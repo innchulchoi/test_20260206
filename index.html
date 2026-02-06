@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kearney Slide Generator — Live Editor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    background: #f0f0f3;
+    color: #222;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Left Panel (Editor) ── */
+  .editor-panel {
+    width: 480px;
+    min-width: 480px;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  .editor-header {
+    background: #5B2D8E;
+    color: #fff;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .editor-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px 80px;
+  }
+
+  /* Section */
+  .section-title {
+    background: #5B2D8E;
+    color: #fff;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 4px;
+    margin: 16px 0 8px;
+    letter-spacing: 0.5px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  /* Field rows */
+  .field-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+  .field-row label {
+    width: 110px;
+    min-width: 110px;
+    font-size: 12px;
+    color: #555;
+    text-align: right;
+    padding-right: 4px;
+  }
+  .field-row input[type="text"],
+  .field-row textarea {
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .field-row input[type="text"]:focus,
+  .field-row textarea:focus {
+    outline: none;
+    border-color: #5B2D8E;
+    box-shadow: 0 0 0 2px rgba(91,45,142,0.15);
+  }
+  .field-row textarea { resize: vertical; min-height: 50px; }
+
+  /* Number input */
+  .field-row input[type="number"] {
+    width: 72px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 6px;
+    font-size: 12px;
+    text-align: center;
+    font-family: inherit;
+  }
+  .field-row input[type="number"]:focus {
+    outline: none;
+    border-color: #5B2D8E;
+    box-shadow: 0 0 0 2px rgba(91,45,142,0.15);
+  }
+
+  .param-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+  }
+  .param-grid .field-row label { width: 90px; min-width: 90px; font-size: 11px; }
+
+  /* ── Right Panel (Preview) ── */
+  .preview-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #e8e8ec;
+    position: relative;
+  }
+  .preview-wrapper {
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    display: inline-block;
+    line-height: 0;
+  }
+  #slideCanvas {
+    max-width: 100%;
+    max-height: calc(100vh - 120px);
+    width: auto;
+    height: auto;
+  }
+  .btn-bar {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+  }
+  .btn-bar button {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.1s;
+  }
+  .btn-bar button:active { transform: scale(0.97); }
+  .btn-primary { background: #5B2D8E; color: #fff; }
+  .btn-primary:hover { background: #4a2475; }
+  .btn-secondary { background: #fff; color: #5B2D8E; border: 2px solid #5B2D8E !important; }
+  .btn-secondary:hover { background: #f5f0fa; }
+</style>
+</head>
+<body>
+
+<!-- ════════════ EDITOR PANEL ════════════ -->
+<div class="editor-panel">
+  <div class="editor-header">Kearney Slide Generator — Live Editor</div>
+  <div class="editor-scroll">
+
+    <!-- Lead Message -->
+    <div class="section-title">Lead Message (Headline)</div>
+    <div class="field-row">
+      <label>Headline</label>
+      <textarea id="headline" rows="2">2026년 이커머스 시장 선점을 위해 모바일 트렌드 대응, 물류 자동화 및 데이터 기반의 초개인화 마케팅을 핵심 전략으로 추진해야</textarea>
+    </div>
+
+    <!-- Box #1 -->
+    <div class="section-title">Box #1</div>
+    <div class="field-row"><label>Label</label><input type="text" id="box1_label" value="시장 환경"></div>
+    <div class="field-row"><label>Main Point</label><input type="text" id="box1_main" value="모바일 쇼핑 비중 80% 돌파 및 MZ세대 중심의 숏폼 커머스가 시장 성장을 주도하..."></div>
+    <div class="field-row"><label>Bullet 1</label><input type="text" id="box1_b1" value="MZ세대의 핵심 소비층 부상 및 구매 영향력 확대"></div>
+    <div class="field-row"><label>Bullet 2</label><input type="text" id="box1_b2" value="숏폼 콘텐츠 플랫폼 기반의 커머스 생태계 급성장"></div>
+
+    <!-- Box #2 -->
+    <div class="section-title">Box #2</div>
+    <div class="field-row"><label>Label</label><input type="text" id="box2_label" value="운영 체계"></div>
+    <div class="field-row"><label>Main Point</label><input type="text" id="box2_main" value="배송 경쟁력 확보를 위한 물류 자동화 시스템 구축 및 AI 기반의 선제적 재고 관리가..."></div>
+    <div class="field-row"><label>Bullet 1</label><input type="text" id="box2_b1" value="당일 배송 권역 확대를 통한 고객 라스트마일 만족도 제고"></div>
+    <div class="field-row"><label>Bullet 2</label><input type="text" id="box2_b2" value="AI 재고 예측 시스템 도입으로 운영 효율성 및 비용 최적화"></div>
+
+    <!-- Box #3 -->
+    <div class="section-title">Box #3</div>
+    <div class="field-row"><label>Label</label><input type="text" id="box3_label" value="고객 경험"></div>
+    <div class="field-row"><label>Main Point</label><input type="text" id="box3_main" value="CRM 고도화와 초개인화 추천 엔진 도입을 통해 고객 데이터 기반의 맞춤형 마케팅..."></div>
+    <div class="field-row"><label>Bullet 1</label><input type="text" id="box3_b1" value="CRM 시스템 고도화를 통한 정교한 고객 타겟팅 수행"></div>
+    <div class="field-row"><label>Bullet 2</label><input type="text" id="box3_b2" value="실시간 고객 행동 데이터 기반의 초개인화 추천 엔진 강화"></div>
+
+    <!-- Footer -->
+    <div class="section-title">Footer</div>
+    <div class="field-row"><label>Footer Left</label><input type="text" id="footer_left" value="KEARNEY  |  PROPRIETARY & CONFIDENTIAL"></div>
+    <div class="field-row"><label>Page Number</label><input type="text" id="page_number" value="1" style="width:50px;flex:none;"></div>
+
+    <!-- Headline params -->
+    <div class="section-title">Headline — Size / Spacing / Position</div>
+    <div class="param-grid">
+      <div class="field-row"><label>Font Size</label><input type="number" id="p_headline_font_size" value="32" min="10" max="80"></div>
+      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_headline_letter_spacing" value="0" min="-5" max="20"></div>
+      <div class="field-row"><label>Line Spacing</label><input type="number" id="p_headline_line_spacing" value="10" min="0" max="40"></div>
+      <div class="field-row"><label>X (Left)</label><input type="number" id="p_headline_x" value="60" min="0" max="400"></div>
+      <div class="field-row"><label>Y (Top)</label><input type="number" id="p_headline_y" value="50" min="0" max="300"></div>
+    </div>
+
+    <!-- Main Point params -->
+    <div class="section-title">Main Point — Size / Spacing</div>
+    <div class="param-grid">
+      <div class="field-row"><label>Font Size</label><input type="number" id="p_main_font_size" value="22" min="10" max="50"></div>
+      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_main_letter_spacing" value="0" min="-5" max="20"></div>
+      <div class="field-row"><label>X Offset</label><input type="number" id="p_main_x_offset" value="150" min="0" max="400"></div>
+    </div>
+
+    <!-- Bullet params -->
+    <div class="section-title">Bullet Points — Size / Spacing</div>
+    <div class="param-grid">
+      <div class="field-row"><label>Font Size</label><input type="number" id="p_bullet_font_size" value="17" min="8" max="40"></div>
+      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_bullet_letter_spacing" value="0" min="-5" max="20"></div>
+      <div class="field-row"><label>Line Spacing</label><input type="number" id="p_bullet_line_spacing" value="8" min="0" max="30"></div>
+      <div class="field-row"><label>Indent</label><input type="number" id="p_bullet_indent" value="30" min="0" max="100"></div>
+      <div class="field-row"><label>Symbol Size</label><input type="number" id="p_bullet_symbol_size" value="6" min="2" max="20"></div>
+    </div>
+
+    <!-- Label Box params -->
+    <div class="section-title">Label Box</div>
+    <div class="param-grid">
+      <div class="field-row"><label>Font Size</label><input type="number" id="p_label_font_size" value="18" min="8" max="40"></div>
+      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_label_letter_spacing" value="2" min="-5" max="20"></div>
+      <div class="field-row"><label>Box Width</label><input type="number" id="p_label_box_width" value="120" min="60" max="300"></div>
+    </div>
+
+    <!-- Content Layout params -->
+    <div class="section-title">Content Layout — Position / Spacing</div>
+    <div class="param-grid">
+      <div class="field-row"><label>Content Start Y</label><input type="number" id="p_content_start_y" value="190" min="100" max="400"></div>
+      <div class="field-row"><label>Left Margin</label><input type="number" id="p_content_x" value="60" min="0" max="200"></div>
+      <div class="field-row"><label>Right Margin</label><input type="number" id="p_content_right_margin" value="60" min="0" max="200"></div>
+      <div class="field-row"><label>Box Spacing</label><input type="number" id="p_box_spacing" value="20" min="0" max="80"></div>
+      <div class="field-row"><label>Padding Top</label><input type="number" id="p_box_padding_top" value="18" min="0" max="60"></div>
+      <div class="field-row"><label>Padding Bottom</label><input type="number" id="p_box_padding_bottom" value="18" min="0" max="60"></div>
+      <div class="field-row"><label>Main→Bullet</label><input type="number" id="p_main_to_bullet_gap" value="12" min="0" max="40"></div>
+    </div>
+
+    <!-- Korean Glyph -->
+    <div class="section-title">Korean Glyph Clipping Prevention</div>
+    <div class="param-grid">
+      <div class="field-row"><label>Extra Y Pad</label><input type="number" id="p_korean_y_pad" value="4" min="0" max="20"></div>
+    </div>
+
+    <!-- Footer params -->
+    <div class="section-title">Footer — Size / Position</div>
+    <div class="param-grid">
+      <div class="field-row"><label>Font Size</label><input type="number" id="p_footer_font_size" value="13" min="8" max="30"></div>
+      <div class="field-row"><label>Y from Bottom</label><input type="number" id="p_footer_y_offset" value="40" min="10" max="100"></div>
+    </div>
+
+  </div><!-- /editor-scroll -->
+</div>
+
+<!-- ════════════ PREVIEW PANEL ════════════ -->
+<div class="preview-panel">
+  <div class="preview-wrapper">
+    <canvas id="slideCanvas" width="1587" height="1123"></canvas>
+  </div>
+  <div class="btn-bar">
+    <button class="btn-primary" onclick="downloadPNG()">PNG Download</button>
+    <button class="btn-secondary" onclick="downloadJPG()">JPG Download</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// Canvas Slide Renderer
+// ══════════════════════════════════════════
+const W = 1587, H = 1123;
+const canvas = document.getElementById('slideCanvas');
+const ctx = canvas.getContext('2d');
+
+const COLORS = {
+  bg: '#FFFFFF',
+  headline: '#5B2D8E',
+  labelBg: '#F2F0F0',
+  labelText: '#333333',
+  mainText: '#1A1A1A',
+  bulletText: '#555555',
+  divider: '#D0D0D0',
+  footerText: '#888888',
+  purpleLine: '#5B2D8E',
+};
+
+const FONT_FAMILY = "'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif";
+
+// ── Helpers ──
+function val(id) { return document.getElementById(id).value; }
+function num(id) { return parseInt(document.getElementById(id).value) || 0; }
+
+function setFont(size, bold) {
+  ctx.font = (bold ? '700 ' : '400 ') + size + 'px ' + FONT_FAMILY;
+}
+
+function measureTextWithSpacing(text, fontSize, bold, letterSpacing) {
+  setFont(fontSize, bold);
+  if (letterSpacing === 0) return ctx.measureText(text).width;
+  let w = 0;
+  for (const ch of text) {
+    w += ctx.measureText(ch).width + letterSpacing;
+  }
+  return text.length > 0 ? w - letterSpacing : 0;
+}
+
+function drawTextWithSpacing(x, y, text, fontSize, bold, color, letterSpacing) {
+  setFont(fontSize, bold);
+  ctx.fillStyle = color;
+  ctx.textBaseline = 'top';
+  if (letterSpacing === 0) {
+    ctx.fillText(text, x, y);
+    return;
+  }
+  let cx = x;
+  for (const ch of text) {
+    ctx.fillText(ch, cx, y);
+    cx += ctx.measureText(ch).width + letterSpacing;
+  }
+}
+
+function wrapText(text, fontSize, bold, maxWidth, letterSpacing) {
+  if (!text) return [''];
+  const words = text.split(' ');
+  if (words.length <= 1 || text.indexOf(' ') === -1) {
+    // Character wrap for CJK
+    const lines = []; let cur = '';
+    for (const ch of text) {
+      const test = cur + ch;
+      if (measureTextWithSpacing(test, fontSize, bold, letterSpacing) > maxWidth && cur) {
+        lines.push(cur); cur = ch;
+      } else { cur = test; }
+    }
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [''];
+  }
+  const lines = []; let cur = '';
+  for (const word of words) {
+    const test = (cur ? cur + ' ' + word : word);
+    if (measureTextWithSpacing(test, fontSize, bold, letterSpacing) > maxWidth && cur) {
+      lines.push(cur); cur = word;
+    } else { cur = test; }
+  }
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [''];
+}
+
+function truncateOneLine(text, fontSize, bold, maxWidth, letterSpacing) {
+  if (measureTextWithSpacing(text, fontSize, bold, letterSpacing) <= maxWidth) return text;
+  for (let i = text.length; i > 0; i--) {
+    const c = text.slice(0, i) + '...';
+    if (measureTextWithSpacing(c, fontSize, bold, letterSpacing) <= maxWidth) return c;
+  }
+  return '...';
+}
+
+function roundRect(x, y, w, h, r, fill) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+}
+
+// ── Main render ──
+function render() {
+  // Read params
+  const p = {
+    headline_font_size: num('p_headline_font_size'),
+    headline_letter_spacing: num('p_headline_letter_spacing'),
+    headline_line_spacing: num('p_headline_line_spacing'),
+    headline_x: num('p_headline_x'),
+    headline_y: num('p_headline_y'),
+    main_font_size: num('p_main_font_size'),
+    main_letter_spacing: num('p_main_letter_spacing'),
+    main_x_offset: num('p_main_x_offset'),
+    bullet_font_size: num('p_bullet_font_size'),
+    bullet_letter_spacing: num('p_bullet_letter_spacing'),
+    bullet_line_spacing: num('p_bullet_line_spacing'),
+    bullet_indent: num('p_bullet_indent'),
+    bullet_symbol_size: num('p_bullet_symbol_size'),
+    label_font_size: num('p_label_font_size'),
+    label_letter_spacing: num('p_label_letter_spacing'),
+    label_box_width: num('p_label_box_width'),
+    content_start_y: num('p_content_start_y'),
+    content_x: num('p_content_x'),
+    content_right_margin: num('p_content_right_margin'),
+    box_spacing: num('p_box_spacing'),
+    box_padding_top: num('p_box_padding_top'),
+    box_padding_bottom: num('p_box_padding_bottom'),
+    main_to_bullet_gap: num('p_main_to_bullet_gap'),
+    korean_y_pad: num('p_korean_y_pad'),
+    footer_font_size: num('p_footer_font_size'),
+    footer_y_offset: num('p_footer_y_offset'),
+  };
+
+  // Read content
+  const headline = val('headline');
+  const boxes = [1,2,3].map(i => ({
+    label: val(`box${i}_label`),
+    main: val(`box${i}_main`),
+    bullets: [val(`box${i}_b1`), val(`box${i}_b2`)].filter(b => b.trim()),
+  }));
+  const footerLeft = val('footer_left');
+  const pageNumber = val('page_number');
+
+  // Clear
+  ctx.fillStyle = COLORS.bg;
+  ctx.fillRect(0, 0, W, H);
+
+  const yPad = p.korean_y_pad;
+  const headlineMaxW = W - p.headline_x - p.content_right_margin;
+
+  // ── Headline ──
+  let headlineLines = wrapText(headline, p.headline_font_size, true, headlineMaxW, p.headline_letter_spacing);
+  if (headlineLines.length > 2) {
+    headlineLines = headlineLines.slice(0, 2);
+    headlineLines[1] = truncateOneLine(headlineLines[1], p.headline_font_size, true, headlineMaxW, p.headline_letter_spacing);
+  }
+
+  setFont(p.headline_font_size, true);
+  const hLineH = p.headline_font_size * 1.25 + yPad;
+  let hy = p.headline_y;
+  for (const line of headlineLines) {
+    drawTextWithSpacing(p.headline_x, hy, line, p.headline_font_size, true, COLORS.headline, p.headline_letter_spacing);
+    hy += hLineH + p.headline_line_spacing;
+  }
+
+  // Purple accent line
+  const accentY = hy + 5;
+  ctx.strokeStyle = COLORS.purpleLine;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(p.headline_x, accentY);
+  ctx.lineTo(W - p.content_right_margin, accentY);
+  ctx.stroke();
+
+  // ── Content boxes ──
+  const contentY = Math.max(p.content_start_y, accentY + 20);
+  const contentX = p.content_x;
+  const contentRight = W - p.content_right_margin;
+  const textAreaX = contentX + p.main_x_offset;
+  const textAreaW = contentRight - textAreaX;
+
+  setFont(p.main_font_size, true);
+  const mainLineH = p.main_font_size * 1.25 + yPad;
+  setFont(p.bullet_font_size, false);
+  const bulletLineH = p.bullet_font_size * 1.25 + yPad;
+
+  // Calc box heights
+  function calcBoxH(box) {
+    let h = p.box_padding_top + mainLineH;
+    if (box.bullets.length) {
+      h += p.main_to_bullet_gap;
+      h += box.bullets.length * bulletLineH + (box.bullets.length - 1) * p.bullet_line_spacing;
+    }
+    h += p.box_padding_bottom;
+    return h;
+  }
+
+  let boxHeights = boxes.map(calcBoxH);
+  const footerYLimit = H - p.footer_y_offset - 30;
+  let totalUsed = boxHeights.reduce((a,b) => a+b, 0) + (boxes.length - 1) * p.box_spacing;
+  const totalAvail = footerYLimit - contentY;
+
+  // Scale if overflow
+  if (totalUsed > totalAvail && totalUsed > 0) {
+    const scale = totalAvail / totalUsed;
+    boxHeights = boxHeights.map(h => Math.floor(h * scale));
+    totalUsed = boxHeights.reduce((a,b) => a+b, 0) + (boxes.length - 1) * p.box_spacing;
+  }
+
+  // Distribute vertical gaps
+  const remaining = totalAvail - totalUsed;
+  let gap = p.box_spacing;
+  let topOffset = 0;
+  if (boxes.length > 1 && remaining > 0) {
+    const divCount = boxes.length - 1 + 2;
+    gap = p.box_spacing + Math.floor(remaining / divCount);
+    topOffset = Math.floor(remaining / divCount);
+  }
+
+  // Draw boxes
+  let curY = contentY + topOffset;
+  for (let idx = 0; idx < boxes.length; idx++) {
+    const box = boxes[idx];
+    const boxH = boxHeights[idx];
+
+    // Divider above (except first)
+    if (idx > 0) {
+      const divY = curY - Math.floor(gap / 2);
+      ctx.strokeStyle = COLORS.divider;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(contentX, divY);
+      ctx.lineTo(contentRight, divY);
+      ctx.stroke();
+    }
+
+    // Label box
+    roundRect(contentX, curY, p.label_box_width, boxH, 6, COLORS.labelBg);
+
+    // Center label text
+    setFont(p.label_font_size, true);
+    const labelW = measureTextWithSpacing(box.label, p.label_font_size, true, p.label_letter_spacing);
+    const labelTextH = p.label_font_size;
+    const lx = contentX + (p.label_box_width - labelW) / 2;
+    const ly = curY + (boxH - labelTextH) / 2;
+    drawTextWithSpacing(lx, ly, box.label, p.label_font_size, true, COLORS.labelText, p.label_letter_spacing);
+
+    // Main point
+    const mainDisplay = truncateOneLine(box.main, p.main_font_size, true, textAreaW, p.main_letter_spacing);
+    const my = curY + p.box_padding_top;
+    drawTextWithSpacing(textAreaX, my, mainDisplay, p.main_font_size, true, COLORS.mainText, p.main_letter_spacing);
+
+    // Bullets
+    let by = my + mainLineH + p.main_to_bullet_gap;
+    const bulletX = textAreaX + p.bullet_indent;
+    const bulletTextW = contentRight - bulletX - 10;
+    for (let bi = 0; bi < box.bullets.length; bi++) {
+      const bDisplay = truncateOneLine(box.bullets[bi], p.bullet_font_size, false, bulletTextW, p.bullet_letter_spacing);
+      // Em-dash bullet symbol
+      const dotY = by + bulletLineH / 2;
+      const r = p.bullet_symbol_size;
+      ctx.strokeStyle = COLORS.bulletText;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bulletX - 18, dotY);
+      ctx.lineTo(bulletX - 18 + r * 2, dotY);
+      ctx.stroke();
+
+      drawTextWithSpacing(bulletX, by, bDisplay, p.bullet_font_size, false, COLORS.bulletText, p.bullet_letter_spacing);
+      by += bulletLineH + p.bullet_line_spacing;
+    }
+
+    curY += boxH + gap;
+  }
+
+  // ── Footer ──
+  const footerY = H - p.footer_y_offset;
+  // Divider
+  ctx.strokeStyle = COLORS.divider;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(contentX, footerY - 15);
+  ctx.lineTo(contentRight, footerY - 15);
+  ctx.stroke();
+
+  // Footer text
+  setFont(p.footer_font_size, false);
+  ctx.fillStyle = COLORS.footerText;
+  ctx.textBaseline = 'top';
+  ctx.fillText(footerLeft, contentX, footerY);
+  // Page number (right)
+  const pnW = ctx.measureText(pageNumber).width;
+  ctx.fillText(pageNumber, contentRight - pnW, footerY);
+}
+
+// ── Download ──
+function downloadPNG() {
+  const link = document.createElement('a');
+  link.download = 'kearney_slide.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+function downloadJPG() {
+  const link = document.createElement('a');
+  link.download = 'kearney_slide.jpg';
+  link.href = canvas.toDataURL('image/jpeg', 0.95);
+  link.click();
+}
+
+// ── Bind events ──
+document.querySelectorAll('input, textarea').forEach(el => {
+  el.addEventListener('input', render);
+});
+
+// Wait for font to load then render
+document.fonts.ready.then(() => { render(); });
+// Also render immediately as fallback
+render();
+</script>
+</body>
+</html>

@@ -17,142 +17,168 @@
     overflow: hidden;
   }
 
-  /* ── Left Panel (Editor) ── */
+  /* ── Left Panel ── */
   .editor-panel {
-    width: 480px;
-    min-width: 480px;
+    width: 500px; min-width: 500px;
     background: #fff;
     border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
     height: 100vh;
   }
   .editor-header {
-    background: #5B2D8E;
-    color: #fff;
-    padding: 16px 20px;
-    font-size: 16px;
-    font-weight: 700;
-    flex-shrink: 0;
+    background: #5B2D8E; color: #fff;
+    padding: 14px 20px; font-size: 15px; font-weight: 700; flex-shrink: 0;
   }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex; border-bottom: 2px solid #eee; flex-shrink: 0;
+  }
+  .tab-bar button {
+    flex: 1; padding: 10px 0; border: none; background: #fafafa;
+    font-size: 13px; font-weight: 600; color: #777; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+  }
+  .tab-bar button.active {
+    color: #5B2D8E; background: #fff;
+    border-bottom: 3px solid #5B2D8E; margin-bottom: -2px;
+  }
+  .tab-bar button:hover:not(.active) { background: #f5f0fa; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
   .editor-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px 16px 80px;
+    flex: 1; overflow-y: auto; padding: 12px 16px 80px;
   }
 
   /* Section */
   .section-title {
-    background: #5B2D8E;
-    color: #fff;
-    padding: 7px 12px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 4px;
-    margin: 16px 0 8px;
-    letter-spacing: 0.5px;
+    background: #5B2D8E; color: #fff;
+    padding: 7px 12px; font-size: 12px; font-weight: 700;
+    border-radius: 4px; margin: 14px 0 8px; letter-spacing: 0.5px;
   }
   .section-title:first-child { margin-top: 0; }
 
   /* Field rows */
   .field-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
-    gap: 8px;
+    display: flex; align-items: center; margin-bottom: 6px; gap: 8px;
   }
   .field-row label {
-    width: 110px;
-    min-width: 110px;
-    font-size: 12px;
-    color: #555;
-    text-align: right;
-    padding-right: 4px;
+    width: 110px; min-width: 110px; font-size: 12px;
+    color: #555; text-align: right; padding-right: 4px;
   }
-  .field-row input[type="text"],
-  .field-row textarea {
-    flex: 1;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 6px 8px;
-    font-size: 12px;
-    font-family: inherit;
+  .field-row input[type="text"], .field-row textarea {
+    flex: 1; border: 1px solid #ccc; border-radius: 4px;
+    padding: 6px 8px; font-size: 12px; font-family: inherit;
     transition: border-color 0.2s;
   }
-  .field-row input[type="text"]:focus,
-  .field-row textarea:focus {
-    outline: none;
-    border-color: #5B2D8E;
+  .field-row input[type="text"]:focus, .field-row textarea:focus {
+    outline: none; border-color: #5B2D8E;
     box-shadow: 0 0 0 2px rgba(91,45,142,0.15);
   }
   .field-row textarea { resize: vertical; min-height: 50px; }
-
-  /* Number input */
   .field-row input[type="number"] {
-    width: 72px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 5px 6px;
-    font-size: 12px;
-    text-align: center;
-    font-family: inherit;
+    width: 72px; border: 1px solid #ccc; border-radius: 4px;
+    padding: 5px 6px; font-size: 12px; text-align: center; font-family: inherit;
   }
   .field-row input[type="number"]:focus {
-    outline: none;
-    border-color: #5B2D8E;
+    outline: none; border-color: #5B2D8E;
     box-shadow: 0 0 0 2px rgba(91,45,142,0.15);
   }
-
   .param-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 12px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px;
   }
   .param-grid .field-row label { width: 90px; min-width: 90px; font-size: 11px; }
 
-  /* ── Right Panel (Preview) ── */
+  /* Bulk paste */
+  .bulk-area {
+    width: 100%; min-height: 200px; border: 1px solid #ccc;
+    border-radius: 6px; padding: 10px; font-size: 12px;
+    font-family: 'Noto Sans KR', monospace; resize: vertical;
+    line-height: 1.7;
+  }
+  .bulk-area:focus {
+    outline: none; border-color: #5B2D8E;
+    box-shadow: 0 0 0 2px rgba(91,45,142,0.15);
+  }
+  .bulk-hint {
+    font-size: 11px; color: #888; margin: 6px 0 10px;
+    line-height: 1.5; background: #f9f9f9; padding: 8px 10px;
+    border-radius: 4px; border-left: 3px solid #5B2D8E;
+  }
+  .bulk-hint code { background: #eee; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+
+  /* Upload area */
+  .upload-zone {
+    border: 2px dashed #ccc; border-radius: 8px;
+    padding: 24px; text-align: center; cursor: pointer;
+    transition: all 0.2s; margin-bottom: 12px;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: #5B2D8E; background: #f5f0fa;
+  }
+  .upload-zone .icon { font-size: 32px; margin-bottom: 8px; }
+  .upload-zone .label { font-size: 13px; color: #555; }
+  .upload-zone .sub { font-size: 11px; color: #999; margin-top: 4px; }
+  .upload-status {
+    font-size: 12px; padding: 8px 12px; border-radius: 4px;
+    margin-bottom: 12px; display: none;
+  }
+  .upload-status.success { display: block; background: #e8f5e9; color: #2e7d32; }
+  .upload-status.error { display: block; background: #fbe9e7; color: #c62828; }
+
+  /* Action buttons in editor */
+  .action-btn {
+    width: 100%; padding: 10px; border: none; border-radius: 6px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    font-family: inherit; margin-bottom: 8px; transition: all 0.15s;
+  }
+  .action-btn:active { transform: scale(0.98); }
+  .action-btn.purple { background: #5B2D8E; color: #fff; }
+  .action-btn.purple:hover { background: #4a2475; }
+  .action-btn.outline { background: #fff; color: #5B2D8E; border: 2px solid #5B2D8E; }
+  .action-btn.outline:hover { background: #f5f0fa; }
+
+  /* ── Right Panel ── */
   .preview-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: #e8e8ec;
-    position: relative;
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px; background: #e8e8ec;
   }
   .preview-wrapper {
-    background: #fff;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-    display: inline-block;
-    line-height: 0;
+    background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    display: inline-block; line-height: 0;
   }
   #slideCanvas {
-    max-width: 100%;
-    max-height: calc(100vh - 120px);
-    width: auto;
-    height: auto;
+    max-width: 100%; max-height: calc(100vh - 120px);
+    width: auto; height: auto;
   }
   .btn-bar {
-    margin-top: 16px;
-    display: flex;
-    gap: 12px;
+    margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;
+    justify-content: center;
   }
   .btn-bar button {
-    padding: 10px 28px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    transition: transform 0.1s;
+    padding: 10px 24px; border: none; border-radius: 6px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    font-family: inherit; transition: transform 0.1s;
   }
   .btn-bar button:active { transform: scale(0.97); }
   .btn-primary { background: #5B2D8E; color: #fff; }
   .btn-primary:hover { background: #4a2475; }
   .btn-secondary { background: #fff; color: #5B2D8E; border: 2px solid #5B2D8E !important; }
   .btn-secondary:hover { background: #f5f0fa; }
+  .btn-pptx { background: #C0392B; color: #fff; }
+  .btn-pptx:hover { background: #a93226; }
+
+  /* Toast notification */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: #333; color: #fff; padding: 12px 24px; border-radius: 8px;
+    font-size: 13px; z-index: 9999; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -160,100 +186,169 @@
 <!-- ════════════ EDITOR PANEL ════════════ -->
 <div class="editor-panel">
   <div class="editor-header">Kearney Slide Generator — Live Editor</div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="active" onclick="switchTab('tab-fields')">Field Editor</button>
+    <button onclick="switchTab('tab-bulk')">Bulk Paste</button>
+    <button onclick="switchTab('tab-pptx')">PPT Upload</button>
+    <button onclick="switchTab('tab-params')">Layout</button>
+  </div>
+
   <div class="editor-scroll">
 
-    <!-- Lead Message -->
-    <div class="section-title">Lead Message (Headline)</div>
-    <div class="field-row">
-      <label>Headline</label>
-      <textarea id="headline" rows="2">2026년 이커머스 시장 선점을 위해 모바일 트렌드 대응, 물류 자동화 및 데이터 기반의 초개인화 마케팅을 핵심 전략으로 추진해야</textarea>
+    <!-- ═══ TAB: Field Editor ═══ -->
+    <div id="tab-fields" class="tab-content active">
+      <div class="section-title">Lead Message (Headline)</div>
+      <div class="field-row">
+        <label>Headline</label>
+        <textarea id="headline" rows="2">2026년 이커머스 시장 선점을 위해 모바일 트렌드 대응, 물류 자동화 및 데이터 기반의 초개인화 마케팅을 핵심 전략으로 추진해야</textarea>
+      </div>
+
+      <div class="section-title">Box #1</div>
+      <div class="field-row"><label>Label</label><input type="text" id="box1_label" value="시장 환경"></div>
+      <div class="field-row"><label>Main Point</label><input type="text" id="box1_main" value="모바일 쇼핑 비중 80% 돌파 및 MZ세대 중심의 숏폼 커머스가 시장 성장을 주도하..."></div>
+      <div class="field-row"><label>Bullet 1</label><input type="text" id="box1_b1" value="MZ세대의 핵심 소비층 부상 및 구매 영향력 확대"></div>
+      <div class="field-row"><label>Bullet 2</label><input type="text" id="box1_b2" value="숏폼 콘텐츠 플랫폼 기반의 커머스 생태계 급성장"></div>
+
+      <div class="section-title">Box #2</div>
+      <div class="field-row"><label>Label</label><input type="text" id="box2_label" value="운영 체계"></div>
+      <div class="field-row"><label>Main Point</label><input type="text" id="box2_main" value="배송 경쟁력 확보를 위한 물류 자동화 시스템 구축 및 AI 기반의 선제적 재고 관리가..."></div>
+      <div class="field-row"><label>Bullet 1</label><input type="text" id="box2_b1" value="당일 배송 권역 확대를 통한 고객 라스트마일 만족도 제고"></div>
+      <div class="field-row"><label>Bullet 2</label><input type="text" id="box2_b2" value="AI 재고 예측 시스템 도입으로 운영 효율성 및 비용 최적화"></div>
+
+      <div class="section-title">Box #3</div>
+      <div class="field-row"><label>Label</label><input type="text" id="box3_label" value="고객 경험"></div>
+      <div class="field-row"><label>Main Point</label><input type="text" id="box3_main" value="CRM 고도화와 초개인화 추천 엔진 도입을 통해 고객 데이터 기반의 맞춤형 마케팅..."></div>
+      <div class="field-row"><label>Bullet 1</label><input type="text" id="box3_b1" value="CRM 시스템 고도화를 통한 정교한 고객 타겟팅 수행"></div>
+      <div class="field-row"><label>Bullet 2</label><input type="text" id="box3_b2" value="실시간 고객 행동 데이터 기반의 초개인화 추천 엔진 강화"></div>
+
+      <div class="section-title">Footer</div>
+      <div class="field-row"><label>Footer Left</label><input type="text" id="footer_left" value="KEARNEY  |  PROPRIETARY & CONFIDENTIAL"></div>
+      <div class="field-row"><label>Page Number</label><input type="text" id="page_number" value="1" style="width:50px;flex:none;"></div>
     </div>
 
-    <!-- Box #1 -->
-    <div class="section-title">Box #1</div>
-    <div class="field-row"><label>Label</label><input type="text" id="box1_label" value="시장 환경"></div>
-    <div class="field-row"><label>Main Point</label><input type="text" id="box1_main" value="모바일 쇼핑 비중 80% 돌파 및 MZ세대 중심의 숏폼 커머스가 시장 성장을 주도하..."></div>
-    <div class="field-row"><label>Bullet 1</label><input type="text" id="box1_b1" value="MZ세대의 핵심 소비층 부상 및 구매 영향력 확대"></div>
-    <div class="field-row"><label>Bullet 2</label><input type="text" id="box1_b2" value="숏폼 콘텐츠 플랫폼 기반의 커머스 생태계 급성장"></div>
-
-    <!-- Box #2 -->
-    <div class="section-title">Box #2</div>
-    <div class="field-row"><label>Label</label><input type="text" id="box2_label" value="운영 체계"></div>
-    <div class="field-row"><label>Main Point</label><input type="text" id="box2_main" value="배송 경쟁력 확보를 위한 물류 자동화 시스템 구축 및 AI 기반의 선제적 재고 관리가..."></div>
-    <div class="field-row"><label>Bullet 1</label><input type="text" id="box2_b1" value="당일 배송 권역 확대를 통한 고객 라스트마일 만족도 제고"></div>
-    <div class="field-row"><label>Bullet 2</label><input type="text" id="box2_b2" value="AI 재고 예측 시스템 도입으로 운영 효율성 및 비용 최적화"></div>
-
-    <!-- Box #3 -->
-    <div class="section-title">Box #3</div>
-    <div class="field-row"><label>Label</label><input type="text" id="box3_label" value="고객 경험"></div>
-    <div class="field-row"><label>Main Point</label><input type="text" id="box3_main" value="CRM 고도화와 초개인화 추천 엔진 도입을 통해 고객 데이터 기반의 맞춤형 마케팅..."></div>
-    <div class="field-row"><label>Bullet 1</label><input type="text" id="box3_b1" value="CRM 시스템 고도화를 통한 정교한 고객 타겟팅 수행"></div>
-    <div class="field-row"><label>Bullet 2</label><input type="text" id="box3_b2" value="실시간 고객 행동 데이터 기반의 초개인화 추천 엔진 강화"></div>
-
-    <!-- Footer -->
-    <div class="section-title">Footer</div>
-    <div class="field-row"><label>Footer Left</label><input type="text" id="footer_left" value="KEARNEY  |  PROPRIETARY & CONFIDENTIAL"></div>
-    <div class="field-row"><label>Page Number</label><input type="text" id="page_number" value="1" style="width:50px;flex:none;"></div>
-
-    <!-- Headline params -->
-    <div class="section-title">Headline — Size / Spacing / Position</div>
-    <div class="param-grid">
-      <div class="field-row"><label>Font Size</label><input type="number" id="p_headline_font_size" value="32" min="10" max="80"></div>
-      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_headline_letter_spacing" value="0" min="-5" max="20"></div>
-      <div class="field-row"><label>Line Spacing</label><input type="number" id="p_headline_line_spacing" value="10" min="0" max="40"></div>
-      <div class="field-row"><label>X (Left)</label><input type="number" id="p_headline_x" value="60" min="0" max="400"></div>
-      <div class="field-row"><label>Y (Top)</label><input type="number" id="p_headline_y" value="50" min="0" max="300"></div>
+    <!-- ═══ TAB: Bulk Paste ═══ -->
+    <div id="tab-bulk" class="tab-content">
+      <div class="section-title">Content Bulk Paste</div>
+      <div class="bulk-hint">
+        아래 형식으로 전체 내용을 한번에 붙여넣기 하세요:<br>
+        <code>Headline: 헤드라인 텍스트</code><br>
+        <code>---</code> (구분선)<br>
+        <code>Label: 라벨명</code><br>
+        <code>Main: 메인 포인트</code><br>
+        <code>- 불릿 포인트 1</code><br>
+        <code>- 불릿 포인트 2</code><br>
+        <code>---</code> (반복)<br>
+        <code>Footer: 푸터 텍스트</code><br>
+        <code>Page: 1</code>
+      </div>
+      <textarea id="bulkInput" class="bulk-area" placeholder="여기에 전체 내용을 붙여넣기 하세요...">Headline: 2026년 이커머스 시장 선점을 위해 모바일 트렌드 대응, 물류 자동화 및 데이터 기반의 초개인화 마케팅을 핵심 전략으로 추진해야
+---
+Label: 시장 환경
+Main: 모바일 쇼핑 비중 80% 돌파 및 MZ세대 중심의 숏폼 커머스가 시장 성장을 주도하...
+- MZ세대의 핵심 소비층 부상 및 구매 영향력 확대
+- 숏폼 콘텐츠 플랫폼 기반의 커머스 생태계 급성장
+---
+Label: 운영 체계
+Main: 배송 경쟁력 확보를 위한 물류 자동화 시스템 구축 및 AI 기반의 선제적 재고 관리가...
+- 당일 배송 권역 확대를 통한 고객 라스트마일 만족도 제고
+- AI 재고 예측 시스템 도입으로 운영 효율성 및 비용 최적화
+---
+Label: 고객 경험
+Main: CRM 고도화와 초개인화 추천 엔진 도입을 통해 고객 데이터 기반의 맞춤형 마케팅...
+- CRM 시스템 고도화를 통한 정교한 고객 타겟팅 수행
+- 실시간 고객 행동 데이터 기반의 초개인화 추천 엔진 강화
+---
+Footer: KEARNEY  |  PROPRIETARY & CONFIDENTIAL
+Page: 1</textarea>
+      <button class="action-btn purple" onclick="applyBulk()" style="margin-top:10px;">Apply to Slide</button>
+      <button class="action-btn outline" onclick="exportBulk()" style="margin-top:4px;">Export Current → Bulk Text</button>
     </div>
 
-    <!-- Main Point params -->
-    <div class="section-title">Main Point — Size / Spacing</div>
-    <div class="param-grid">
-      <div class="field-row"><label>Font Size</label><input type="number" id="p_main_font_size" value="22" min="10" max="50"></div>
-      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_main_letter_spacing" value="0" min="-5" max="20"></div>
-      <div class="field-row"><label>X Offset</label><input type="number" id="p_main_x_offset" value="150" min="0" max="400"></div>
+    <!-- ═══ TAB: PPT Upload ═══ -->
+    <div id="tab-pptx" class="tab-content">
+      <div class="section-title">PPT Template Upload</div>
+      <p style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.6;">
+        PPTX 파일을 업로드하면 내용을 자동 파싱하여 에디터에 반영합니다.<br>
+        다운로드 시 업로드한 파일의 서식(폰트, 색상, 위치)이 유지됩니다.
+      </p>
+
+      <div class="upload-zone" id="uploadZone"
+           onclick="document.getElementById('pptxFile').click()">
+        <div class="icon">&#128196;</div>
+        <div class="label">클릭 또는 드래그하여 PPTX 업로드</div>
+        <div class="sub">.pptx 파일만 지원</div>
+      </div>
+      <input type="file" id="pptxFile" accept=".pptx,.ppt" style="display:none;" onchange="uploadPPTX(this)">
+
+      <div class="upload-status" id="uploadStatus"></div>
+
+      <div class="section-title">PPT Download</div>
+      <button class="action-btn purple" onclick="downloadPPTX()">
+        PPT Download (현재 내용)
+      </button>
+      <p style="font-size:11px;color:#888;margin-top:6px;line-height:1.5;">
+        업로드한 템플릿이 있으면 해당 서식을 유지하여 PPT를 생성합니다.<br>
+        없으면 Kearney 기본 스타일로 새 PPT를 생성합니다.
+      </p>
     </div>
 
-    <!-- Bullet params -->
-    <div class="section-title">Bullet Points — Size / Spacing</div>
-    <div class="param-grid">
-      <div class="field-row"><label>Font Size</label><input type="number" id="p_bullet_font_size" value="17" min="8" max="40"></div>
-      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_bullet_letter_spacing" value="0" min="-5" max="20"></div>
-      <div class="field-row"><label>Line Spacing</label><input type="number" id="p_bullet_line_spacing" value="8" min="0" max="30"></div>
-      <div class="field-row"><label>Indent</label><input type="number" id="p_bullet_indent" value="30" min="0" max="100"></div>
-      <div class="field-row"><label>Symbol Size</label><input type="number" id="p_bullet_symbol_size" value="6" min="2" max="20"></div>
-    </div>
+    <!-- ═══ TAB: Layout Params ═══ -->
+    <div id="tab-params" class="tab-content">
+      <div class="section-title">Headline — Size / Spacing / Position</div>
+      <div class="param-grid">
+        <div class="field-row"><label>Font Size</label><input type="number" id="p_headline_font_size" value="32" min="10" max="80"></div>
+        <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_headline_letter_spacing" value="0" min="-5" max="20"></div>
+        <div class="field-row"><label>Line Spacing</label><input type="number" id="p_headline_line_spacing" value="10" min="0" max="40"></div>
+        <div class="field-row"><label>X (Left)</label><input type="number" id="p_headline_x" value="60" min="0" max="400"></div>
+        <div class="field-row"><label>Y (Top)</label><input type="number" id="p_headline_y" value="50" min="0" max="300"></div>
+      </div>
 
-    <!-- Label Box params -->
-    <div class="section-title">Label Box</div>
-    <div class="param-grid">
-      <div class="field-row"><label>Font Size</label><input type="number" id="p_label_font_size" value="18" min="8" max="40"></div>
-      <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_label_letter_spacing" value="2" min="-5" max="20"></div>
-      <div class="field-row"><label>Box Width</label><input type="number" id="p_label_box_width" value="120" min="60" max="300"></div>
-    </div>
+      <div class="section-title">Main Point — Size / Spacing</div>
+      <div class="param-grid">
+        <div class="field-row"><label>Font Size</label><input type="number" id="p_main_font_size" value="22" min="10" max="50"></div>
+        <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_main_letter_spacing" value="0" min="-5" max="20"></div>
+        <div class="field-row"><label>X Offset</label><input type="number" id="p_main_x_offset" value="150" min="0" max="400"></div>
+      </div>
 
-    <!-- Content Layout params -->
-    <div class="section-title">Content Layout — Position / Spacing</div>
-    <div class="param-grid">
-      <div class="field-row"><label>Content Start Y</label><input type="number" id="p_content_start_y" value="190" min="100" max="400"></div>
-      <div class="field-row"><label>Left Margin</label><input type="number" id="p_content_x" value="60" min="0" max="200"></div>
-      <div class="field-row"><label>Right Margin</label><input type="number" id="p_content_right_margin" value="60" min="0" max="200"></div>
-      <div class="field-row"><label>Box Spacing</label><input type="number" id="p_box_spacing" value="20" min="0" max="80"></div>
-      <div class="field-row"><label>Padding Top</label><input type="number" id="p_box_padding_top" value="18" min="0" max="60"></div>
-      <div class="field-row"><label>Padding Bottom</label><input type="number" id="p_box_padding_bottom" value="18" min="0" max="60"></div>
-      <div class="field-row"><label>Main→Bullet</label><input type="number" id="p_main_to_bullet_gap" value="12" min="0" max="40"></div>
-    </div>
+      <div class="section-title">Bullet Points — Size / Spacing</div>
+      <div class="param-grid">
+        <div class="field-row"><label>Font Size</label><input type="number" id="p_bullet_font_size" value="17" min="8" max="40"></div>
+        <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_bullet_letter_spacing" value="0" min="-5" max="20"></div>
+        <div class="field-row"><label>Line Spacing</label><input type="number" id="p_bullet_line_spacing" value="8" min="0" max="30"></div>
+        <div class="field-row"><label>Indent</label><input type="number" id="p_bullet_indent" value="30" min="0" max="100"></div>
+        <div class="field-row"><label>Symbol Size</label><input type="number" id="p_bullet_symbol_size" value="6" min="2" max="20"></div>
+      </div>
 
-    <!-- Korean Glyph -->
-    <div class="section-title">Korean Glyph Clipping Prevention</div>
-    <div class="param-grid">
-      <div class="field-row"><label>Extra Y Pad</label><input type="number" id="p_korean_y_pad" value="4" min="0" max="20"></div>
-    </div>
+      <div class="section-title">Label Box</div>
+      <div class="param-grid">
+        <div class="field-row"><label>Font Size</label><input type="number" id="p_label_font_size" value="18" min="8" max="40"></div>
+        <div class="field-row"><label>Letter Spacing</label><input type="number" id="p_label_letter_spacing" value="2" min="-5" max="20"></div>
+        <div class="field-row"><label>Box Width</label><input type="number" id="p_label_box_width" value="120" min="60" max="300"></div>
+      </div>
 
-    <!-- Footer params -->
-    <div class="section-title">Footer — Size / Position</div>
-    <div class="param-grid">
-      <div class="field-row"><label>Font Size</label><input type="number" id="p_footer_font_size" value="13" min="8" max="30"></div>
-      <div class="field-row"><label>Y from Bottom</label><input type="number" id="p_footer_y_offset" value="40" min="10" max="100"></div>
+      <div class="section-title">Content Layout — Position / Spacing</div>
+      <div class="param-grid">
+        <div class="field-row"><label>Content Start Y</label><input type="number" id="p_content_start_y" value="190" min="100" max="400"></div>
+        <div class="field-row"><label>Left Margin</label><input type="number" id="p_content_x" value="60" min="0" max="200"></div>
+        <div class="field-row"><label>Right Margin</label><input type="number" id="p_content_right_margin" value="60" min="0" max="200"></div>
+        <div class="field-row"><label>Box Spacing</label><input type="number" id="p_box_spacing" value="20" min="0" max="80"></div>
+        <div class="field-row"><label>Padding Top</label><input type="number" id="p_box_padding_top" value="18" min="0" max="60"></div>
+        <div class="field-row"><label>Padding Bottom</label><input type="number" id="p_box_padding_bottom" value="18" min="0" max="60"></div>
+        <div class="field-row"><label>Main->Bullet</label><input type="number" id="p_main_to_bullet_gap" value="12" min="0" max="40"></div>
+      </div>
+
+      <div class="section-title">Korean Glyph Clipping Prevention</div>
+      <div class="param-grid">
+        <div class="field-row"><label>Extra Y Pad</label><input type="number" id="p_korean_y_pad" value="4" min="0" max="20"></div>
+      </div>
+
+      <div class="section-title">Footer — Size / Position</div>
+      <div class="param-grid">
+        <div class="field-row"><label>Font Size</label><input type="number" id="p_footer_font_size" value="13" min="8" max="30"></div>
+        <div class="field-row"><label>Y from Bottom</label><input type="number" id="p_footer_y_offset" value="40" min="10" max="100"></div>
+      </div>
     </div>
 
   </div><!-- /editor-scroll -->
@@ -267,331 +362,421 @@
   <div class="btn-bar">
     <button class="btn-primary" onclick="downloadPNG()">PNG Download</button>
     <button class="btn-secondary" onclick="downloadJPG()">JPG Download</button>
+    <button class="btn-pptx" onclick="downloadPPTX()">PPT Download</button>
   </div>
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
 // ══════════════════════════════════════════
-// Canvas Slide Renderer
+// Tab switching
+// ══════════════════════════════════════════
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-bar button').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  // Activate button
+  const tabs = ['tab-fields', 'tab-bulk', 'tab-pptx', 'tab-params'];
+  const idx = tabs.indexOf(tabId);
+  document.querySelectorAll('.tab-bar button')[idx].classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// Toast
+// ══════════════════════════════════════════
+function showToast(msg, duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ══════════════════════════════════════════
+// Bulk Paste Logic
+// ══════════════════════════════════════════
+function applyBulk() {
+  const raw = document.getElementById('bulkInput').value;
+  const sections = raw.split(/^---$/m).map(s => s.trim());
+
+  let headline = '', footerLeft = '', pageNum = '1';
+  const boxes = [];
+
+  for (const section of sections) {
+    const lines = section.split('\n').map(l => l.trim()).filter(l => l);
+    if (!lines.length) continue;
+
+    // Check for headline
+    const headlineMatch = lines.find(l => /^Headline:\s*/i.test(l));
+    if (headlineMatch) {
+      headline = headlineMatch.replace(/^Headline:\s*/i, '');
+      // Also check footer/page in same section
+      const footerMatch = lines.find(l => /^Footer:\s*/i.test(l));
+      const pageMatch = lines.find(l => /^Page:\s*/i.test(l));
+      if (footerMatch) footerLeft = footerMatch.replace(/^Footer:\s*/i, '');
+      if (pageMatch) pageNum = pageMatch.replace(/^Page:\s*/i, '');
+      continue;
+    }
+
+    // Check for footer-only section
+    const footerMatch = lines.find(l => /^Footer:\s*/i.test(l));
+    const pageMatch = lines.find(l => /^Page:\s*/i.test(l));
+    if (footerMatch || pageMatch) {
+      if (footerMatch) footerLeft = footerMatch.replace(/^Footer:\s*/i, '');
+      if (pageMatch) pageNum = pageMatch.replace(/^Page:\s*/i, '');
+      // Also check if this section has label/main (combined section)
+      const labelMatch = lines.find(l => /^Label:\s*/i.test(l));
+      if (!labelMatch) continue;
+    }
+
+    // Box section
+    const labelLine = lines.find(l => /^Label:\s*/i.test(l));
+    const mainLine = lines.find(l => /^Main:\s*/i.test(l));
+    const bullets = lines.filter(l => /^[-]/.test(l)).map(l => l.replace(/^[-]\s*/, ''));
+
+    if (labelLine || mainLine) {
+      boxes.push({
+        label: labelLine ? labelLine.replace(/^Label:\s*/i, '') : '',
+        main: mainLine ? mainLine.replace(/^Main:\s*/i, '') : '',
+        bullets: bullets,
+      });
+    }
+  }
+
+  // Apply to fields
+  if (headline) document.getElementById('headline').value = headline;
+  if (footerLeft) document.getElementById('footer_left').value = footerLeft;
+  document.getElementById('page_number').value = pageNum;
+
+  for (let i = 0; i < 3; i++) {
+    const box = boxes[i] || { label: '', main: '', bullets: [] };
+    document.getElementById(`box${i+1}_label`).value = box.label;
+    document.getElementById(`box${i+1}_main`).value = box.main;
+    document.getElementById(`box${i+1}_b1`).value = box.bullets[0] || '';
+    document.getElementById(`box${i+1}_b2`).value = box.bullets[1] || '';
+  }
+
+  render();
+  switchTab('tab-fields');
+  showToast('Bulk content applied!');
+}
+
+function exportBulk() {
+  const h = val('headline');
+  let text = `Headline: ${h}\n`;
+
+  for (let i = 1; i <= 3; i++) {
+    text += '---\n';
+    text += `Label: ${val(`box${i}_label`)}\n`;
+    text += `Main: ${val(`box${i}_main`)}\n`;
+    const b1 = val(`box${i}_b1`);
+    const b2 = val(`box${i}_b2`);
+    if (b1) text += `- ${b1}\n`;
+    if (b2) text += `- ${b2}\n`;
+  }
+  text += '---\n';
+  text += `Footer: ${val('footer_left')}\n`;
+  text += `Page: ${val('page_number')}\n`;
+
+  document.getElementById('bulkInput').value = text;
+  showToast('Exported to bulk text!');
+}
+
+// ══════════════════════════════════════════
+// PPT Upload
+// ══════════════════════════════════════════
+const uploadZone = document.getElementById('uploadZone');
+
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('dragover');
+});
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.classList.remove('dragover');
+});
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) {
+    handlePPTXFile(e.dataTransfer.files[0]);
+  }
+});
+
+function uploadPPTX(input) {
+  if (input.files.length) handlePPTXFile(input.files[0]);
+}
+
+async function handlePPTXFile(file) {
+  const statusEl = document.getElementById('uploadStatus');
+
+  if (!file.name.toLowerCase().endsWith('.pptx')) {
+    statusEl.className = 'upload-status error';
+    statusEl.textContent = '.pptx 파일만 업로드 가능합니다.';
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  statusEl.className = 'upload-status';
+  statusEl.style.display = 'block';
+  statusEl.style.background = '#fff3e0';
+  statusEl.style.color = '#e65100';
+  statusEl.textContent = 'Uploading & parsing...';
+
+  try {
+    const resp = await fetch('/api/upload-pptx', { method: 'POST', body: formData });
+    const data = await resp.json();
+
+    if (data.error) {
+      statusEl.className = 'upload-status error';
+      statusEl.textContent = data.error;
+      return;
+    }
+
+    // Apply parsed content
+    const c = data.content;
+    if (c.headline) document.getElementById('headline').value = c.headline;
+    if (c.footer_left) document.getElementById('footer_left').value = c.footer_left;
+    if (c.page_number) document.getElementById('page_number').value = c.page_number;
+
+    const boxes = c.boxes || [];
+    for (let i = 0; i < 3; i++) {
+      const box = boxes[i] || { label: '', main: '', bullets: [] };
+      document.getElementById(`box${i+1}_label`).value = box.label || '';
+      document.getElementById(`box${i+1}_main`).value = box.main || '';
+      document.getElementById(`box${i+1}_b1`).value = (box.bullets && box.bullets[0]) || '';
+      document.getElementById(`box${i+1}_b2`).value = (box.bullets && box.bullets[1]) || '';
+    }
+
+    render();
+    // Also update bulk text
+    exportBulk();
+
+    statusEl.className = 'upload-status success';
+    statusEl.textContent = `"${data.filename}" uploaded. Template format saved for PPT download.`;
+    showToast('PPT content loaded!');
+
+  } catch (err) {
+    statusEl.className = 'upload-status error';
+    statusEl.textContent = 'Server error. Make sure app.py is running.';
+  }
+}
+
+// ══════════════════════════════════════════
+// PPT Download
+// ══════════════════════════════════════════
+async function downloadPPTX() {
+  const content = {
+    headline: val('headline'),
+    boxes: [1,2,3].map(i => ({
+      label: val(`box${i}_label`),
+      main: val(`box${i}_main`),
+      bullets: [val(`box${i}_b1`), val(`box${i}_b2`)].filter(b => b.trim()),
+    })),
+    footer_left: val('footer_left'),
+    page_number: val('page_number'),
+  };
+
+  try {
+    const resp = await fetch('/api/download-pptx', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json();
+      showToast('Error: ' + (err.error || 'PPT generation failed'));
+      return;
+    }
+
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'kearney_slide.pptx';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('PPT downloaded!');
+  } catch (err) {
+    showToast('Server error. Make sure app.py is running.');
+  }
+}
+
+// ══════════════════════════════════════════
+// Canvas Slide Renderer (same as before)
 // ══════════════════════════════════════════
 const W = 1587, H = 1123;
 const canvas = document.getElementById('slideCanvas');
 const ctx = canvas.getContext('2d');
 
 const COLORS = {
-  bg: '#FFFFFF',
-  headline: '#5B2D8E',
-  labelBg: '#F2F0F0',
-  labelText: '#333333',
-  mainText: '#1A1A1A',
-  bulletText: '#555555',
-  divider: '#D0D0D0',
-  footerText: '#888888',
-  purpleLine: '#5B2D8E',
+  bg: '#FFFFFF', headline: '#5B2D8E', labelBg: '#F2F0F0',
+  labelText: '#333333', mainText: '#1A1A1A', bulletText: '#555555',
+  divider: '#D0D0D0', footerText: '#888888', purpleLine: '#5B2D8E',
 };
-
 const FONT_FAMILY = "'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif";
 
-// ── Helpers ──
 function val(id) { return document.getElementById(id).value; }
 function num(id) { return parseInt(document.getElementById(id).value) || 0; }
+function setFont(sz, bold) { ctx.font = (bold?'700 ':'400 ')+sz+'px '+FONT_FAMILY; }
 
-function setFont(size, bold) {
-  ctx.font = (bold ? '700 ' : '400 ') + size + 'px ' + FONT_FAMILY;
+function measureTextWithSpacing(text, fs, bold, ls) {
+  setFont(fs, bold);
+  if (ls===0) return ctx.measureText(text).width;
+  let w=0; for(const ch of text) w+=ctx.measureText(ch).width+ls;
+  return text.length>0?w-ls:0;
 }
 
-function measureTextWithSpacing(text, fontSize, bold, letterSpacing) {
-  setFont(fontSize, bold);
-  if (letterSpacing === 0) return ctx.measureText(text).width;
-  let w = 0;
-  for (const ch of text) {
-    w += ctx.measureText(ch).width + letterSpacing;
-  }
-  return text.length > 0 ? w - letterSpacing : 0;
+function drawTextWithSpacing(x, y, text, fs, bold, color, ls) {
+  setFont(fs, bold); ctx.fillStyle=color; ctx.textBaseline='top';
+  if(ls===0){ ctx.fillText(text,x,y); return; }
+  let cx=x; for(const ch of text){ ctx.fillText(ch,cx,y); cx+=ctx.measureText(ch).width+ls; }
 }
 
-function drawTextWithSpacing(x, y, text, fontSize, bold, color, letterSpacing) {
-  setFont(fontSize, bold);
-  ctx.fillStyle = color;
-  ctx.textBaseline = 'top';
-  if (letterSpacing === 0) {
-    ctx.fillText(text, x, y);
-    return;
+function wrapText(text, fs, bold, maxW, ls) {
+  if(!text) return [''];
+  const words=text.split(' ');
+  if(words.length<=1||text.indexOf(' ')===-1){
+    const lines=[]; let cur='';
+    for(const ch of text){ const t=cur+ch;
+      if(measureTextWithSpacing(t,fs,bold,ls)>maxW&&cur){ lines.push(cur); cur=ch; } else cur=t; }
+    if(cur) lines.push(cur); return lines.length?lines:[''];
   }
-  let cx = x;
-  for (const ch of text) {
-    ctx.fillText(ch, cx, y);
-    cx += ctx.measureText(ch).width + letterSpacing;
-  }
+  const lines=[]; let cur='';
+  for(const w of words){ const t=cur?cur+' '+w:w;
+    if(measureTextWithSpacing(t,fs,bold,ls)>maxW&&cur){ lines.push(cur); cur=w; } else cur=t; }
+  if(cur) lines.push(cur); return lines.length?lines:[''];
 }
 
-function wrapText(text, fontSize, bold, maxWidth, letterSpacing) {
-  if (!text) return [''];
-  const words = text.split(' ');
-  if (words.length <= 1 || text.indexOf(' ') === -1) {
-    // Character wrap for CJK
-    const lines = []; let cur = '';
-    for (const ch of text) {
-      const test = cur + ch;
-      if (measureTextWithSpacing(test, fontSize, bold, letterSpacing) > maxWidth && cur) {
-        lines.push(cur); cur = ch;
-      } else { cur = test; }
-    }
-    if (cur) lines.push(cur);
-    return lines.length ? lines : [''];
-  }
-  const lines = []; let cur = '';
-  for (const word of words) {
-    const test = (cur ? cur + ' ' + word : word);
-    if (measureTextWithSpacing(test, fontSize, bold, letterSpacing) > maxWidth && cur) {
-      lines.push(cur); cur = word;
-    } else { cur = test; }
-  }
-  if (cur) lines.push(cur);
-  return lines.length ? lines : [''];
-}
-
-function truncateOneLine(text, fontSize, bold, maxWidth, letterSpacing) {
-  if (measureTextWithSpacing(text, fontSize, bold, letterSpacing) <= maxWidth) return text;
-  for (let i = text.length; i > 0; i--) {
-    const c = text.slice(0, i) + '...';
-    if (measureTextWithSpacing(c, fontSize, bold, letterSpacing) <= maxWidth) return c;
-  }
+function truncateOneLine(text, fs, bold, maxW, ls) {
+  if(measureTextWithSpacing(text,fs,bold,ls)<=maxW) return text;
+  for(let i=text.length;i>0;i--){ const c=text.slice(0,i)+'...';
+    if(measureTextWithSpacing(c,fs,bold,ls)<=maxW) return c; }
   return '...';
 }
 
-function roundRect(x, y, w, h, r, fill) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-  ctx.fillStyle = fill;
-  ctx.fill();
+function roundRect(x,y,w,h,r,fill) {
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); ctx.fillStyle=fill; ctx.fill();
 }
 
-// ── Main render ──
 function render() {
-  // Read params
   const p = {
-    headline_font_size: num('p_headline_font_size'),
-    headline_letter_spacing: num('p_headline_letter_spacing'),
-    headline_line_spacing: num('p_headline_line_spacing'),
-    headline_x: num('p_headline_x'),
-    headline_y: num('p_headline_y'),
-    main_font_size: num('p_main_font_size'),
-    main_letter_spacing: num('p_main_letter_spacing'),
-    main_x_offset: num('p_main_x_offset'),
-    bullet_font_size: num('p_bullet_font_size'),
-    bullet_letter_spacing: num('p_bullet_letter_spacing'),
-    bullet_line_spacing: num('p_bullet_line_spacing'),
-    bullet_indent: num('p_bullet_indent'),
-    bullet_symbol_size: num('p_bullet_symbol_size'),
-    label_font_size: num('p_label_font_size'),
-    label_letter_spacing: num('p_label_letter_spacing'),
-    label_box_width: num('p_label_box_width'),
-    content_start_y: num('p_content_start_y'),
-    content_x: num('p_content_x'),
-    content_right_margin: num('p_content_right_margin'),
-    box_spacing: num('p_box_spacing'),
-    box_padding_top: num('p_box_padding_top'),
-    box_padding_bottom: num('p_box_padding_bottom'),
-    main_to_bullet_gap: num('p_main_to_bullet_gap'),
-    korean_y_pad: num('p_korean_y_pad'),
-    footer_font_size: num('p_footer_font_size'),
-    footer_y_offset: num('p_footer_y_offset'),
+    headline_font_size:num('p_headline_font_size'), headline_letter_spacing:num('p_headline_letter_spacing'),
+    headline_line_spacing:num('p_headline_line_spacing'), headline_x:num('p_headline_x'), headline_y:num('p_headline_y'),
+    main_font_size:num('p_main_font_size'), main_letter_spacing:num('p_main_letter_spacing'), main_x_offset:num('p_main_x_offset'),
+    bullet_font_size:num('p_bullet_font_size'), bullet_letter_spacing:num('p_bullet_letter_spacing'),
+    bullet_line_spacing:num('p_bullet_line_spacing'), bullet_indent:num('p_bullet_indent'), bullet_symbol_size:num('p_bullet_symbol_size'),
+    label_font_size:num('p_label_font_size'), label_letter_spacing:num('p_label_letter_spacing'), label_box_width:num('p_label_box_width'),
+    content_start_y:num('p_content_start_y'), content_x:num('p_content_x'), content_right_margin:num('p_content_right_margin'),
+    box_spacing:num('p_box_spacing'), box_padding_top:num('p_box_padding_top'), box_padding_bottom:num('p_box_padding_bottom'),
+    main_to_bullet_gap:num('p_main_to_bullet_gap'), korean_y_pad:num('p_korean_y_pad'),
+    footer_font_size:num('p_footer_font_size'), footer_y_offset:num('p_footer_y_offset'),
   };
 
-  // Read content
   const headline = val('headline');
   const boxes = [1,2,3].map(i => ({
-    label: val(`box${i}_label`),
-    main: val(`box${i}_main`),
-    bullets: [val(`box${i}_b1`), val(`box${i}_b2`)].filter(b => b.trim()),
+    label: val(`box${i}_label`), main: val(`box${i}_main`),
+    bullets: [val(`box${i}_b1`), val(`box${i}_b2`)].filter(b=>b.trim()),
   }));
   const footerLeft = val('footer_left');
   const pageNumber = val('page_number');
 
-  // Clear
-  ctx.fillStyle = COLORS.bg;
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle=COLORS.bg; ctx.fillRect(0,0,W,H);
+  const yPad=p.korean_y_pad;
+  const headlineMaxW = W-p.headline_x-p.content_right_margin;
 
-  const yPad = p.korean_y_pad;
-  const headlineMaxW = W - p.headline_x - p.content_right_margin;
+  // Headline
+  let hLines = wrapText(headline,p.headline_font_size,true,headlineMaxW,p.headline_letter_spacing);
+  if(hLines.length>2){ hLines=hLines.slice(0,2);
+    hLines[1]=truncateOneLine(hLines[1],p.headline_font_size,true,headlineMaxW,p.headline_letter_spacing); }
+  const hLineH = p.headline_font_size*1.25+yPad;
+  let hy=p.headline_y;
+  for(const line of hLines){ drawTextWithSpacing(p.headline_x,hy,line,p.headline_font_size,true,COLORS.headline,p.headline_letter_spacing); hy+=hLineH+p.headline_line_spacing; }
 
-  // ── Headline ──
-  let headlineLines = wrapText(headline, p.headline_font_size, true, headlineMaxW, p.headline_letter_spacing);
-  if (headlineLines.length > 2) {
-    headlineLines = headlineLines.slice(0, 2);
-    headlineLines[1] = truncateOneLine(headlineLines[1], p.headline_font_size, true, headlineMaxW, p.headline_letter_spacing);
-  }
+  // Accent line
+  const accentY=hy+5;
+  ctx.strokeStyle=COLORS.purpleLine; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(p.headline_x,accentY); ctx.lineTo(W-p.content_right_margin,accentY); ctx.stroke();
 
-  setFont(p.headline_font_size, true);
-  const hLineH = p.headline_font_size * 1.25 + yPad;
-  let hy = p.headline_y;
-  for (const line of headlineLines) {
-    drawTextWithSpacing(p.headline_x, hy, line, p.headline_font_size, true, COLORS.headline, p.headline_letter_spacing);
-    hy += hLineH + p.headline_line_spacing;
-  }
+  // Content
+  const contentY=Math.max(p.content_start_y,accentY+20);
+  const contentX=p.content_x, contentRight=W-p.content_right_margin;
+  const textAreaX=contentX+p.main_x_offset, textAreaW=contentRight-textAreaX;
+  const mainLineH=p.main_font_size*1.25+yPad;
+  const bulletLineH=p.bullet_font_size*1.25+yPad;
 
-  // Purple accent line
-  const accentY = hy + 5;
-  ctx.strokeStyle = COLORS.purpleLine;
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(p.headline_x, accentY);
-  ctx.lineTo(W - p.content_right_margin, accentY);
-  ctx.stroke();
+  function calcBoxH(box){ let h=p.box_padding_top+mainLineH;
+    if(box.bullets.length){ h+=p.main_to_bullet_gap; h+=box.bullets.length*bulletLineH+(box.bullets.length-1)*p.bullet_line_spacing; }
+    return h+p.box_padding_bottom; }
 
-  // ── Content boxes ──
-  const contentY = Math.max(p.content_start_y, accentY + 20);
-  const contentX = p.content_x;
-  const contentRight = W - p.content_right_margin;
-  const textAreaX = contentX + p.main_x_offset;
-  const textAreaW = contentRight - textAreaX;
+  let boxHeights=boxes.map(calcBoxH);
+  const footerYLimit=H-p.footer_y_offset-30;
+  let totalUsed=boxHeights.reduce((a,b)=>a+b,0)+(boxes.length-1)*p.box_spacing;
+  const totalAvail=footerYLimit-contentY;
+  if(totalUsed>totalAvail&&totalUsed>0){ const sc=totalAvail/totalUsed; boxHeights=boxHeights.map(h=>Math.floor(h*sc));
+    totalUsed=boxHeights.reduce((a,b)=>a+b,0)+(boxes.length-1)*p.box_spacing; }
+  const remaining=totalAvail-totalUsed;
+  let gap=p.box_spacing, topOffset=0;
+  if(boxes.length>1&&remaining>0){ const d=boxes.length-1+2; gap=p.box_spacing+Math.floor(remaining/d); topOffset=Math.floor(remaining/d); }
 
-  setFont(p.main_font_size, true);
-  const mainLineH = p.main_font_size * 1.25 + yPad;
-  setFont(p.bullet_font_size, false);
-  const bulletLineH = p.bullet_font_size * 1.25 + yPad;
-
-  // Calc box heights
-  function calcBoxH(box) {
-    let h = p.box_padding_top + mainLineH;
-    if (box.bullets.length) {
-      h += p.main_to_bullet_gap;
-      h += box.bullets.length * bulletLineH + (box.bullets.length - 1) * p.bullet_line_spacing;
+  let curY=contentY+topOffset;
+  for(let idx=0;idx<boxes.length;idx++){
+    const box=boxes[idx], boxH=boxHeights[idx];
+    if(idx>0){ const dY=curY-Math.floor(gap/2); ctx.strokeStyle=COLORS.divider; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(contentX,dY); ctx.lineTo(contentRight,dY); ctx.stroke(); }
+    roundRect(contentX,curY,p.label_box_width,boxH,6,COLORS.labelBg);
+    setFont(p.label_font_size,true);
+    const lW=measureTextWithSpacing(box.label,p.label_font_size,true,p.label_letter_spacing);
+    drawTextWithSpacing(contentX+(p.label_box_width-lW)/2,curY+(boxH-p.label_font_size)/2,box.label,p.label_font_size,true,COLORS.labelText,p.label_letter_spacing);
+    const mainD=truncateOneLine(box.main,p.main_font_size,true,textAreaW,p.main_letter_spacing);
+    const my=curY+p.box_padding_top;
+    drawTextWithSpacing(textAreaX,my,mainD,p.main_font_size,true,COLORS.mainText,p.main_letter_spacing);
+    let by=my+mainLineH+p.main_to_bullet_gap;
+    const bX=textAreaX+p.bullet_indent, bW=contentRight-bX-10;
+    for(let bi=0;bi<box.bullets.length;bi++){
+      const bD=truncateOneLine(box.bullets[bi],p.bullet_font_size,false,bW,p.bullet_letter_spacing);
+      const dotY=by+bulletLineH/2; const r=p.bullet_symbol_size;
+      ctx.strokeStyle=COLORS.bulletText; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(bX-18,dotY); ctx.lineTo(bX-18+r*2,dotY); ctx.stroke();
+      drawTextWithSpacing(bX,by,bD,p.bullet_font_size,false,COLORS.bulletText,p.bullet_letter_spacing);
+      by+=bulletLineH+p.bullet_line_spacing;
     }
-    h += p.box_padding_bottom;
-    return h;
+    curY+=boxH+gap;
   }
 
-  let boxHeights = boxes.map(calcBoxH);
-  const footerYLimit = H - p.footer_y_offset - 30;
-  let totalUsed = boxHeights.reduce((a,b) => a+b, 0) + (boxes.length - 1) * p.box_spacing;
-  const totalAvail = footerYLimit - contentY;
-
-  // Scale if overflow
-  if (totalUsed > totalAvail && totalUsed > 0) {
-    const scale = totalAvail / totalUsed;
-    boxHeights = boxHeights.map(h => Math.floor(h * scale));
-    totalUsed = boxHeights.reduce((a,b) => a+b, 0) + (boxes.length - 1) * p.box_spacing;
-  }
-
-  // Distribute vertical gaps
-  const remaining = totalAvail - totalUsed;
-  let gap = p.box_spacing;
-  let topOffset = 0;
-  if (boxes.length > 1 && remaining > 0) {
-    const divCount = boxes.length - 1 + 2;
-    gap = p.box_spacing + Math.floor(remaining / divCount);
-    topOffset = Math.floor(remaining / divCount);
-  }
-
-  // Draw boxes
-  let curY = contentY + topOffset;
-  for (let idx = 0; idx < boxes.length; idx++) {
-    const box = boxes[idx];
-    const boxH = boxHeights[idx];
-
-    // Divider above (except first)
-    if (idx > 0) {
-      const divY = curY - Math.floor(gap / 2);
-      ctx.strokeStyle = COLORS.divider;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(contentX, divY);
-      ctx.lineTo(contentRight, divY);
-      ctx.stroke();
-    }
-
-    // Label box
-    roundRect(contentX, curY, p.label_box_width, boxH, 6, COLORS.labelBg);
-
-    // Center label text
-    setFont(p.label_font_size, true);
-    const labelW = measureTextWithSpacing(box.label, p.label_font_size, true, p.label_letter_spacing);
-    const labelTextH = p.label_font_size;
-    const lx = contentX + (p.label_box_width - labelW) / 2;
-    const ly = curY + (boxH - labelTextH) / 2;
-    drawTextWithSpacing(lx, ly, box.label, p.label_font_size, true, COLORS.labelText, p.label_letter_spacing);
-
-    // Main point
-    const mainDisplay = truncateOneLine(box.main, p.main_font_size, true, textAreaW, p.main_letter_spacing);
-    const my = curY + p.box_padding_top;
-    drawTextWithSpacing(textAreaX, my, mainDisplay, p.main_font_size, true, COLORS.mainText, p.main_letter_spacing);
-
-    // Bullets
-    let by = my + mainLineH + p.main_to_bullet_gap;
-    const bulletX = textAreaX + p.bullet_indent;
-    const bulletTextW = contentRight - bulletX - 10;
-    for (let bi = 0; bi < box.bullets.length; bi++) {
-      const bDisplay = truncateOneLine(box.bullets[bi], p.bullet_font_size, false, bulletTextW, p.bullet_letter_spacing);
-      // Em-dash bullet symbol
-      const dotY = by + bulletLineH / 2;
-      const r = p.bullet_symbol_size;
-      ctx.strokeStyle = COLORS.bulletText;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(bulletX - 18, dotY);
-      ctx.lineTo(bulletX - 18 + r * 2, dotY);
-      ctx.stroke();
-
-      drawTextWithSpacing(bulletX, by, bDisplay, p.bullet_font_size, false, COLORS.bulletText, p.bullet_letter_spacing);
-      by += bulletLineH + p.bullet_line_spacing;
-    }
-
-    curY += boxH + gap;
-  }
-
-  // ── Footer ──
-  const footerY = H - p.footer_y_offset;
-  // Divider
-  ctx.strokeStyle = COLORS.divider;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(contentX, footerY - 15);
-  ctx.lineTo(contentRight, footerY - 15);
-  ctx.stroke();
-
-  // Footer text
-  setFont(p.footer_font_size, false);
-  ctx.fillStyle = COLORS.footerText;
-  ctx.textBaseline = 'top';
-  ctx.fillText(footerLeft, contentX, footerY);
-  // Page number (right)
-  const pnW = ctx.measureText(pageNumber).width;
-  ctx.fillText(pageNumber, contentRight - pnW, footerY);
+  // Footer
+  const footerY=H-p.footer_y_offset;
+  ctx.strokeStyle=COLORS.divider; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(contentX,footerY-15); ctx.lineTo(contentRight,footerY-15); ctx.stroke();
+  setFont(p.footer_font_size,false); ctx.fillStyle=COLORS.footerText; ctx.textBaseline='top';
+  ctx.fillText(footerLeft,contentX,footerY);
+  const pnW=ctx.measureText(pageNumber).width;
+  ctx.fillText(pageNumber,contentRight-pnW,footerY);
 }
 
-// ── Download ──
+// ── Downloads ──
 function downloadPNG() {
-  const link = document.createElement('a');
-  link.download = 'kearney_slide.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  const a=document.createElement('a'); a.download='kearney_slide.png';
+  a.href=canvas.toDataURL('image/png'); a.click();
 }
 function downloadJPG() {
-  const link = document.createElement('a');
-  link.download = 'kearney_slide.jpg';
-  link.href = canvas.toDataURL('image/jpeg', 0.95);
-  link.click();
+  const a=document.createElement('a'); a.download='kearney_slide.jpg';
+  a.href=canvas.toDataURL('image/jpeg',0.95); a.click();
 }
 
-// ── Bind events ──
-document.querySelectorAll('input, textarea').forEach(el => {
+// ── Bind ──
+document.querySelectorAll('#tab-fields input, #tab-fields textarea, #tab-params input').forEach(el => {
   el.addEventListener('input', render);
 });
 
-// Wait for font to load then render
-document.fonts.ready.then(() => { render(); });
-// Also render immediately as fallback
+document.fonts.ready.then(()=>{ render(); });
 render();
 </script>
 </body>

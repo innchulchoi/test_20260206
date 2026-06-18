@@ -137,6 +137,7 @@ Description: 고객의 식별·연락·계약 기본정보를 담은 마스터 �
 **한눈에 보는 위치**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart TB
     subgraph SRC["원천 데이터"]
         S1["정형<br/>(RDB/DW)"]
@@ -182,6 +183,7 @@ AI 과제에서 모델링보다 **데이터 확보·이해 단계가 전체 기�
 > *있을 때*: A는 카탈로그에서 "검사 불량"을 검색 → 관련 테이블 4건과 소유자·등급·최신성·기존 전처리 이력 확인 → 30분 만에 사용 가능 데이터 2종 확정, 권한 신청까지 완료.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart LR
     P1["❓ 존재 여부<br/>불확실"]:::pain
     P2["📍 위치<br/>파편화"]:::pain
@@ -321,6 +323,7 @@ flowchart LR
 | **AI** | AI 활용 속성 | 전처리 여부, 피처 정의, 학습 이력, 임베딩 여부, 재사용성 | AI 조직 |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 mindmap
   root((데이터 자산 메타데이터))
     Business
@@ -430,6 +433,7 @@ mindmap
 - **Owner**: 책임자(승인·등급 결정) / **Steward**: 관리자(메타데이터 품질 유지) / **Custodian**: 운영자(기술적 보관·접근 제공)
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart TB
     GOV["데이터 거버넌스 / 관리 조직<br/>(표준·승인·품질 총괄)"]:::gov
     OWN["데이터 오너<br/>(최종 책임·등급 결정)"]:::own
@@ -495,6 +499,7 @@ flowchart TB
 **전체 흐름 한눈에 보기 — "전수 → 선별 → 등록"**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart TB
     A["전체 데이터<br/>(예: 정형 12,000 테이블 + 비정형)"]:::all
     B["1차 선별<br/>등록 대상 기준 적용<br/>(가치·공유·책임·신뢰)"]
@@ -569,6 +574,7 @@ flowchart TB
 | **Unknown** | 로그상 사용 흔적 없음 | 소유자 확인 후 제외/보류 |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart TD
     Q{"로그상 사용 흔적<br/>있는가?"}
     Q -->|"없음"| U["Unknown<br/>→ 소유자 확인 후 제외/보류"]:::u
@@ -670,6 +676,7 @@ flowchart TD
 5. **템플릿 일괄 업로드 + 스케줄/이벤트 수집** — 비정형·오프라인 데이터는 Excel 템플릿으로 한 번에 등록. 이후 정해진 주기(Scheduled)나 변경 발생 시(Event-based)에 자동 갱신(9.7).
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart LR
     subgraph AUTO["자동 (기계 + AI)"]
         direction TB
@@ -754,6 +761,7 @@ flowchart LR
 | **자체 구축(In-house)** | 직접 개발 | 완전 맞춤 | 개발·유지비 큼 | (사내 개발) |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 quadrantChart
     title 데이터 카탈로그 솔루션 포지셔닝 (개념도)
     x-axis "낮은 도입·운영 부담" --> "높은 도입·운영 부담"
@@ -911,6 +919,7 @@ PoC는 **실제 계열사 데이터 일부로 검증**한다.
 "데이터 카탈로그 솔루션 1개"는 사실 **여러 기능 컴포넌트의 묶음**이다. 상용 제품은 이 기능들을 패키지로 제공하고, OSS/클라우드 조합은 영역별로 도구를 붙인다. 아래는 **기능 영역별로 필요한 솔루션·기술**을 구체적으로 제안한 것이다(한 제품이 여러 영역을 커버하므로 중복 등장).
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart TB
     subgraph L1["① 수집(Connector/Ingestion)"]
         a["JDBC/API 커넥터 · 스캐너"]
@@ -1092,13 +1101,39 @@ Query/ETL/BI 로그 분석으로 Tier를 산정한 결과(예시):
 
 ### 7.9 두산전자 솔루션 선정 검토 예시
 
-- 요건: Oracle/Hive/S3 자동 수집, 한글 검색, 컬럼 레벨 Lineage, On-prem+Cloud Hybrid
-- 숏리스트: 상용 A, 오픈소스 B(OpenMetadata형)
-- PoC 결과(예시): 자동수집·Lineage는 A 우위, 비용은 B 우위 → **A를 본도입, 일부 영역 B 병행 검토**
+**요건(기능 영역별)**
+
+| 영역 | 두산전자 요건 |
+| --- | --- |
+| 수집 | Oracle(ERP/QMS)·Hive/S3(레이크)·Tableau(BI) 자동 수집 |
+| Lineage | MES→QMS→BI 컬럼 레벨 추적 |
+| 검색 | 한글 검색(공정·불량 용어) |
+| 거버넌스 | CRM 개인정보·공정 산업기밀 등급/마스킹 |
+| 품질 | 검사 데이터 정합성 점검 |
+| 배포 | On-prem(생산망) + Cloud(분석) Hybrid |
+
+**검토 후보 (기능 영역별 매핑, 중복 허용)**
+
+| 영역 | 후보 A (상용 중심) | 후보 B (OSS 조합) |
+| --- | --- | --- |
+| 카탈로그·검색 | Collibra | OpenMetadata + Nori(한글) |
+| 수집 커넥터 | Collibra Edge / Informatica Scanner | OpenMetadata Ingestion + Airflow |
+| Lineage | Manta | OpenLineage + Marquez |
+| 거버넌스·마스킹 | Collibra + Immuta | Apache Ranger + Presidio(개인정보) |
+| 품질 | Monte Carlo | Great Expectations |
+| AI 메타 초안 | Informatica CLAIRE | LLM(Claude) + 카탈로그 API |
+
+**PoC 결과(예시) 및 결정**
+- 자동수집·거버넌스·지원은 **A 우위**, 비용·커스터마이징은 **B 우위**
+- 한글 검색은 B(Nori 튜닝)가 정밀, Lineage 컬럼 추적은 A(Manta)가 정확
+- **결정(예시)**: 전사 거버넌스·규제 대응 비중이 커 **A(Collibra 중심)를 본도입**, 단 **품질은 Great Expectations, 한글 검색 보강은 Nori**를 병행하는 하이브리드 구성
+
+> 핵심: "한 제품으로 다 살지(A) vs 영역별 베스트 조합(B)"의 트레이드오프를 **운영 역량 기준**으로 판단(6.9.3 원칙 적용).
 
 ### 7.10 두산전자 To-Be 아키텍처 예시
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart TB
     subgraph SRC["원천 시스템"]
         direction LR
@@ -1137,6 +1172,7 @@ flowchart TB
 ### 7.11 두산전자 구축 단계 예시
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 gantt
     title 두산전자 데이터 카탈로그 구축 일정 (예시)
     dateFormat YYYY-MM-DD
@@ -1181,6 +1217,7 @@ gantt
 **구축 단계 흐름**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart LR
     B1["취합 데이터<br/>검토"] --> B2["정합성 검토<br/>·보완 요청"]
     B2 --> B3["To-Be<br/>아키텍처 설계"]
@@ -1280,6 +1317,7 @@ flowchart LR
 | **삭제** | 자산 등록 해제 | 폐기 데이터 제거 |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 sequenceDiagram
     participant U as 요청자(현업/AI)
     participant S as Steward
@@ -1359,6 +1397,7 @@ sequenceDiagram
 **A-1 / C-3 / F-2 책임 경계 한눈에 보기**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart LR
     subgraph A1["A-1 데이터 카탈로그"]
         a["메타데이터 발견·신뢰·전달<br/>+ 메타 변경 이력(History)"]
@@ -1466,6 +1505,7 @@ flowchart LR
 카탈로그를 **수동 관리 → AI 보조 → AI 자율**로 단계적으로 고도화한다.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#EDE7F6','primaryBorderColor':'#5B2D8E','primaryTextColor':'#1A1A1A','lineColor':'#5B2D8E','clusterBkg':'#F6F3FB','clusterBorder':'#8E63CE','fontSize':'14px'}}}%%
 flowchart LR
     L1["<b>1단계</b><br/>수동 관리<br/>기본 카탈로그·Tier1 등록"]:::s1
     L2["<b>2단계</b><br/>AI 보조<br/>메타·태그·품질 초안 자동생성<br/>+ 현업 검수"]:::s2

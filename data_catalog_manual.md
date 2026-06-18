@@ -136,14 +136,26 @@ Description: 고객의 식별·연락·계약 기본정보를 담은 마스터 �
 
 **한눈에 보는 위치**
 
-```
-[원천 데이터(정형/비정형/AI)]
-        │  (자동·수동 수집)
-        ▼
-[A-1 데이터 카탈로그]  ←→  C-3 Lineage / F-2 생애주기
-        │  (탐색·신뢰·전달)
-        ▼
-[AI 전처리 · 분석 · Agent 서비스]
+```mermaid
+flowchart TB
+    subgraph SRC["원천 데이터"]
+        S1["정형<br/>(RDB/DW)"]
+        S2["비정형<br/>(문서/이미지/로그)"]
+        S3["AI 데이터<br/>(학습셋/피처/벡터)"]
+    end
+    CAT["<b>A-1 데이터 카탈로그</b><br/>발견 · 신뢰 · 전달"]
+    subgraph LINK["연계 과제"]
+        C3["C-3<br/>데이터 계통(Lineage)"]
+        F2["F-2<br/>데이터 생애주기"]
+    end
+    AI["AI 전처리 · 분석 · Agent 서비스"]
+
+    SRC -->|"자동·수동 수집"| CAT
+    CAT <-->|"메타데이터 연계"| LINK
+    CAT -->|"탐색 결과 전달"| AI
+
+    style CAT fill:#5B2D8E,color:#fff,stroke:#3d1d5e,stroke-width:2px
+    style AI fill:#E8E2F2,stroke:#5B2D8E
 ```
 
 ---
@@ -168,6 +180,31 @@ AI 과제에서 모델링보다 **데이터 확보·이해 단계가 전체 기�
 > *없을 때*: AI 엔지니어 A는 '품질 불량 예측' 과제를 위해 검사 데이터를 찾는다. 생산팀·품질팀·IT에 각각 문의 → 2주 만에 데이터 3종을 받았으나 컬럼 의미 불명확 → 다시 1주 협의 → 일부는 권한 문제로 사용 불가.
 >
 > *있을 때*: A는 카탈로그에서 "검사 불량"을 검색 → 관련 테이블 4건과 소유자·등급·최신성·기존 전처리 이력 확인 → 30분 만에 사용 가능 데이터 2종 확정, 권한 신청까지 완료.
+
+```mermaid
+flowchart LR
+    P1["❓ 존재 여부<br/>불확실"]:::pain
+    P2["📍 위치<br/>파편화"]:::pain
+    P3["👤 소유자<br/>부재"]:::pain
+    P4["🔤 의미<br/>불명확"]:::pain
+    P5["⏱ 신뢰<br/>불가"]:::pain
+    P6["♻️ 재사용<br/>불가"]:::pain
+
+    CAT(("데이터<br/>카탈로그")):::cat
+
+    P1 --> CAT
+    P2 --> CAT
+    P3 --> CAT
+    P4 --> CAT
+    P5 --> CAT
+    P6 --> CAT
+
+    CAT --> R["✅ 탐색 Lead-time 단축<br/>✅ 중복 제거 · 재사용<br/>✅ 신뢰 가능한 데이터 활용"]:::good
+
+    classDef pain fill:#FBE3E0,stroke:#CC3A21,color:#7a1c0a;
+    classDef cat fill:#5B2D8E,color:#fff,stroke:#3d1d5e,stroke-width:2px;
+    classDef good fill:#D7F0DE,stroke:#149E60,color:#0b4f30;
+```
 
 ---
 
@@ -283,6 +320,36 @@ AI 과제에서 모델링보다 **데이터 확보·이해 단계가 전체 기�
 | **Operational** | 운영·관리 속성 | 소유자, 최종 갱신일, 주기, 적재방식, 품질점수 | IT/거버넌스 |
 | **AI** | AI 활용 속성 | 전처리 여부, 피처 정의, 학습 이력, 임베딩 여부, 재사용성 | AI 조직 |
 
+```mermaid
+mindmap
+  root((데이터 자산 메타데이터))
+    Business
+      비즈니스명
+      정의·설명
+      도메인
+      용어·태그
+    Technical
+      시스템/DB/스키마
+      테이블/컬럼
+      타입·길이·PK/FK
+      건수
+    Compliance
+      보안 등급
+      개인정보 여부
+      민감정보 유형
+      보존기간·규제
+    Operational
+      소유자
+      최종 갱신일·주기
+      적재 방식
+      품질 점수
+    AI
+      전처리 여부
+      피처 정의
+      학습 사용 이력
+      임베딩·재사용성
+```
+
 > **카테고리별 작성 예시 (고객기본정보 자산)**
 > ```
 > Business    : 고객기본정보 / "고객 식별·연락 마스터" / 도메인=고객 / 태그=#마스터 #개인정보
@@ -361,6 +428,33 @@ AI 과제에서 모델링보다 **데이터 확보·이해 단계가 전체 기�
 **관련 용어 구분**
 - **Owner**: 책임자(승인·등급 결정) / **Steward**: 관리자(메타데이터 품질 유지) / **Custodian**: 운영자(기술적 보관·접근 제공)
 
+```mermaid
+flowchart TB
+    GOV["데이터 거버넌스 / 관리 조직<br/>(표준·승인·품질 총괄)"]:::gov
+    OWN["데이터 오너<br/>(최종 책임·등급 결정)"]:::own
+    subgraph PROD["생산"]
+        BIZ["현업<br/>비즈니스 메타 작성"]
+        IT["IT<br/>기술 메타 수집·연동"]
+    end
+    subgraph CTRL["통제"]
+        SEC["보안<br/>등급·개인정보 점검"]
+    end
+    subgraph USE["소비"]
+        AI["AI 조직<br/>AI 메타·재사용"]
+    end
+    CAT[("데이터<br/>카탈로그")]:::cat
+
+    OWN --> GOV
+    GOV --> PROD & CTRL & USE
+    PROD --> CAT
+    CTRL --> CAT
+    USE --> CAT
+
+    classDef gov fill:#5B2D8E,color:#fff,stroke:#3d1d5e;
+    classDef own fill:#8E63CE,color:#fff;
+    classDef cat fill:#FAD165,stroke:#7a4706,color:#333;
+```
+
 ### 4.2 역할별 책임 구분 (RACI)
 
 데이터 카탈로그 주요 활동에 대한 RACI(R=실행, A=최종책임, C=협의, I=공유)를 정의한다.
@@ -396,6 +490,23 @@ AI 과제에서 모델링보다 **데이터 확보·이해 단계가 전체 기�
 ---
 
 ## 5. 데이터 현황 조사 및 등록 대상 선정
+
+**전체 흐름 한눈에 보기 — "전수 → 선별 → 등록"**
+
+```mermaid
+flowchart TB
+    A["전체 데이터<br/>(예: 정형 12,000 테이블 + 비정형)"]:::all
+    B["1차 선별<br/>등록 대상 기준 적용<br/>(가치·공유·책임·신뢰)"]
+    C["2차 선별<br/>유형별 등록/제외 기준"]
+    D["중요도 분류<br/>로그 기반 Tier 1/2/3"]
+    E["보안 검토<br/>등급·개인정보·규제"]
+    F["최종 등록 대상 + 우선순위"]:::final
+
+    A --> B --> C --> D --> E --> F
+
+    classDef all fill:#F2F0F0,stroke:#999;
+    classDef final fill:#D7F0DE,stroke:#149E60,color:#0b4f30;
+```
 
 ### 5.1 데이터 카탈로그 등록 대상 기준 정의
 
@@ -455,6 +566,21 @@ AI 과제에서 모델링보다 **데이터 확보·이해 단계가 전체 기�
 | **Tier 2** | 일부 부서 조회 또는 단일 시스템 핵심 | 차순위 등록 |
 | **Tier 3** | 조회 빈도 낮음, 제한적 사용 | 선택 등록 |
 | **Unknown** | 로그상 사용 흔적 없음 | 소유자 확인 후 제외/보류 |
+
+```mermaid
+flowchart TD
+    Q{"로그상 사용 흔적<br/>있는가?"}
+    Q -->|"없음"| U["Unknown<br/>→ 소유자 확인 후 제외/보류"]:::u
+    Q -->|"있음"| M{"다수 부서 조회<br/>+ BI/API 참조<br/>+ 정기 배치?"}
+    M -->|"예"| T1["Tier 1<br/>최우선 등록·메타 완비"]:::t1
+    M -->|"일부 충족"| T2["Tier 2<br/>차순위 등록"]:::t2
+    M -->|"낮음"| T3["Tier 3<br/>선택 등록"]:::t3
+
+    classDef t1 fill:#149E60,color:#fff;
+    classDef t2 fill:#68DFA9,color:#0b4f30;
+    classDef t3 fill:#D7F0DE,color:#0b4f30;
+    classDef u fill:#FBE3E0,stroke:#CC3A21,color:#7a1c0a;
+```
 
 > **Tier 분류 예시**
 > ```
@@ -528,25 +654,105 @@ AI 과제에서 모델링보다 **데이터 확보·이해 단계가 전체 기�
 
 ### 6.3 데이터 카탈로그 솔루션 유형
 
-| 유형 | 특징 | 장점 | 단점 |
-| --- | --- | --- | --- |
-| **상용(Commercial)** | 벤더 제공 패키지 | 기능 완성도·지원·자동화 | 라이선스 비용 |
-| **오픈소스(Open-source)** | 커뮤니티 기반 | 비용 낮음·커스터마이징 | 운영·유지보수 부담 |
-| **클라우드 네이티브** | CSP 통합 서비스 | 클라우드 연동·확장성 | CSP 종속성 |
-| **자체 구축** | 직접 개발 | 완전 맞춤 | 개발·유지비 큼 |
+| 유형 | 특징 | 장점 | 단점 | 대표 제품 |
+| --- | --- | --- | --- | --- |
+| **상용(Commercial)** | 벤더 제공 패키지 | 기능 완성도·지원·자동화 | 높은 라이선스 비용 | Collibra, Alation, Informatica, Atlan |
+| **클라우드 네이티브** | CSP 통합 서비스 | 클라우드 연동·확장성 | CSP 종속성 | Microsoft Purview, AWS Glue/DataZone, GCP Dataplex, Databricks Unity Catalog |
+| **오픈소스(Open-source)** | 커뮤니티 기반 | 비용 낮음·커스터마이징 | 운영·유지보수 부담 | DataHub, OpenMetadata, Amundsen, Apache Atlas |
+| **자체 구축(In-house)** | 직접 개발 | 완전 맞춤 | 개발·유지비 큼 | (사내 개발) |
 
-> **대표 후보 예시(분류용, 실제 검토 시 최신 제품 재확인)**: 상용(Collibra, Alation, Informatica), 오픈소스(DataHub, OpenMetadata, Amundsen), 클라우드(AWS Glue Data Catalog, Azure Purview, GCP Dataplex).
+```mermaid
+quadrantChart
+    title 데이터 카탈로그 솔루션 포지셔닝 (개념도)
+    x-axis "낮은 도입·운영 부담" --> "높은 도입·운영 부담"
+    y-axis "기능·거버넌스 단순" --> "기능·거버넌스 풍부"
+    quadrant-1 "엔터프라이즈 상용"
+    quadrant-2 "모던 SaaS"
+    quadrant-3 "기술 카탈로그"
+    quadrant-4 "구축형 OSS"
+    "Collibra": [0.75, 0.92]
+    "Informatica": [0.78, 0.85]
+    "Alation": [0.6, 0.8]
+    "Atlan": [0.45, 0.78]
+    "Microsoft Purview": [0.5, 0.62]
+    "OpenMetadata": [0.62, 0.6]
+    "DataHub": [0.7, 0.62]
+    "AWS Glue Catalog": [0.35, 0.35]
+    "Amundsen": [0.55, 0.4]
+```
 
 ### 6.4 주요 솔루션 후보군 검토
 
-후보군은 **롱리스트 → 숏리스트**로 좁힌다.
+> 아래 평가는 2026년 초 기준 일반적 시장 인식을 정리한 것으로, **실제 선정 시 최신 버전·가격·기능을 반드시 재확인**한다.
+
+**[상용] Collibra**
+- **포지션**: 엔터프라이즈 데이터 거버넌스 시장 리더
+- **장점**: 거버넌스·정책·워크플로우 기능이 가장 깊음, 비즈니스 용어집·데이터 책임 체계 강력, 대기업 레퍼런스 풍부
+- **단점**: 라이선스·구축 비용 높음, 도입 기간 길고 구현 복잡, 기술 메타 자동화는 별도 구성 필요
+- **적합**: 강한 거버넌스·규제 대응이 최우선인 대기업
+
+**[상용] Alation**
+- **포지션**: 데이터 카탈로그 개념을 대중화한 선도 제품, "Data Intelligence"
+- **장점**: 검색·사용성 우수, **Query Log 기반 인기도/추천**(현장 사용 패턴 반영), 현업 친화적 UX로 채택률 높음
+- **단점**: 순수 거버넌스 깊이는 Collibra 대비 다소 약함, 비용 부담
+- **적합**: 분석가·현업의 셀프서비스 탐색 활성화가 목표인 조직
+
+**[상용] Informatica (Cloud Data Governance & Catalog, CDGC / 구 EDC)**
+- **포지션**: 광범위한 연결성과 AI 엔진(CLAIRE) 보유
+- **장점**: 스캐너·커넥터 범위 넓음, AI 기반 자동 분류·추천, Informatica ETL/품질 생태계와 강한 통합
+- **단점**: 복잡도·비용 높음, Informatica 스택 밖에서는 가치 반감
+- **적합**: 이미 Informatica 데이터 통합/품질을 쓰는 조직
+
+**[상용/모던] Atlan**
+- **포지션**: 협업·액티브 메타데이터 중심의 모던 SaaS
+- **장점**: 현대적 UX, 협업(슬랙/지라 연동) 강점, 클라우드 데이터 스택과 빠른 연동, 도입 속도 빠름
+- **단점**: 상대적으로 신생, 초대형 규제 거버넌스 기능은 성숙 중
+- **적합**: 클라우드 데이터 스택 기반의 민첩한 데이터 조직
+
+**[클라우드] Microsoft Purview**
+- **포지션**: Azure 중심 멀티클라우드 거버넌스/카탈로그
+- **장점**: Azure·M365 통합, MS 환경에서 비용 효율, 자동 스캔·분류, 컴플라이언스 연계
+- **단점**: Azure 외 환경에서 가치 감소, Lineage·UX 깊이 한계
+- **적합**: Microsoft/Azure 중심 IT 환경
+
+**[클라우드] AWS Glue Data Catalog (+ Amazon DataZone)**
+- **포지션**: AWS 네이티브 기술 카탈로그(Glue) + 비즈니스 카탈로그(DataZone)
+- **장점**: AWS(Athena/Redshift/EMR)와 완벽 통합, 서버리스, 저비용
+- **단점**: Glue 단독은 **기술 메타 중심**으로 비즈니스 용어집·거버넌스·UX 약함 → DataZone/Lake Formation 조합 필요
+- **적합**: AWS 중심 데이터레이크 환경
+
+**[클라우드] GCP Dataplex / Databricks Unity Catalog**
+- **Dataplex**: GCP 네이티브, BigQuery 등과 통합, 서버리스. GCP 종속.
+- **Unity Catalog**: Databricks 레이크하우스 거버넌스·Lineage 내장, 빠르게 성숙 중. Databricks 중심 환경에 적합.
+
+**[오픈소스] DataHub (LinkedIn/Acryl)**
+- **장점**: 강력한 메타데이터 그래프, 실시간 수집, 커넥터·확장성 우수, 활발한 커뮤니티, 무료
+- **단점**: 직접 운영·유지보수 부담, 엔지니어링 역량 필요
+- **적합**: 엔지니어링 역량 보유, 커스터마이징 원하는 조직
+
+**[오픈소스] OpenMetadata**
+- **장점**: 단일 앱에 **카탈로그+품질+Lineage+거버넌스** 통합, 모던 UX, 빠른 성장
+- **단점**: 운영 부담, 비교적 신생
+- **적합**: OSS로 올인원 기능을 원하는 조직
+
+**[오픈소스] Amundsen / Apache Atlas**
+- **Amundsen(Lyft)**: 검색 우선·심플, 도입 쉬움. 거버넌스·Lineage 기능은 제한적.
+- **Apache Atlas**: Hadoop 생태계 거버넌스·Lineage 표준. UX 노후, Hadoop 중심.
+
+**후보군 압축 절차 (롱리스트 → 숏리스트)**
 
 | 단계 | 활동 | 산출물 |
 | --- | --- | --- |
-| 롱리스트 | 시장 제품·오픈소스 폭넓게 수집 | 후보 10~15종 목록 |
-| 1차 필터 | 필수 요건(연동/보안/한글) 미달 제외 | 후보 5~7종 |
+| 롱리스트 | 위 제품군 폭넓게 수집 | 후보 10~15종 |
+| 1차 필터 | 필수 요건(연동/보안/한글/배포형태) 미달 제외 | 후보 5~7종 |
 | 숏리스트 | 기능·비용·레퍼런스 정밀 평가 | 후보 2~3종 |
 | PoC 대상 | 숏리스트 중 PoC 진행 | 최종 1~2종 |
+
+> **선정 가이드(요약)**
+> - 강한 거버넌스·규제 → **Collibra / Informatica**
+> - 현업 셀프서비스·사용성 → **Alation / Atlan**
+> - 특정 CSP 종속 환경 → **Purview(Azure) / Glue·DataZone(AWS) / Dataplex(GCP) / Unity(Databricks)**
+> - 비용 절감·내재화 → **DataHub / OpenMetadata**
 
 ### 6.5 솔루션 기능 비교 기준
 
@@ -696,21 +902,60 @@ Query/ETL/BI 로그 분석으로 Tier를 산정한 결과(예시):
 
 ### 7.10 두산전자 To-Be 아키텍처 예시
 
-```
-[SAP ERP][MES][QMS][CRM]   [데이터레이크: 센서로그/이미지]
-      │ 커넥터(자동수집)            │ 커넥터/수동
-      └──────────┬─────────────────┘
-                 ▼
-        [데이터 카탈로그 솔루션]
-        - 메타 저장소 / 검색 / 계층탐색
-        - Lineage / 권한·등급 / AI 메타
-                 │  연계
-     ┌───────────┼────────────┐
-     ▼           ▼            ▼
-  C-3 Lineage  F-2 생애주기  AI 전처리/분석/Agent
+```mermaid
+flowchart TB
+    subgraph SRC["원천 시스템"]
+        direction LR
+        ERP["SAP ERP"]
+        MES["MES"]
+        QMS["QMS"]
+        CRM["CRM<br/>(개인정보)"]
+        LAKE["데이터레이크<br/>센서로그·검사이미지"]
+    end
+
+    subgraph CATALOG["데이터 카탈로그 솔루션"]
+        direction LR
+        META["메타 저장소"]
+        SEARCH["검색·계층탐색"]
+        LIN["Lineage"]
+        GOV["권한·등급"]
+        AIM["AI 메타"]
+    end
+
+    subgraph CONSUME["연계·소비"]
+        direction LR
+        C3["C-3 Lineage"]
+        F2["F-2 생애주기"]
+        AISVC["AI 전처리·분석·Agent"]
+    end
+
+    ERP & MES & QMS & CRM -->|"커넥터(자동수집)"| CATALOG
+    LAKE -->|"커넥터/수동"| CATALOG
+    CATALOG --> CONSUME
+
+    style CATALOG fill:#EDE7F6,stroke:#5B2D8E,stroke-width:2px
+    style SRC fill:#F2F0F0,stroke:#999
+    style CONSUME fill:#E8F5E9,stroke:#149E60
 ```
 
 ### 7.11 두산전자 구축 단계 예시
+
+```mermaid
+gantt
+    title 두산전자 데이터 카탈로그 구축 일정 (예시)
+    dateFormat YYYY-MM-DD
+    axisFormat %m월
+    section 준비
+    요건·조직·표준 정의      :a1, 2026-07-01, 30d
+    section 솔루션
+    선정·PoC·설치           :a2, after a1, 45d
+    section 적재
+    Tier1 자동수집·메타보완   :a3, after a2, 60d
+    section 오픈
+    정합성 검증·현업 오픈     :a4, after a3, 30d
+    section 확산
+    Tier2·비정형·AI 확대     :a5, after a4, 90d
+```
 
 | 단계 | 기간(예시) | 주요 활동 |
 | --- | --- | --- |
@@ -736,6 +981,20 @@ Query/ETL/BI 로그 분석으로 Tier를 산정한 결과(예시):
 ---
 
 ## 8. 데이터 카탈로그 구축
+
+**구축 단계 흐름**
+
+```mermaid
+flowchart LR
+    B1["취합 데이터<br/>검토"] --> B2["정합성 검토<br/>·보완 요청"]
+    B2 --> B3["To-Be<br/>아키텍처 설계"]
+    B3 --> B4["솔루션 설정·<br/>연동 개발"]
+    B4 --> B5["연동 테스트"]
+    B5 --> B6["초기 적재<br/>·검증"]
+    B6 --> B7(["정식 오픈"])
+
+    style B7 fill:#D7F0DE,stroke:#149E60,color:#0b4f30
+```
 
 ### 8.1 취합 데이터 검토
 
@@ -824,6 +1083,26 @@ Query/ETL/BI 로그 분석으로 Tier를 산정한 결과(예시):
 | **수정** | 메타데이터 변경 | 소유자 변경, 설명 보완 |
 | **삭제** | 자산 등록 해제 | 폐기 데이터 제거 |
 
+```mermaid
+sequenceDiagram
+    participant U as 요청자(현업/AI)
+    participant S as Steward
+    participant O as Owner
+    participant SEC as 보안
+    participant C as 카탈로그
+
+    U->>S: 변경 요청(신규/수정/삭제)
+    S->>S: 표준·중복 검토
+    alt 영향 큰 변경(등급변경/삭제)
+        S->>SEC: 보안·거버넌스 협의
+        SEC-->>S: 의견 회신
+    end
+    S->>O: 승인 요청
+    O-->>S: 승인 / 반려
+    S->>C: 승인 건 반영 + 이력(History) 기록
+    C-->>U: 처리 완료 통지
+```
+
 ### 9.2 변경 검토 및 승인
 
 - 요청을 Steward/Owner가 검토 → 표준·보안 부합 확인 → 승인/반려
@@ -880,6 +1159,30 @@ Query/ETL/BI 로그 분석으로 Tier를 산정한 결과(예시):
 ---
 
 ## 10. AI-ready 데이터 체계 내 연계 범위
+
+**A-1 / C-3 / F-2 책임 경계 한눈에 보기**
+
+```mermaid
+flowchart LR
+    subgraph A1["A-1 데이터 카탈로그"]
+        a["메타데이터 발견·신뢰·전달<br/>+ 메타 변경 이력(History)"]
+    end
+    subgraph C3["C-3 데이터 계통(Lineage)"]
+        c["컬럼 레벨 변환 추적·산출"]
+    end
+    subgraph F2["F-2 데이터 생애주기"]
+        f["아카이빙·삭제 실행"]
+    end
+
+    A1 -->|"자산 ID 제공"| C3
+    C3 -->|"계통 그래프 회신"| A1
+    A1 -->|"보존·등급 메타 제공"| F2
+    F2 -->|"폐기 상태 회신"| A1
+
+    style A1 fill:#5B2D8E,color:#fff,stroke:#3d1d5e,stroke-width:2px
+    style C3 fill:#E8E2F2,stroke:#5B2D8E
+    style F2 fill:#E8E2F2,stroke:#5B2D8E
+```
 
 ### 10.1 A-1 데이터 카탈로그의 과제 범위
 
@@ -965,6 +1268,21 @@ Query/ETL/BI 로그 분석으로 Tier를 산정한 결과(예시):
 ## 12. 고도화 Roadmap
 
 카탈로그를 **수동 관리 → AI 보조 → AI 자율**로 단계적으로 고도화한다.
+
+```mermaid
+flowchart LR
+    L1["<b>1단계</b><br/>수동 관리<br/>기본 카탈로그·Tier1 등록"]:::s1
+    L2["<b>2단계</b><br/>AI 보조<br/>메타·태그·품질 초안 자동생성<br/>+ 현업 검수"]:::s2
+    L3["<b>3단계</b><br/>의미 탐색<br/>Semantic Layer·자연어 탐색"]:::s3
+    L4["<b>4단계</b><br/>AI 자율<br/>대화식 쿼리·전처리·분석 Agent<br/>+ 그룹 확산"]:::s4
+
+    L1 --> L2 --> L3 --> L4
+
+    classDef s1 fill:#EFEFEF,stroke:#999,color:#333;
+    classDef s2 fill:#D0BCF1,stroke:#5B2D8E,color:#41236d;
+    classDef s3 fill:#A479E2,color:#fff,stroke:#5B2D8E;
+    classDef s4 fill:#5B2D8E,color:#fff,stroke:#3d1d5e,stroke-width:2px;
+```
 
 ### 12.1 AI 기반 메타데이터 초안 생성
 - LLM이 테이블/컬럼명·샘플·계통을 분석해 **메타데이터 초안 자동 생성**

@@ -906,6 +906,110 @@ PoC는 **실제 계열사 데이터 일부로 검증**한다.
 
 > **PoC 시나리오 예시**: 고객/계약 5개 테이블을 자동 수집 → 검색 "고객" 정확도 확인 → CUST_BASE→CONTRACT Lineage 자동 추출 확인 → '기밀' 등급 마스킹 동작 확인 → 현업 3인 사용성 평가.
 
+### 6.9 데이터 카탈로그 세부 영역별 솔루션 제안 (기능 단위, 중복 허용)
+
+"데이터 카탈로그 솔루션 1개"는 사실 **여러 기능 컴포넌트의 묶음**이다. 상용 제품은 이 기능들을 패키지로 제공하고, OSS/클라우드 조합은 영역별로 도구를 붙인다. 아래는 **기능 영역별로 필요한 솔루션·기술**을 구체적으로 제안한 것이다(한 제품이 여러 영역을 커버하므로 중복 등장).
+
+```mermaid
+flowchart TB
+    subgraph L1["① 수집(Connector/Ingestion)"]
+        a["JDBC/API 커넥터 · 스캐너"]
+    end
+    subgraph L2["② Lineage 추출"]
+        b["SQL 파싱 · OpenLineage"]
+    end
+    subgraph L3["③ 메타 저장소·모델"]
+        c["메타 그래프 DB"]
+    end
+    subgraph L4["④ 검색·인덱스"]
+        d["Elastic/OpenSearch · 한글 분석기"]
+    end
+    subgraph L5["⑤ 거버넌스·권한·마스킹"]
+        e["정책 · 권한 · 개인정보 탐지"]
+    end
+    subgraph L6["⑥ 데이터 품질"]
+        f["품질 룰 · 관측성"]
+    end
+    subgraph L7["⑦ AI 메타·Semantic·자연어"]
+        g["LLM 메타 생성 · 의미 검색"]
+    end
+    subgraph L8["⑧ 비정형·AI데이터·벡터"]
+        h["임베딩 · 벡터DB · 피처스토어"]
+    end
+    L1 --> L3 --> L4
+    L2 --> L3
+    L5 --> L3
+    L6 --> L3
+    L7 --> L3
+    L8 --> L3
+```
+
+#### 6.9.1 영역별 솔루션 매핑표
+
+| 기능 영역 | 무엇을 하는가 | OSS / 기술 | 상용 / 클라우드 |
+| --- | --- | --- | --- |
+| ① 수집(Connector) | 원천에서 메타 스캔 | OpenMetadata Ingestion, DataHub(acryl-datahub), Apache Atlas Hooks | Collibra Edge, Informatica Scanner, Alation OCF, Atlan / AWS Glue Crawler, MS Purview Scan, GCP Dataplex |
+| ② Lineage | 데이터 흐름 추적 | OpenLineage+Marquez, SQLLineage, Spline(Spark), dbt | Manta, Collibra, Informatica, DataHub |
+| ③ 메타 저장소 | 메타 그래프 저장 | DataHub(Kafka+ES+Graph), OpenMetadata(MySQL/PG+ES), JanusGraph(Atlas) | 상용 제품 내장 |
+| ④ 검색·인덱스 | 키워드·한글·자연어 검색 | Elasticsearch/OpenSearch, **Nori(한글 형태소)**, 동의어 사전 | 상용 제품 내장 검색 |
+| ⑤ 거버넌스·권한·마스킹 | 정책·접근통제·마스킹 | Apache Ranger, Unity Catalog | Collibra(워크플로우), Immuta, Privacera / AWS Lake Formation |
+| ⑤-1 개인정보 탐지 | 민감정보 자동 식별 | Presidio(MS OSS) | BigID, Google DLP, AWS Macie, MS Purview |
+| ⑥ 데이터 품질 | 룰 검증·이상 탐지 | Great Expectations, Soda, dbt tests | Monte Carlo, Anomalo (OpenMetadata 내장) |
+| ⑦ AI 메타·Semantic | 설명·태그 자동생성, 의미검색 | LLM(Claude 등)+카탈로그 API, Cube/dbt Semantic Layer | Informatica CLAIRE, Atlan AI, Alation |
+| ⑧ 비정형·벡터·피처 | AI 데이터 자산 관리 | pgvector, Milvus, Weaviate / Feast(피처스토어) | Pinecone, Tecton, Databricks Feature Store |
+| ⑨ 스케줄·오케스트레이션 | 수집 주기 실행 | Apache Airflow, Dagster, cron | 관리형 Airflow(MWAA 등) |
+
+#### 6.9.2 "커넥터로 연결한다"가 구체적으로 무엇인가
+
+> 가장 자주 나오는 표현이지만 추상적이라, 실제로 무슨 일이 일어나는지 풀어 설명한다.
+
+**커넥터 = 원천 시스템의 '메타데이터를 읽어오는 표준 어댑터'**다. 데이터 실물을 복사하는 게 아니라, "어떤 테이블·컬럼·타입이 있는지"를 **시스템 카탈로그(딕셔너리)에서 조회**한다.
+
+| 원천 유형 | "연결"의 실제 의미 | 어디서 메타를 읽나 |
+| --- | --- | --- |
+| RDB (Oracle/PostgreSQL/MySQL) | JDBC/ODBC 드라이버로 접속 | `ALL_TAB_COLUMNS`(Oracle), `information_schema`(PG/MySQL) |
+| DW (Snowflake/BigQuery/Redshift) | 계정·웨어하우스·권한으로 API/SQL 접속 | 각 `INFORMATION_SCHEMA`, 메타 API |
+| Lake (S3/Delta/Iceberg) | 스토리지 접근키 + 테이블 포맷 메타 | Glue Catalog, Delta/Iceberg 카탈로그 |
+| BI (Tableau/Power BI/Looker) | REST API 토큰으로 접속 | 워크북·리포트·데이터소스 메타 |
+| ETL (Airflow/dbt/Informatica) | 메타 API/매니페스트 파싱 | dbt `manifest.json`, Airflow 메타DB |
+
+**실제 수집 절차 (RDB 예시)**
+1. 접속 정보 등록(호스트/포트/계정/권한) — *읽기 전용 계정 권장*
+2. 커넥터가 시스템 카탈로그를 조회해 테이블·컬럼·타입·건수·코멘트 수집
+3. 표준 메타모델로 변환해 카탈로그 저장소에 적재
+4. **증분 수집**(변경분만) + **스케줄**(예: 매일 새벽)로 주기 실행
+
+> **개념 예시 — OpenMetadata 수집 레시피(YAML)**
+> ```yaml
+> source:
+>   type: postgres                 # 커넥터 종류
+>   serviceConnection:
+>     config:
+>       hostPort: db.doosan.com:5432
+>       username: catalog_reader    # 읽기 전용
+>       database: salesdb
+>   sourceConfig:
+>     config:
+>       schemaFilterPattern:        # 수집 대상 한정
+>         includes: ["sales"]
+> sink:
+>   type: metadata-rest             # 카탈로그로 적재
+> ```
+> → 이 레시피를 **Airflow가 매일 실행**하면, `salesdb.sales` 스키마의 모든 테이블·컬럼이 자동으로 카탈로그에 올라온다. (DataHub는 동일 개념을 `recipe.yml` + `datahub ingest -c recipe.yml`로 수행)
+
+**커넥터가 없을 때(레거시)**: 표준 커넥터 미지원 원천은 ⓐ JDBC 범용 커넥터, ⓑ 시스템 카탈로그를 직접 추출하는 커스텀 스크립트(8.6), ⓒ Excel 템플릿 일괄 업로드(8.7)로 대응한다.
+
+#### 6.9.3 상황별 추천 솔루션 조합(스택) 예시
+
+| 시나리오 | 추천 조합 |
+| --- | --- |
+| **OSS·모던 스택**(비용 절감, 엔지니어 보유) | 카탈로그=OpenMetadata 또는 DataHub / Lineage=OpenLineage+Marquez / 품질=Great Expectations / 검색 한글=Nori / 스케줄=Airflow / 메타초안=LLM / 벡터자산=pgvector |
+| **엔터프라이즈 상용**(강한 거버넌스·규제) | 카탈로그·거버넌스=Collibra / Lineage=Manta / 정책·마스킹=Immuta / 품질·관측성=Monte Carlo / 개인정보=BigID |
+| **AWS 네이티브** | 기술카탈로그=Glue Catalog / 비즈니스카탈로그=Amazon DataZone / 권한=Lake Formation / 개인정보=Macie / 쿼리=Athena |
+| **Azure 네이티브** | MS Purview(카탈로그·스캔·개인정보) + Microsoft Fabric/Synapse 연계 |
+
+> **선택 원칙**: ① 상용은 "한 제품으로 ①~⑦ 대부분 커버"가 강점 ② OSS는 "영역별 베스트 도구 조합"이 강점 ③ 단, 조합형은 **통합·운영 부담**이 크므로 엔지니어링 역량과 트레이드오프를 따져 결정한다.
+
 ---
 
 ## 7. 계열사 적용 예시: 두산전자 데이터 카탈로그 구축 시나리오

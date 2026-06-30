@@ -148,6 +148,11 @@
 만도 등 주요 기업 경영진 및 Google App Summit, Modern Growth Stack, Max Summit, IGM 등
 주요 컨퍼런스 다수 출강.
 
+**2026**
+- 2026.06 KEARNEY *AI as a X* 포럼 연사
+- 2026.05 한화 경영진 대상 AI 포럼 연사
+- 2026.04 한화 큐셀 임직원 대상 AI 강의
+
 **2025**
 - 2025.09 삼성전자 임원 대상 *AI enabled Enterprise Architecture*
 - 2025.08 삼성금융사 임원진 대상 *AI enabled Enterprise Architecture*

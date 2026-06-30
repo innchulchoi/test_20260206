@@ -4,136 +4,187 @@
 <meta charset="UTF-8">
 <title>최인철 (Innchul Choi) — CV</title>
 <style>
-  @page {
-    size: A4;
-    margin: 16mm 15mm 16mm 15mm;
+  /* ---- Pretendard (professional Korean typeface) ---- */
+  @font-face { font-family:'Pretendard'; font-weight:400; font-style:normal;
+    src:url('fonts/Pretendard-Regular.otf') format('opentype'); }
+  @font-face { font-family:'Pretendard'; font-weight:500; font-style:normal;
+    src:url('fonts/Pretendard-Medium.otf') format('opentype'); }
+  @font-face { font-family:'Pretendard'; font-weight:600; font-style:normal;
+    src:url('fonts/Pretendard-SemiBold.otf') format('opentype'); }
+  @font-face { font-family:'Pretendard'; font-weight:700; font-style:normal;
+    src:url('fonts/Pretendard-Bold.otf') format('opentype'); }
+  @font-face { font-family:'Pretendard'; font-weight:800; font-style:normal;
+    src:url('fonts/Pretendard-ExtraBold.otf') format('opentype'); }
+
+  :root {
+    --ink:#222a33;        /* body text */
+    --navy:#16314a;       /* headings */
+    --navy2:#0f2235;
+    --accent:#9a4a1c;     /* restrained sienna */
+    --accent2:#b86a3a;
+    --muted:#74808c;
+    --rule:#e1e6ec;
+    --soft:#f6f8fb;
+    --chip:#eef2f6;
   }
+  @page { size: A4; margin: 17mm 16mm 15mm 16mm; }
   * { box-sizing: border-box; }
   body {
-    font-family: 'NanumBarunGothic', 'NanumGothic', sans-serif;
-    color: #1a1a1a;
-    font-size: 10.2px;
-    line-height: 1.5;
-    margin: 0;
+    font-family:'Pretendard', sans-serif;
+    color:var(--ink);
+    font-size:10px;
+    font-weight:400;
+    line-height:1.52;
+    letter-spacing:-0.1px;
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
   }
-  /* Header */
-  header {
-    border-bottom: 2.5px solid #0b3d6b;
-    padding-bottom: 10px;
-    margin-bottom: 14px;
+  b, strong { font-weight:600; }
+
+  /* ---- Header ---- */
+  header { margin-bottom:13px; }
+  .hdr-top {
+    display:flex; justify-content:space-between; align-items:flex-end;
+    padding-bottom:9px;
+    border-bottom:2px solid var(--navy);
   }
   .name {
-    font-size: 25px;
-    font-weight: 800;
-    color: #0b3d6b;
-    letter-spacing: -0.3px;
+    font-size:27px; font-weight:800; color:var(--navy);
+    letter-spacing:-0.6px; line-height:1;
   }
-  .name .en { font-size: 16px; font-weight: 600; color: #4a5a6a; margin-left: 6px; }
+  .name .en {
+    font-size:14px; font-weight:500; color:var(--muted);
+    margin-left:8px; letter-spacing:0.1px;
+  }
+  .hdr-contact {
+    text-align:right; font-size:8.6px; color:var(--muted);
+    line-height:1.55; letter-spacing:0.1px;
+  }
+  .hdr-contact b { color:var(--ink); font-weight:600; }
   .role {
-    font-size: 11px;
-    font-weight: 700;
-    color: #c8501e;
-    margin-top: 4px;
-    letter-spacing: 0.2px;
+    margin-top:8px;
+    font-size:10.5px; font-weight:700; color:var(--accent);
+    text-transform:uppercase; letter-spacing:1.6px;
   }
-  .contact {
-    font-size: 9.5px;
-    color: #5a6a7a;
-    margin-top: 5px;
-  }
-  /* Summary */
+
+  /* ---- Summary ---- */
   .summary {
-    background: #f4f7fa;
-    border-left: 3px solid #0b3d6b;
-    padding: 9px 12px;
-    margin-bottom: 14px;
-    font-size: 9.8px;
-    line-height: 1.55;
+    margin:11px 0 4px 0;
+    font-size:9.6px; line-height:1.62; color:#374350;
   }
-  .summary .skills { margin-top: 6px; }
-  .summary .skills b { color: #0b3d6b; }
-  /* Core expertise pillars */
-  .pillars {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 4px;
+  .summary .skills {
+    margin-top:7px; padding-top:7px;
+    border-top:0.8px solid var(--rule);
+    font-size:9px; color:var(--muted);
   }
+  .summary .skills b { color:var(--navy); font-weight:700; }
+
+  /* ---- Section heading ---- */
+  h2.section {
+    font-size:10px; font-weight:700; color:var(--navy);
+    text-transform:uppercase; letter-spacing:2px;
+    margin:17px 0 9px 0; padding-bottom:5px;
+    border-bottom:1px solid var(--rule);
+    position:relative;
+  }
+  h2.section::after {
+    content:""; position:absolute; left:0; bottom:-1px;
+    width:34px; height:2px; background:var(--accent);
+  }
+
+  /* ---- Core expertise pillars ---- */
+  .pillars { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:2px; }
   .pillar {
-    border: 0.8px solid #d2dbe4;
-    border-top: 2.5px solid #c8501e;
-    border-radius: 4px;
-    padding: 7px 10px 8px 10px;
-    background: #fafcfe;
-    page-break-inside: avoid;
+    border:0.8px solid var(--rule); border-radius:5px;
+    padding:9px 11px 10px 11px; background:var(--soft);
+    page-break-inside:avoid;
   }
   .pillar .pt {
-    font-size: 10px; font-weight: 800; color: #0b3d6b;
-    margin-bottom: 3px;
+    font-size:9.6px; font-weight:700; color:var(--navy);
+    margin-bottom:4px; letter-spacing:-0.1px;
   }
-  .pillar .pd { font-size: 8.9px; line-height: 1.45; color: #2a3a4a; }
-  .pillar .pd b { color: #c8501e; }
-  /* Section */
-  h2.section {
-    font-size: 12px;
-    font-weight: 800;
-    color: #0b3d6b;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1.5px solid #d2dbe4;
-    padding-bottom: 3px;
-    margin: 16px 0 9px 0;
+  .pillar .pt .n {
+    display:inline-block; color:var(--accent); font-weight:800; margin-right:4px;
   }
-  /* Job entry */
-  .job { margin-bottom: 12px; page-break-inside: avoid; }
+  .pillar .pd { font-size:8.6px; line-height:1.5; color:#3c4956; }
+  .pillar .pd b { color:var(--accent); font-weight:600; }
+
+  /* ---- Job entry ---- */
+  .job { margin-bottom:13px; page-break-inside:avoid; }
   .job-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 0.5px dotted #b8c4d0;
-    padding-bottom: 2px;
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding-bottom:3px; border-bottom:0.8px solid var(--rule);
   }
-  .job-company { font-size: 11.5px; font-weight: 800; color: #16314a; }
+  .job-company {
+    font-size:11.5px; font-weight:800; color:var(--navy);
+    letter-spacing:0.2px;
+  }
   .job-company .tag {
-    font-size: 8px; font-weight: 700; color: #c8501e;
-    background: #fbeee6; padding: 1px 5px; border-radius: 3px; margin-left: 5px;
-    vertical-align: middle;
+    font-size:7.6px; font-weight:600; color:var(--muted);
+    background:var(--chip); padding:1.5px 6px; border-radius:9px;
+    margin-left:7px; vertical-align:middle; letter-spacing:0.2px;
   }
-  .job-period { font-size: 9px; color: #6a7a8a; font-weight: 600; white-space: nowrap; }
-  .job-title { font-size: 10px; font-weight: 700; color: #c8501e; margin: 2px 0 5px 0; }
+  .job-period {
+    font-size:8.8px; color:var(--muted); font-weight:600;
+    white-space:nowrap; letter-spacing:0.3px;
+  }
+  .job-title {
+    font-size:9.6px; font-weight:600; color:var(--accent);
+    margin:3px 0 5px 0; letter-spacing:0.1px;
+  }
   .theme {
-    font-size: 9.8px; font-weight: 700; color: #16314a;
-    margin: 6px 0 3px 0;
+    font-size:9.4px; font-weight:700; color:var(--navy);
+    margin:7px 0 4px 0;
   }
-  ul { margin: 0 0 0 0; padding-left: 15px; }
-  li { margin-bottom: 2.5px; line-height: 1.48; }
-  li b { color: #0b3d6b; }
-  .note { color: #7a6a5a; font-style: italic; }
-  /* Speaking list */
-  .speak-intro { font-size: 9.6px; margin-bottom: 8px; line-height: 1.5; }
-  .year-block { margin-bottom: 8px; page-break-inside: avoid; }
+  ul { margin:0; padding:0; list-style:none; }
+  li {
+    position:relative; padding-left:11px; margin-bottom:3px; line-height:1.5;
+  }
+  li::before {
+    content:""; position:absolute; left:1px; top:6.5px;
+    width:3px; height:3px; border-radius:50%; background:var(--accent2);
+  }
+  li b { color:var(--navy); font-weight:600; }
+  .note { color:#8a7a6a; font-style:italic; }
+
+  /* ---- Speaking ---- */
+  .speak-intro { font-size:9.2px; margin-bottom:9px; line-height:1.55; color:#3c4956; }
+  .year-block { margin-bottom:9px; page-break-inside:avoid; }
   .year-label {
-    font-size: 10px; font-weight: 800; color: #c8501e;
-    margin-bottom: 3px;
+    font-size:9px; font-weight:700; color:var(--accent);
+    letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px;
   }
-  .talks { column-count: 2; column-gap: 18px; }
-  .talks li { font-size: 8.8px; margin-bottom: 2px; break-inside: avoid; }
-  /* Education */
-  .edu-line { font-size: 10px; }
-  .edu-line .school { font-weight: 800; color: #16314a; }
-  .edu-line .meta { color: #6a7a8a; }
+  .talks { column-count:2; column-gap:20px; }
+  .talks li {
+    font-size:8.4px; margin-bottom:2.5px; break-inside:avoid;
+    padding-left:9px; line-height:1.4;
+  }
+  .talks li::before { top:5.5px; width:2.5px; height:2.5px; background:#c2ccd6; }
+
+  /* ---- Education ---- */
+  .edu-line { font-size:9.6px; line-height:1.7; }
+  .edu-line .school { font-weight:700; color:var(--navy); }
+  .edu-line .meta { color:var(--muted); }
+
   footer {
-    margin-top: 14px; border-top: 0.5px solid #d2dbe4; padding-top: 6px;
-    font-size: 9px; color: #6a7a8a;
+    margin-top:15px; padding-top:7px; border-top:0.8px solid var(--rule);
+    font-size:8.4px; color:var(--muted); letter-spacing:0.2px;
+    display:flex; justify-content:space-between;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="name">최인철 <span class="en">Innchul Choi</span></div>
-  <div class="role">AI Transformation (AX) Leader &nbsp;|&nbsp; Partner · 전무, Kearney</div>
-  <div class="contact">✉ innchul@gmail.com &nbsp;·&nbsp; Seoul, Korea</div>
+  <div class="hdr-top">
+    <div class="name">최인철 <span class="en">Innchul Choi</span></div>
+    <div class="hdr-contact">
+      <b>innchul@gmail.com</b><br>
+      Seoul, Korea
+    </div>
+  </div>
+  <div class="role">AI Transformation (AX) Leader · Partner, Kearney</div>
 </header>
 
 <div class="summary">
@@ -152,22 +203,22 @@
 <h2 class="section">Core Expertise — AI Transformation (AX)</h2>
 <div class="pillars">
   <div class="pillar">
-    <div class="pt">① Enterprise AX 전략 &amp; 마스터플랜</div>
+    <div class="pt"><span class="n">01</span>Enterprise AX 전략 &amp; 마스터플랜</div>
     <div class="pd">전사 AI 전환 마스터플랜 수립 및 투자 유치 — 에너지/트레이딩사 <b>4백억+ 투자</b> 견인,
       중공업 지주사 <b>AX 컨트롤타워</b> 및 핵심 5대 과제 3개년 PMO/구축</div>
   </div>
   <div class="pillar">
-    <div class="pt">② AI 조직·역량 구축 &amp; 턴어라운드</div>
+    <div class="pt"><span class="n">02</span>AI 조직·역량 구축 &amp; 턴어라운드</div>
     <div class="pd">Kearney <b>AI 전담조직 'AiX' 셋업·리드</b>(제조 온톨로지 팀 포함),
       인수 AI 기업 <b>Skelterlabs Temporary CSO</b>로 사업 턴어라운드 수행</div>
   </div>
   <div class="pillar">
-    <div class="pt">③ Hands-on AI 구현</div>
+    <div class="pt"><span class="n">03</span>Hands-on AI 구현</div>
     <div class="pd">AI Agent 기반 IT Help Desk(<b>콜센터 ~40% AI 전환</b>), Ontology 기반 품질결함 RCA,
       전 계열사 <b>AI-ready data 체계</b>, Gen AI 구매·법무 자동화</div>
   </div>
   <div class="pillar">
-    <div class="pt">④ AX Thought Leadership</div>
+    <div class="pt"><span class="n">04</span>AX Thought Leadership</div>
     <div class="pd">삼성·SK·한화·LG·현대·Microsoft 등 <b>경영진 100+ 강연</b>,
       Kearney <i>AI as a X</i> 포럼 연사 — Enterprise AI 트렌드·실행 전파</div>
   </div>
@@ -398,7 +449,8 @@
 </div>
 
 <footer>
-  최인철 (Innchul Choi) · Partner, Kearney · innchul@gmail.com
+  <span>최인철 (Innchul Choi) · AI Transformation Leader, Kearney</span>
+  <span>innchul@gmail.com</span>
 </footer>
 
 </body>

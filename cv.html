@@ -52,6 +52,27 @@
   }
   .summary .skills { margin-top: 6px; }
   .summary .skills b { color: #0b3d6b; }
+  /* Core expertise pillars */
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .pillar {
+    border: 0.8px solid #d2dbe4;
+    border-top: 2.5px solid #c8501e;
+    border-radius: 4px;
+    padding: 7px 10px 8px 10px;
+    background: #fafcfe;
+    page-break-inside: avoid;
+  }
+  .pillar .pt {
+    font-size: 10px; font-weight: 800; color: #0b3d6b;
+    margin-bottom: 3px;
+  }
+  .pillar .pd { font-size: 8.9px; line-height: 1.45; color: #2a3a4a; }
+  .pillar .pd b { color: #c8501e; }
   /* Section */
   h2.section {
     font-size: 12px;
@@ -111,19 +132,44 @@
 
 <header>
   <div class="name">최인철 <span class="en">Innchul Choi</span></div>
-  <div class="role">Partner · 전무 &nbsp;|&nbsp; AI · Digital Transformation · Growth Strategy</div>
+  <div class="role">AI Transformation (AX) Leader &nbsp;|&nbsp; Partner · 전무, Kearney</div>
   <div class="contact">✉ innchul@gmail.com &nbsp;·&nbsp; Seoul, Korea</div>
 </header>
 
 <div class="summary">
-  대기업 AI/Digital Transformation 전략 수립부터 Hands-on 실행까지 실제 변화를 만들어 온 전략·성장 전문가.
-  글로벌 컨설팅펌(Kearney, BCG, A.T. Kearney)과 유니콘 스타트업(Coupang, Skyscanner, Korea Credit Data)을
-  아우르는 경력을 바탕으로, Enterprise AI·디지털 전환, 그로스 전략·실행, PE 실사 및 밸류업 영역에서
-  측정 가능한 성과를 창출.
+  대기업 전사 <b>AI Transformation(AX)</b>을 전략 수립부터 Hands-on 구축까지 책임지고 '실제 성과'로
+  연결하는 AX 전문가. Kearney에서 AI 전담 조직 <b>AiX</b>를 셋업·리드하고, 인수 AI 기업 Skelterlabs의
+  Temporary CSO로 턴어라운드를 이끌고 있음. 글로벌 컨설팅(Kearney·BCG)의 전략 역량과 유니콘
+  스타트업(Coupang·Skyscanner·Korea Credit Data)의 그로스 실행력을 결합해, AX 마스터플랜·AI 조직
+  구축·Hands-on 구현·밸류업 전 영역에서 측정 가능한 변화를 만들어 옴.
   <div class="skills">
-    <b>핵심 역량</b> &nbsp;·&nbsp; Enterprise AI / DX 마스터플랜 &amp; PMO·구축 실행 &nbsp;·&nbsp;
-    Growth Strategy &amp; Performance Marketing &nbsp;·&nbsp; PE Commercial Due Diligence &amp; 밸류업 &nbsp;·&nbsp;
-    데이터 기반 신사업 기획·런칭
+    <b>핵심 역량</b> &nbsp;·&nbsp; Enterprise AX 전략 &amp; 마스터플랜 &nbsp;·&nbsp;
+    AI 조직·역량 구축(AiX) &amp; 턴어라운드 &nbsp;·&nbsp; Hands-on AI 구현(Agent·Ontology·Gen AI) &nbsp;·&nbsp;
+    데이터 기반 Growth &amp; 밸류업
+  </div>
+</div>
+
+<h2 class="section">Core Expertise — AI Transformation (AX)</h2>
+<div class="pillars">
+  <div class="pillar">
+    <div class="pt">① Enterprise AX 전략 &amp; 마스터플랜</div>
+    <div class="pd">전사 AI 전환 마스터플랜 수립 및 투자 유치 — 에너지/트레이딩사 <b>4백억+ 투자</b> 견인,
+      중공업 지주사 <b>AX 컨트롤타워</b> 및 핵심 5대 과제 3개년 PMO/구축</div>
+  </div>
+  <div class="pillar">
+    <div class="pt">② AI 조직·역량 구축 &amp; 턴어라운드</div>
+    <div class="pd">Kearney <b>AI 전담조직 'AiX' 셋업·리드</b>(제조 온톨로지 팀 포함),
+      인수 AI 기업 <b>Skelterlabs Temporary CSO</b>로 사업 턴어라운드 수행</div>
+  </div>
+  <div class="pillar">
+    <div class="pt">③ Hands-on AI 구현</div>
+    <div class="pd">AI Agent 기반 IT Help Desk(<b>콜센터 ~40% AI 전환</b>), Ontology 기반 품질결함 RCA,
+      전 계열사 <b>AI-ready data 체계</b>, Gen AI 구매·법무 자동화</div>
+  </div>
+  <div class="pillar">
+    <div class="pt">④ AX Thought Leadership</div>
+    <div class="pd">삼성·SK·한화·LG·현대·Microsoft 등 <b>경영진 100+ 강연</b>,
+      Kearney <i>AI as a X</i> 포럼 연사 — Enterprise AI 트렌드·실행 전파</div>
   </div>
 </div>
 
@@ -233,7 +279,7 @@
 
 <div class="job">
   <div class="job-head">
-    <div class="job-company">A.T. KEARNEY <span class="tag">Seoul</span></div>
+    <div class="job-company">KEARNEY <span class="tag">舊 A.T. Kearney · 동일 법인 · Seoul</span></div>
     <div class="job-period">2009.03 – 2014.03</div>
   </div>
   <div class="job-title">Consultant</div>

@@ -1,6 +1,6 @@
 # 최인철 (Innchul Choi)
 
-**Partner / 전무** · AI · Digital Transformation · Growth Strategy
+**AI Transformation (AX) Leader** · Partner / 전무, Kearney
 
 📧 innchul@gmail.com · Seoul, Korea
 
@@ -8,16 +8,30 @@
 
 ## Professional Summary
 
-대기업 AI/Digital Transformation 전략 수립부터 Hands-on 실행까지 실제 변화를 만들어 온
-전략·성장 전문가. 글로벌 컨설팅펌(Kearney, BCG, A.T. Kearney)과 유니콘 스타트업
-(Coupang, Skyscanner, Korea Credit Data)을 아우르는 경력을 바탕으로, AI/디지털 전환,
-그로스 전략·실행, PE 실사 및 밸류업 영역에서 측정 가능한 성과를 창출.
+대기업 전사 **AI Transformation(AX)**을 전략 수립부터 Hands-on 구축까지 책임지고 '실제
+성과'로 연결하는 AX 전문가. Kearney에서 AI 전담 조직 **AiX**를 셋업·리드하고, 인수 AI 기업
+Skelterlabs의 Temporary CSO로 턴어라운드를 이끌고 있음. 글로벌 컨설팅(Kearney·BCG)의 전략
+역량과 유니콘 스타트업(Coupang·Skyscanner·Korea Credit Data)의 그로스 실행력을 결합해,
+AX 마스터플랜·AI 조직 구축·Hands-on 구현·밸류업 전 영역에서 측정 가능한 변화를 만들어 옴.
 
 **핵심 역량**
-- Enterprise AI / Digital Transformation 마스터플랜 수립 및 PMO·구축 실행
-- Growth Strategy & Performance Marketing (AARRR 퍼널, 그로스 해킹, 마테크)
-- PE Commercial Due Diligence 및 포트폴리오 밸류업
-- 신사업 기획·런칭 및 데이터 기반 의사결정
+- Enterprise AX 전략 & 마스터플랜 수립, 투자 유치 및 PMO·구축
+- AI 조직·역량 구축(AiX 셋업·리드) 및 AI 기업 턴어라운드
+- Hands-on AI 구현 (AI Agent · Ontology RCA · Gen AI · AI-ready Data)
+- 데이터 기반 Growth & 포트폴리오 밸류업
+
+> *Kearney는 舊 A.T. Kearney와 동일 법인 (2020년 'Kearney'로 리브랜딩)*
+
+---
+
+## Core Expertise — AI Transformation (AX)
+
+| 영역 | 대표 성과 |
+|------|-----------|
+| **① Enterprise AX 전략·마스터플랜** | 전사 AI 전환 마스터플랜 및 투자 유치 — 에너지/트레이딩사 **4백억+ 투자** 견인, 중공업 지주사 **AX 컨트롤타워** 및 5대 과제 3개년 PMO/구축 |
+| **② AI 조직·역량 구축 & 턴어라운드** | Kearney **AI 전담조직 'AiX' 셋업·리드**(제조 온톨로지 팀 포함), 인수 AI 기업 **Skelterlabs Temporary CSO** 턴어라운드 |
+| **③ Hands-on AI 구현** | AI Agent IT Help Desk(**콜센터 ~40% AI 전환**), Ontology 기반 품질결함 RCA, 전 계열사 **AI-ready data 체계**, Gen AI 구매·법무 자동화 |
+| **④ AX Thought Leadership** | 삼성·SK·한화·LG·현대·Microsoft 등 **경영진 100+ 강연**, Kearney *AI as a X* 포럼 연사 |
 
 ---
 
@@ -118,7 +132,7 @@
 - 홈쇼핑 플레이어 모바일 성장 전략 — 50명+ 고객 인터뷰 및 글로벌(구글/아마존/알리바바/쿠팡)
   벤치마킹 기반 고객 인사이트 도출
 
-### A.T. Kearney — Seoul, Korea
+### Kearney *(舊 A.T. Kearney · 동일 법인)* — Seoul, Korea
 **Consultant** · 2009.03 – 2014.03
 
 **국내외 선도 화학/철강/소재 업체 신사업·성장전략 및 턴어라운드 수립**

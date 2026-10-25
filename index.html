@@ -292,6 +292,16 @@ Page: 1</textarea>
         업로드한 템플릿이 있으면 해당 서식을 유지하여 PPT를 생성합니다.<br>
         없으면 Kearney 기본 스타일로 새 PPT를 생성합니다.
       </p>
+
+      <div class="section-title">AI Visual (Runway)</div>
+      <textarea id="visualPrompt" rows="4" maxlength="1000" style="width:100%;font-size:12px;box-sizing:border-box;"
+        placeholder="예: Minimal flat illustration of a supply chain network, purple and grey palette, white background"></textarea>
+      <button class="action-btn purple" id="visualBtn" onclick="generateVisual()" style="margin-top:6px;">
+        Generate Visual
+      </button>
+      <div class="upload-status" id="visualStatus"></div>
+      <img id="visualPreview" alt="Generated visual" style="display:none;width:100%;margin-top:8px;border:1px solid #ddd;">
+      <a id="visualDownload" download="slide_visual.png" style="display:none;font-size:12px;">이미지 다운로드</a>
     </div>
 
     <!-- ═══ TAB: Layout Params ═══ -->
@@ -561,6 +571,45 @@ async function handlePPTXFile(file) {
   } catch (err) {
     statusEl.className = 'upload-status error';
     statusEl.textContent = 'Server error. Make sure app.py is running.';
+  }
+}
+
+// ══════════════════════════════════════════
+// AI Visual (Runway text-to-image)
+// ══════════════════════════════════════════
+async function generateVisual() {
+  const prompt = val('visualPrompt').trim();
+  const statusEl = document.getElementById('visualStatus');
+  const btn = document.getElementById('visualBtn');
+  if (!prompt) { showToast('프롬프트를 입력하세요'); return; }
+
+  btn.disabled = true;
+  statusEl.className = 'upload-status success';
+  statusEl.textContent = '생성 중... (수십 초 정도 걸릴 수 있습니다)';
+
+  try {
+    const resp = await fetch('/api/generate-visual', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) {
+      statusEl.className = 'upload-status error';
+      statusEl.textContent = data.error || 'Generation failed';
+      return;
+    }
+    const img = document.getElementById('visualPreview');
+    const link = document.getElementById('visualDownload');
+    img.src = data.image; img.style.display = 'block';
+    link.href = data.image; link.style.display = 'inline-block';
+    statusEl.className = 'upload-status success';
+    statusEl.textContent = '생성 완료';
+  } catch (err) {
+    statusEl.className = 'upload-status error';
+    statusEl.textContent = 'Server error. Make sure app.py is running.';
+  } finally {
+    btn.disabled = false;
   }
 }
 

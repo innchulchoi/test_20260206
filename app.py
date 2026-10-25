@@ -5,6 +5,7 @@ Kearney Slide Generator — Flask Backend
 - PPT 업로드 → 슬라이드 내용 파싱 API
 - 슬라이드 내용 → PPT 다운로드 API (업로드된 템플릿 서식 유지)
 - 프론트엔드(index.html) 서빙
+- Runway Dev text-to-image → 슬라이드용 비주얼 생성 API (RUNWAYML_API_SECRET 필요)
 
 Usage:
     python app.py
@@ -15,17 +16,25 @@ import io
 import os
 import json
 import copy
+import base64
 import tempfile
+import urllib.request
 from flask import Flask, request, jsonify, send_file, send_from_directory
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
+from runwayml import RunwayML, TaskFailedError, TaskTimeoutError, APIError
 
 app = Flask(__name__, static_folder=".", static_url_path="")
 
 # Store uploaded template in memory (per-session simplicity)
 _uploaded_template = {"pptx_bytes": None, "filename": None}
+
+# Runway Dev text-to-image settings (see https://docs.dev.runwayml.com/api.md)
+RUNWAY_IMAGE_MODEL = "gen4_image"
+RUNWAY_IMAGE_RATIO = "1920:1080"
+RUNWAY_PROMPT_MAX = 1000
 
 # Kearney brand colors
 PURPLE = RGBColor(0x5B, 0x2D, 0x8E)
@@ -89,6 +98,48 @@ def download_pptx():
         as_attachment=True,
         download_name="kearney_slide.pptx",
     )
+
+
+@app.route("/api/generate-visual", methods=["POST"])
+def generate_visual():
+    """Generate a slide visual with Runway Dev text-to-image and return it as a data URI."""
+    data = request.get_json(silent=True) or {}
+    prompt = (data.get("prompt") or "").strip()
+    if not prompt:
+        return jsonify({"error": "프롬프트를 입력하세요"}), 400
+    if len(prompt) > RUNWAY_PROMPT_MAX:
+        return jsonify({"error": f"프롬프트는 {RUNWAY_PROMPT_MAX}자 이하여야 합니다"}), 400
+    if not os.environ.get("RUNWAYML_API_SECRET"):
+        return jsonify({"error": "서버에 RUNWAYML_API_SECRET 환경 변수가 설정되지 않았습니다"}), 503
+
+    client = RunwayML()
+    try:
+        task = client.text_to_image.create(
+            model=RUNWAY_IMAGE_MODEL,
+            prompt_text=prompt,
+            ratio=RUNWAY_IMAGE_RATIO,
+        ).wait_for_task_output()
+    except TaskFailedError as e:
+        details = e.task_details
+        return jsonify({
+            "error": f"이미지 생성 실패: {getattr(details, 'failure', None) or details.status}",
+            "failure_code": getattr(details, "failure_code", None),
+        }), 502
+    except TaskTimeoutError as e:
+        return jsonify({"error": f"이미지 생성 시간 초과 (task {e.task_details.id})"}), 504
+    except APIError as e:
+        return jsonify({"error": f"Runway API 오류: {e}"}), getattr(e, "status_code", None) or 502
+
+    # Output URLs expire, so fetch the image now and hand it to the browser inline.
+    with urllib.request.urlopen(task.output[0], timeout=60) as resp:
+        mime = resp.headers.get_content_type() or "image/png"
+        image_b64 = base64.b64encode(resp.read()).decode("ascii")
+
+    return jsonify({
+        "success": True,
+        "task_id": task.id,
+        "image": f"data:{mime};base64,{image_b64}",
+    })
 
 
 # ─────────────────────────────────────────

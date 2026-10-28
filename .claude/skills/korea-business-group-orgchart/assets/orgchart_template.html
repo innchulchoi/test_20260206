@@ -210,10 +210,25 @@ function tree(g){
     // a company parent wins over the owner's personal stake when it is larger; ties prefer the company
     if (!cur || e.stake > cur.stake || (e.stake===cur.stake && cur.parent==="__OWNER__")) best[e.child] = e;
   }
-  // break cycles (cross-holdings): walk up, cut where we revisit
-  for (const c of Object.keys(best)) {
-    const seen = new Set([c]); let p = best[c].parent;
-    while (p && p!=="__OWNER__" && best[p]) { if (seen.has(p)) { delete best[c]; break; } seen.add(p); p = best[p].parent; }
+  // break cycles (cross-holdings such as 모비스 → 현대차 → 기아 → 모비스): cut the weakest link of
+  // the loop and hang that company on the 동일인's own stake if there is one, so the loop's
+  // strongest chain stays intact under the owner
+  const ownerStake = {};
+  for (const e of g.edges) if (e.parent==="__OWNER__" && names.has(e.child)) ownerStake[e.child] = e;
+  for (let guard=0; guard<1000; guard++) {
+    let cycle = null;
+    for (const c of Object.keys(best)) {
+      const path = [c]; let p = best[c].parent;
+      while (p && p!=="__OWNER__" && best[p]) {
+        const i = path.indexOf(p);
+        if (i >= 0) { cycle = path.slice(i); break; }
+        path.push(p); p = best[p].parent;
+      }
+      if (cycle) break;
+    }
+    if (!cycle) break;
+    const weakest = cycle.reduce((a,b)=>best[b].stake < best[a].stake ? b : a);
+    if (ownerStake[weakest]) best[weakest] = ownerStake[weakest]; else delete best[weakest];
   }
   const kids = {};
   for (const [c,e] of Object.entries(best)) (kids[e.parent] ||= []).push({name:c, stake:e.stake, src:e.source});

@@ -14,17 +14,22 @@ import re
 import zipfile
 
 # Bump when parsing changes: cached results live under cache/document_v<VERSION>/.
-VERSION = 2
+VERSION = 3
 
-# Header text (spaces removed) -> exctvSttus field.
+# Header text (spaces and parentheses removed) -> exctvSttus field. Companies word the headers
+# differently (현대자동차 '이름'/'직위명'/'주요담당업무', NAVER '직책').
 COLUMNS = {
-    "성명": "nm", "성별": "sexdstn", "출생연월": "birth_ym", "출생년월": "birth_ym", "직위": "ofcps",
-    "등기임원여부": "rgist_exctv_at", "상근여부": "fte_at", "담당업무": "chrg_job", "주요경력": "main_career",
-    "학력": "education", "최대주주와의관계": "mxmm_shrholdr_relate", "재직기간": "hffc_pd",
-    "임기만료일": "tenure_end_on",
+    "성명": "nm", "이름": "nm", "성별": "sexdstn", "출생연월": "birth_ym", "출생년월": "birth_ym",
+    "직위": "ofcps", "직위명": "ofcps", "직책": "ofcps",
+    "등기임원여부": "rgist_exctv_at", "상근여부": "fte_at",
+    "담당업무": "chrg_job", "주요담당업무": "chrg_job", "담당업무명": "chrg_job",
+    "직위/담당업무": "ofcps+chrg_job",  # 카카오: '카카오비즈니스도메인 성과리더' in one cell
+    "주요경력": "main_career", "학력": "education", "최대주주와의관계": "mxmm_shrholdr_relate",
+    "재직기간": "hffc_pd", "임기만료일": "tenure_end_on",
 }
-# Tables in the same section that also have 성명/직위 columns but are not the executive roster.
-SKIP_HEADERS = ("겸직", "변동", "구분", "선임", "해임", "퇴임", "사유")
+# Tables in the same section that also list executives but are not the roster: changes after the
+# record date ('구분', '변동일', '변동사유', '(전)담당업무') and directorships elsewhere ('겸직자').
+SKIP_COLUMN = re.compile(r"^(구분|변동.*|.*사유|겸직.*|\(전\).*)$")
 
 _TAG = re.compile(r"<[^>]+>")
 _TABLE = re.compile(r"<TABLE\b.*?</TABLE>", re.S | re.I)
@@ -66,7 +71,8 @@ def exec_section(doc):
 
 def colname(s):
     """'재직기간(최초선임일)' -> '재직기간', '담당 업무' -> '담당업무'."""
-    return re.sub(r"\s+", "", re.sub(r"\(.*?\)", "", s))
+    s = re.sub(r"\s+", "", s)
+    return s if s.startswith("(") else re.sub(r"\(.*?\)", "", s)
 
 
 def parse_rows(table_html):
@@ -85,8 +91,8 @@ def header_columns(rows):
     """Column names and the index of the first data row. Handles a two-row header where a
     COLSPAN cell in the first row ('소유주식수') is split by the second row."""
     for i, row in enumerate(rows):
-        names = [colname(c[2]) for c in row]
-        if "성명" in names and "직위" in names:
+        fields = {COLUMNS.get(colname(c[2])) for c in row}
+        if "nm" in fields and fields & {"ofcps", "ofcps+chrg_job"}:
             break
     else:
         return None, None
@@ -112,17 +118,21 @@ def executives_from_document(doc):
     for t in _TABLE.findall(exec_section(doc)):
         rows = parse_rows(t)
         cols, start = header_columns(rows)
-        if not cols or any(s in c for c in cols for s in SKIP_HEADERS) or "담당업무" not in cols:
+        fields = {COLUMNS.get(c) for c in cols or ()}
+        if not cols or any(SKIP_COLUMN.match(c) for c in cols) or not fields & {"chrg_job", "ofcps+chrg_job"}:
             continue
-        registered_col = "등기임원여부" in cols
+        registered_col = "rgist_exctv_at" in fields
         for row in rows[start:]:
             vals = [c[2] for c in row]
-            if len(vals) != len(cols) or not vals[0] or vals[0] == "성명":
+            if len(vals) != len(cols) or not vals[0] or COLUMNS.get(colname(vals[0])) == "nm":
                 continue
             e = {}
             for name, v in zip(cols, vals):
                 f = COLUMNS.get(name)
-                if f:
+                if f == "ofcps+chrg_job":
+                    e["chrg_job"] = v
+                    e["ofcps"] = v.split()[-1] if v else ""
+                elif f:
                     e[f] = v
             if not e.get("nm") or not e.get("ofcps"):
                 continue

@@ -17,6 +17,7 @@ compatibility: Python 3.9+ (openpyxl은 명단 재생성 때만 필요), OpenDAR
 | `references/name_overrides.json` | 글자 변환으로 맞출 수 없는 회사명 수동 매핑 (예: 네이버(주) → NAVER) |
 | `references/dart_api.md` | 사용하는 DART API, 응답 필드, 상태코드, 호출량 계산. 오류가 나거나 필드를 추가할 때 읽는다 |
 | `scripts/collect.py` | DART 수집. 결과는 그룹별 JSON (`data/001_삼성.json`), 모든 응답은 `data/cache/`에 캐시 |
+| `scripts/report_doc.py` | 공시 원문(document.xml)에서 임원 표를 읽는다. API가 등기임원만 줄 때 미등기임원을 채운다 |
 | `scripts/build_html.py` | 수집 결과를 단일 HTML로 렌더링 (`assets/orgchart_template.html` 사용) |
 | `scripts/build_groups.py` | 새해 공정위 발표 엑셀(별첨2·별첨5)로 `groups_<연도>.json` 재생성 |
 
@@ -53,6 +54,8 @@ python scripts/build_html.py --groups references/groups_2026.json --data data/ -
 - 50개 그룹 전체는 약 2,000개 계열사를 확인하므로 API 4,000~6,000건을 쓴다. 일일 한도(20,000건) 안이고 10~20분쯤 걸린다.
   빨리 보고 싶으면 `--listed-only`로 상장사만 조회한다.
 - 한도에 걸리거나 중간에 끊겨도 같은 명령을 다시 실행하면 캐시에서 이어간다.
+- 삼성전자처럼 임원현황 API에 등기임원만 있는 회사는 보고서 원문을 받아 미등기임원 표를 읽는다(회사당 1건 추가).
+  이렇게 채운 임원에는 `"source": "원문"`이 붙는다. 이 단계를 빼려면 `--no-document`를 준다.
 - `--period annual`을 주면 직전 사업보고서 기준으로, 기본값 `latest`는 가장 최근 분기·반기 보고서 기준으로 모은다.
 
 ### 4. 결과 전달

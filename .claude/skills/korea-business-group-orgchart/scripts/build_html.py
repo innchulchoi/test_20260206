@@ -21,35 +21,69 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(HERE, "..", "assets", "orgchart_template.html")
 
 # Words that name an organisational unit, longest first so "사업부문" wins over "부문".
-UNIT_SUFFIXES = ("사업부문", "사업본부", "사업부", "부문", "본부", "총괄", "연구소", "연구원", "센터",
-                 "그룹", "실", "팀", "단", "원", "부", "소")
+# "事" is the 사업부 abbreviation some companies use ("중대형事").
+UNIT_SUFFIXES = ("사업부문", "사업본부", "사업부", "事", "부문", "본부", "총괄", "연구소", "연구원", "센터",
+                 "그룹", "법인", "실", "팀", "단", "원", "부", "소")
 ROLE_WORDS = re.compile(r"(장|대표|담당|리더|책임자|CEO|CFO|CTO|COO|CHO|CSO|CISO|CPO|임원|위원)$", re.I)
 
 
-def unit_path(chrg_job):
+SPLIT_DUTIES = re.compile(r"\s*(?:겸|/|,|，|;|\n|\(|\[)\s*")
+
+
+def unit_path(chrg_job, leading=frozenset()):
     """'DS부문 메모리사업부 D램개발실장' -> ['DS부문', '메모리사업부', 'D램개발실'].
 
     Only leading tokens that look like organisational units are kept; a trailing title such as
-    '실장' is folded back into its unit ('D램개발실장' -> 'D램개발실'). With several duties
-    ('대표이사 겸 DX부문장') the first one that names a unit is used. Max depth 3."""
+    '실장' is folded back into its unit ('D램개발실장' -> 'D램개발실'). A unit may span up to three
+    words ('Mobile eXperience사업부'). `leading` holds first words that many executives of the same
+    company share ('메모리', 'Foundry'); such a word counts as a unit even without a unit suffix.
+    With several duties ('대표이사 겸 DX부문장') the first one that names a unit is used. Max depth 3."""
     s = (chrg_job or "").strip()
     if not s or s in ("-", "–"):
         return []
-    for part in re.split(r"\s*(?:겸|/|,|，|;|\n|\(|\[)\s*", s):
-        path = []
-        for tok in part.split():
-            t = tok.strip("·.")
+    for part in SPLIT_DUTIES.split(s):
+        toks = [t.strip("·.") for t in part.split()]
+        path, buf = [], []
+        for n in (2, 1):
+            if len(toks) > n and " ".join(toks[:n]) in leading:
+                path.append(" ".join(toks[:n]))
+                toks = toks[n:]
+                break
+        for t in toks:
+            if not t:
+                continue
             base = re.sub(r"장$", "", t)
             if base != t and base.endswith(UNIT_SUFFIXES) and len(base) > 1:
-                path.append(base)
+                path.append(" ".join(buf + [base]))
                 break
             if t.endswith(UNIT_SUFFIXES) and not ROLE_WORDS.search(t) and len(t) > 1:
-                path.append(t)
+                path.append(" ".join(buf + [t]))
+                buf = []
                 continue
-            break
+            if ROLE_WORDS.search(t) or len(buf) == 2:
+                break
+            buf.append(t)
         if path:
             return path[:3]
     return []
+
+
+def leading_words(executives, min_count=5):
+    """First one or two words of the duty that at least `min_count` executives share. A word that
+    is nearly always followed by the same word ('글로벌' -> '제조&인프라총괄') is only the first half
+    of a longer name, so it is left out and the pair is judged instead."""
+    count, after = {}, {}
+    for e in executives:
+        toks = [t.strip("·.") for t in SPLIT_DUTIES.split((e.get("chrg_job") or "").strip())[0].split()]
+        for n in (1, 2):
+            if len(toks) > n:
+                k = " ".join(toks[:n])
+                count[k] = count.get(k, 0) + 1
+                nxt = after.setdefault(k, {})
+                nxt[toks[n]] = nxt.get(toks[n], 0) + 1
+    return frozenset(k for k, c in count.items()
+                     if c >= min_count and not ROLE_WORDS.search(k) and not k.endswith(UNIT_SUFFIXES)
+                     and max(after[k].values()) < 0.6 * c)
 
 
 def is_registered(e):
@@ -61,11 +95,12 @@ def is_registered(e):
 def org_tree(executives):
     """Nest 미등기 executives by unit path; executives without a unit stay at the root."""
     root = {"name": "", "people": [], "children": {}}
+    leading = leading_words([e for e in executives if not is_registered(e)])
     for i, e in enumerate(executives):
         if is_registered(e):
             continue
         node = root
-        for u in unit_path(e.get("chrg_job")):
+        for u in unit_path(e.get("chrg_job"), leading):
             node = node["children"].setdefault(u, {"name": u, "people": [], "children": {}})
         node["people"].append(i)
 

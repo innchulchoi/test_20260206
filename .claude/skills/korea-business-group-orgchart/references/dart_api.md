@@ -11,6 +11,7 @@ Base: `https://opendart.fss.or.kr/api/` · 모든 요청에 `crtfc_key` · 일�
 | `exctvSttus.json` | 임원 현황 | corp_code, bsns_year, reprt_code |
 | `hyslrSttus.json` | 최대주주 현황 | 위와 같음 |
 | `otrCprInvstmntSttus.json` | 타법인 출자 현황 | 위와 같음 |
+| `document.xml` | 공시 원문(zip 안 XML). 미등기임원 표를 읽는 데 쓴다 | rcept_no |
 
 `reprt_code`: 11011 사업보고서, 11012 반기, 11013 1분기, 11014 3분기.
 제출 기한(대략): 사업 3/31, 1분기 5/15, 반기 8/14, 3분기 11/14. `collect.py`는 기한이 지난 보고서만 시도한다.
@@ -27,6 +28,14 @@ trmend_posesn_stock_qota_rt(기말 지분율), rm. 보통주와 우선주가 따
 **otrCprInvstmntSttus**: inv_prm(법인명), frst_acqs_de, invstmnt_purps, frst_acqs_amount, bsis_blce_qy,
 bsis_blce_qota_rt, trmend_blce_qy, trmend_blce_qota_rt(기말 지분율), trmend_blce_acntbk_amount,
 recent_bsns_year_fnnr_sttus_tot_assets, recent_bsns_year_fnnr_sttus_thstrm_ntpf. "합계" 행이 있고, 해외 법인은 영문명으로 나온다.
+
+**document.xml**: 응답은 zip(약 0.5 MB)이고 안에 보고서 XML이 들어 있다. 오류일 때는 zip 대신 status가 담긴 XML/JSON이 온다.
+삼성전자·삼성SDI 같은 대형사는 exctvSttus로 등기임원만 보내고, 미등기임원(수백~1,000명 이상)은 본문
+"VIII. 임원 및 직원 등에 관한 사항 > 1. 임원 및 직원 등의 현황"의 표로만 공시한다. `report_doc.py`가 이 구간의 표 가운데
+성명·직위·담당업무 열이 있는 표를 읽어 exctvSttus와 같은 필드 이름으로 바꾼다. 겸직·변동·선임 표는 건너뛴다.
+표 셀은 `<TD>`/`<TH>` 외에 양식 코드가 붙은 `<TE>`/`<TU>`로도 나온다. 머리글이 두 줄(소유주식수 → 의결권 있는/없는)이면
+COLSPAN으로 펼친다. 파싱 결과만 `cache/document_v<VERSION>/<rcept_no>.json`에 저장하므로, 파싱 규칙을 바꾸면
+`report_doc.VERSION`을 올린다.
 
 ## 상태코드
 
@@ -45,6 +54,7 @@ recent_bsns_year_fnnr_sttus_tot_assets, recent_bsns_year_fnnr_sttus_thstrm_ntpf.
 DART에 이름이 있는 계열사마다 아래 순서로 호출한다.
 1. 사업보고서 임원현황: 1~2건. 없으면 여기서 끝난다(정기보고서 미제출 회사).
 2. 있으면 더 최근 분기·반기 보고서 1~3건, 기업개황 1건, 최대주주 1건, 타법인출자 1~2건.
+3. 임원현황 API에 미등기임원이 한 명도 없으면 그 보고서의 원문(document.xml) 1건.
 
 동명 법인이 여러 개면 기업개황을 최대 6건 더 불러 법인등록번호로 가린다.
 50개 그룹 기준 약 4,000~6,000건이다. 모든 응답은 `<out>/cache/<endpoint>/<params>.json`에 저장된다.

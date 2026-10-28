@@ -94,6 +94,33 @@ class Dart:
             json.dump(data, f, ensure_ascii=False)
         return data
 
+    def document_executives(self, rcept_no):
+        """Executive rows parsed from the report's original document (document.xml). The zip is
+        large (~0.5 MB) so only the parsed rows are cached. Returns [] if DART has no document."""
+        from report_doc import VERSION, executives_from_document, unzip_document
+
+        path = os.path.join(self.cache_dir, f"document_v{VERSION}", f"{rcept_no}.json")
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+        time.sleep(self.delay)
+        raw = self._get(f"{DART}document.xml?{urllib.parse.urlencode({'crtfc_key': self.key, 'rcept_no': rcept_no})}")
+        self.calls += 1
+        if raw[:2] != b"PK":
+            status = re.search(rb"<status>(\d+)</status>|\"status\"\s*:\s*\"(\d+)\"", raw)
+            code = (status.group(1) or status.group(2)).decode() if status else "?"
+            if code in ("010", "011", "012", "901"):
+                raise DartError(f"인증키 오류 {code}")
+            if code == "020":
+                raise DartError("일일 호출 한도(20,000건)를 넘었습니다. 내일 같은 명령으로 이어서 실행하세요(캐시됨).")
+            rows = []
+        else:
+            rows = executives_from_document(unzip_document(raw))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(rows, f, ensure_ascii=False)
+        return rows
+
     def corp_codes(self, max_age_days=7):
         """All DART-registered companies: list of {corp_code, corp_name, stock_code, modify_date}."""
         path = os.path.join(self.cache_dir, "corp_codes.json")

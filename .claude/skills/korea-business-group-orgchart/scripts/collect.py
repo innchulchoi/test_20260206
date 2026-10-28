@@ -8,6 +8,8 @@ usage:
 For every FTC-listed affiliate it
   1. finds the DART corp_code (name match, tie-broken by 법인등록번호 via company.json),
   2. pulls 임원현황 (exctvSttus) from the latest periodic report that has it,
+     and, when the API lists only 등기임원, reads the 미등기임원 table from the report's
+     original document (document.xml, see report_doc.py),
   3. pulls 타법인출자현황 (otrCprInvstmntSttus) from the annual report and
      최대주주현황 (hyslrSttus) to link parents to subsidiaries inside the group.
 Every API response is cached under <out>/cache, so a run interrupted by the
@@ -48,8 +50,9 @@ def periods_newer_than(year, today):
 
 
 class Collector:
-    def __init__(self, dart, period, today, overrides=None):
+    def __init__(self, dart, period, today, overrides=None, document=True):
         self.dart = dart
+        self.document = document
         self.overrides = {k: v for k, v in (overrides or {}).items() if not k.startswith("_")}
         self.period = period
         self.today = today
@@ -108,6 +111,18 @@ class Collector:
         rec["report"] = {"bsns_year": year, "reprt_code": code, "label": f"{year} {REPORTS[code]}",
                          "rcept_no": rows[0].get("rcept_no"), "stlm_dt": rows[0].get("stlm_dt")}
         rec["executives"] = [{k: (r.get(k) or "").strip() for k in EXEC_FIELDS} for r in rows]
+        if self.document and not any("미등기" in e["rgist_exctv_at"] for e in rec["executives"]):
+            # The API sent only 등기임원: read the 미등기임원 table from the report body.
+            # The document repeats the 등기임원 table; birth months differ in format ('1968년 06월' vs
+            # '1968.06'), so match on name plus digits of the birth month, or on name alone.
+            have = {(e["nm"], re.sub(r"\D", "", e["birth_ym"])) for e in rec["executives"]}
+            names = {e["nm"] for e in rec["executives"]}
+            extra = [{**{k: e.get(k, "") for k in EXEC_FIELDS}, "source": "원문"}
+                     for e in self.dart.document_executives(rec["report"]["rcept_no"])
+                     if e.get("nm") not in names
+                     and (e.get("nm"), re.sub(r"\D", "", e.get("birth_ym", ""))) not in have]
+            rec["executives"] += extra
+            rec["report"]["from_document"] = len(extra)
 
         p = self.profile(hit["corp_code"])
         if p:
@@ -181,6 +196,8 @@ def main():
     ap.add_argument("--period", choices=["latest", "annual"], default="latest",
                     help="latest: 가장 최근 정기보고서(분기/반기 포함), annual: 직전 사업보고서")
     ap.add_argument("--listed-only", action="store_true", help="상장사만 조회 (호출 수 절감)")
+    ap.add_argument("--no-document", action="store_true",
+                    help="API에 미등기임원이 없을 때 보고서 원문에서 읽어 오는 단계를 건너뜀")
     ap.add_argument("--overrides", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
                                                         "references", "name_overrides.json"),
                     help="공정위명 -> DART명 수동 매핑 JSON")
@@ -197,7 +214,7 @@ def main():
         if os.path.exists(a.overrides):
             with open(a.overrides, encoding="utf-8") as f:
                 overrides = json.load(f)
-        col = Collector(dart, a.period, today, overrides)
+        col = Collector(dart, a.period, today, overrides, document=not a.no_document)
         for g in groups:
             affs = g["affiliates"]
             companies = []

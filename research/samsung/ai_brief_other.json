@@ -1,0 +1,1221 @@
+{
+ "companies": [
+  {
+   "company": "삼성물산",
+   "interest_summary": "AI 기사는 건설부문에 몰려 있다. 건설부문은 2025년 11월 'AI 데이'에서 2028년까지 'AI 네이티브' 건설사로 바뀌겠다는 로드맵을 내놓았고, AWS와 함께 만든 AI 에이전트 3종(입찰·계약·현장데이터)을 모든 프로젝트에 단계적으로 적용하고 있다. 현장 로봇(자율주행 지게차·볼트 체결 로봇), 외국인 근로자용 AI 통번역, 데이터센터 등 AI 인프라 수요를 신사업 기회로 본다(2026년 9월 헬릭스 투자 참여). 패션부문은 SSF샵의 생성형 AI 검색 최적화(GEO)에 나섰고, 상사·리조트부문의 AI 관련 기사는 이 기간에 찾지 못했다(공개 기사 적음).",
+   "themes": [
+    "[건설] AI 네이티브 로드맵·AWS 에이전트",
+    "[건설] 현장 로봇·안전 AI",
+    "[그룹/전사] AI 인프라(데이터센터) 투자",
+    "[패션] SSF샵 생성형 AI 검색 최적화(GEO)",
+    "[상사·리조트] 공개 기사 적음"
+   ],
+   "talking_points": [
+    "건설: AI-ITB 리뷰어·컨트랙트 매니저·AIPEX를 '모든 프로젝트에 적용'한 뒤 실제 사용률과 리드타임 절감이 어떻게 나오는가?",
+    "건설: 2028년 AI 플랫폼 완성 목표에서 AI혁신본부와 DxP본부는 각각 무엇을 맡는가?",
+    "헬릭스(10억 달러 공동투자)에 참여한 뒤, 삼성물산이 데이터센터 EPC·전력 쪽에서 맡을 역할은 무엇인가?",
+    "상사부문 AX/PI센터의 우선 과제는 트레이딩 업무 자동화인가, 공급망 데이터인가? (기사 없음, 공시 조직 기준 질문)"
+   ],
+   "key_people": [
+    {
+     "name": "오세철",
+     "role": "대표이사 사장, 건설부문장",
+     "why": "AI 데이를 주관했고 신년사에서 AI·에너지 수요를 신사업 기회로 꼽음",
+     "source": "기사"
+    },
+    {
+     "name": "이현아",
+     "role": "상무, 건설 AI혁신본부 본부장",
+     "why": "건설 AI 전환을 맡은 전담 조직의 책임자(기사에서 이름은 확인 못 함)",
+     "source": "공시"
+    },
+    {
+     "name": "소병식",
+     "role": "부사장, 건설 ENG혁신실장 겸 기술본부장",
+     "why": "AI 데이 기사에 등장했고 기술 혁신 조직을 이끎",
+     "source": "기사"
+    },
+    {
+     "name": "조혜정",
+     "role": "부사장, 건설 DxP본부 본부장",
+     "why": "건설 디지털(DxP) 사업 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "김은경",
+     "role": "상무, 상사 AX/PI센터장",
+     "why": "상사부문 AX 전담 조직의 책임자. 기사가 없어 직접 확인해야 함",
+     "source": "공시"
+    },
+    {
+     "name": "박남영",
+     "role": "부사장, 패션부문장",
+     "why": "SSF샵 AI·GEO 추진을 총괄하는 부문장",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2025-11-11",
+     "outlet": "헤럴드경제",
+     "title": "삼성물산, AI 네이티브 건설사 전환 로드맵 제시",
+     "url": "https://www.heraldk.com/article/2025111117055840402",
+     "summary": "[건설] AI 데이: AWS 공동개발 에이전트 3종, 2028년 AI 플랫폼 완성",
+     "category": "조직",
+     "people": [
+      "오세철",
+      "소병식",
+      "김윤식"
+     ],
+     "people_roles": {
+      "오세철": "대표이사 사장",
+      "소병식": "ENG혁신실장 부사장",
+      "김윤식": "AWS코리아 엔터프라이즈 총괄"
+     },
+     "units": [],
+     "unit_hint": "건설부문 AI 전환 로드맵(AI 데이)",
+     "related": [
+      "오세철",
+      "소병식",
+      "이현아",
+      "조혜정"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-01-05",
+     "outlet": "한국경제",
+     "title": "AI전환과 안전…주요 건설사 신년 키워드",
+     "url": "https://www.hankyung.com/article/202601052305i",
+     "summary": "[건설] 오세철 신년사: AI·에너지 수요로 포트폴리오 다변화",
+     "category": "발언",
+     "people": [
+      "오세철"
+     ],
+     "people_roles": {
+      "오세철": "삼성물산 건설부문 대표이사"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "오세철"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-01-16",
+     "outlet": "뉴시스",
+     "title": "건설 현장에 들어온 AI·로봇, 위기 속 성장 동력 되나[건설업계 생존전략]②",
+     "url": "https://www.newsis.com/view/NISX20260116_0003479606",
+     "summary": "[건설] 현장 AI·로봇 실증과 AI 에이전트 전 프로젝트 적용 계획",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "건설 현장 AI·로보틱스",
+     "related": [
+      "이현아",
+      "장일규"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-03-23",
+     "outlet": "아시아경제",
+     "title": "2026 주거문화트렌드",
+     "url": "https://view.asiae.co.kr/article/2026032320490141074",
+     "summary": "[건설] 볼트 체결 로봇·AI 주거 서비스 등 현장·주거 AI 소개",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "건설 현장 로봇·AI 주거 서비스",
+     "related": [
+      "이현아"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-07-16",
+     "outlet": "머니투데이",
+     "title": "새벽 2시엔 지게차, 해 뜨면 로봇 나타난다…삼성물산이 그리는 'AI 공사장'",
+     "url": "https://www.mt.co.kr/estate/2026/07/16/2026071514413349328",
+     "summary": "[건설] 반포 현장 자율주행 지게차·운반·청소 로봇 등 AI 공사장",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "AI 공사장(현장 자동화)",
+     "related": [
+      "이현아"
+     ],
+     "confirm": 1,
+     "single_source_note": "같은 현장 로봇 내용은 뉴시스·아시아경제가 다뤘으나, 이 르포 자체를 다룬 매체는 하나만 확인",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-23",
+     "outlet": "다음(보도자료)",
+     "title": "㈜웨이브, 삼성물산 SSF SHOP의 AI 검색 최적화·고도화 나선다",
+     "url": "https://v.daum.net/v/20260623090148190",
+     "summary": "[패션] SSF샵 콘텐츠에 SEO+생성형AI 검색최적화(GEO) 적용",
+     "category": "도입",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "패션부문 SSF샵(자사몰)",
+     "related": [
+      "박남영"
+     ],
+     "confirm": 2,
+     "single_source_note": "협력사(웨이브) 발표 기준. 파이낸셜뉴스(2026-07-19)도 SSF샵 GEO 고도화를 보도",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-09-29",
+     "outlet": "머니투데이",
+     "title": "삼성, 엔비디아와 美 AI 인프라 기업에 10억 달러 투자, 왜?",
+     "url": "https://mt.co.kr/industry/2026/09/29/2026092908143528888",
+     "summary": "[전사] 삼성 6개사(물산 포함) KKR 헬릭스에 10억달러 투자",
+     "category": "파트너십",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "AI 데이터센터 인프라 투자(그룹 6개사)",
+     "related": [],
+     "confirm": 8,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "김은경",
+      "이현아"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "삼성E&A",
+   "interest_summary": "공개 기사 적음. 이 기간에 확인된 것은 남궁홍 사장이 2026년 4~5월 평택 P5 포럼에서 한 발언뿐이다. 반도체 산업이 AI 혁명의 전략 엔진이 됐고, P5를 완수해 AI·자동화·로봇 기반 실행 능력을 입증하겠다는 내용이다. AI 설계 자동화 'AHEAD'(설계·공사 효율 10~20%↑ 주장)는 2025년 6월 기사라 기간 밖이다. 그 밖에는 그룹 차원의 AI 전담조직 신설 방침만 확인된다.",
+   "themes": [
+    "AI·자동화·로봇 기반 EPC 실행",
+    "반도체(P5) 등 AI 수요 연계 수주",
+    "AHEAD 설계 자동화(기간 외 근거)"
+   ],
+   "talking_points": [
+    "AHEAD의 AI 설계 자동화를 SAN-7 같은 신규 해외 프로젝트에도 적용하는가? 효율 지표(10~20%)를 갱신했는가?",
+    "그룹의 AI 전담조직 신설 방침에 맞춰 시스템혁신팀·기술본부(CTO) 중 어디가 AX를 주도하는가?",
+    "AI 데이터센터 EPC 시장 진출 계획이 있는가? (관련 기사 없음)"
+   ],
+   "key_people": [
+    {
+     "name": "남궁홍",
+     "role": "대표이사 사장",
+     "why": "P5 포럼에서 AI·자동화·로봇 기반 실행 능력을 강조함",
+     "source": "기사"
+    },
+    {
+     "name": "김동현",
+     "role": "부사장, 기술본부장(CTO)",
+     "why": "설계 자동화 같은 기술 혁신을 책임지는 자리",
+     "source": "공시"
+    },
+    {
+     "name": "류기평",
+     "role": "상무, 시스템혁신팀장",
+     "why": "사내 시스템·디지털 혁신을 맡는 조직으로 보임(기사 근거 없음)",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-05-06",
+     "outlet": "다음(파이낸셜뉴스 인용)",
+     "title": "남궁홍 삼성E&A 사장, 삼전 P5 S.A.Y 포럼서 안전·품질 강조",
+     "url": "https://v.daum.net/v/20260506145348028",
+     "summary": "남궁홍: AI 혁명이 반도체 견인, P5서 AI·자동화·로봇 실행력 입증",
+     "category": "발언",
+     "people": [
+      "남궁홍"
+     ],
+     "people_roles": {
+      "남궁홍": "삼성E&A 사장"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "남궁홍"
+     ],
+     "confirm": 1,
+     "single_source_note": "P5 포럼에서 남 사장이 한 AI 발언을 다룬 매체는 하나만 확인됨",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "김동현",
+      "류기평"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "삼성중공업",
+   "interest_summary": "최성안 부회장은 디지털(DX)·AI(AX)·로봇(RX)을 묶은 '3X' 스마트 조선소를 내세운다. 2025년 10월 설계 자동화 플랫폼 S-EDP를 공개하고 2030년까지 설계 자동화율을 두 배 이상 끌어올리겠다고 했다. 2025년 12월 경영전략실 아래 AX·DX 컨트롤타워인 ADX총괄을 새로 만들었고, 2026년 7월에는 거제에 10조원을 들여 AI팩토리·로봇·자율운항을 결합한 자율형 조선소를 짓겠다는 계획을 냈다. 8월에는 KAIST와 자율운항 AI·디지털 트윈 연구센터를 열었다.",
+   "themes": [
+    "3X(DX·AX·RX) 스마트 조선소",
+    "S-EDP 설계 자동화 플랫폼",
+    "ADX총괄 신설(AX 컨트롤타워)",
+    "자율운항 AI·디지털 트윈",
+    "거제 10조 자율형 조선소"
+   ],
+   "talking_points": [
+    "S-EDP의 설계 자동화율은 지금 얼마이고, 2030년 '2배' 목표의 기준선은 무엇인가? 해외 조선소 판매는 언제쯤인가?",
+    "ADX총괄 책임자가 기사(박정서 상무)와 공시(김경희 부사장, 미래사업본부장 겸)에서 다르게 나온다. 실제 역할은 어떻게 나뉘는가?",
+    "거제 10조 투자 가운데 AI팩토리·로봇 투자의 비중과 단계별 일정은 어떻게 되는가?",
+    "KAIST 차세대 선박연구센터의 자율운항 AI 성과를 MASGA(미국 협력) 사업과 연결하는가?"
+   ],
+   "key_people": [
+    {
+     "name": "최성안",
+     "role": "대표이사 부회장",
+     "why": "S-EDP를 공개하고 3X·거제 10조 투자를 직접 발표함",
+     "source": "기사"
+    },
+    {
+     "name": "김경희",
+     "role": "부사장, 미래사업본부장 겸 ADX총괄",
+     "why": "공시상 ADX총괄. 기사에는 경영전략실장으로 나옴",
+     "source": "공시"
+    },
+    {
+     "name": "박정서",
+     "role": "상무, ADX총괄 겸 IT솔루션팀장(기사)",
+     "why": "기사에 ADX총괄 실무 책임자로 나옴. 공시 명단의 삼성중공업 임원에는 없음",
+     "source": "기사"
+    },
+    {
+     "name": "안영규",
+     "role": "부사장, 기술개발본부장",
+     "why": "설계·생산 기술 개발 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "김현조",
+     "role": "부사장, 조선해양연구소장",
+     "why": "자율운항·디지털 트윈 연구의 상대방",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2025-10-29",
+     "outlet": "삼성중공업(보도자료)",
+     "title": "SHI Accelerates Full-speed Transformation into a Smart Shipyard",
+     "url": "https://samsungshi.com/En/Notice_news_view.aspx?no=128",
+     "summary": "S-EDP 공개, 2030년 설계 자동화율 2배 이상·3X 스마트조선소",
+     "category": "사업",
+     "people": [
+      "최성안"
+     ],
+     "people_roles": {
+      "최성안": "대표이사 부회장"
+     },
+     "units": [],
+     "unit_hint": "S-EDP 설계·생산자동화 플랫폼",
+     "related": [
+      "최성안",
+      "안영규"
+     ],
+     "confirm": 3,
+     "single_source_note": "날짜는 행사일(10/29) 기준. 파이낸셜뉴스·시대일보도 같은 날 보도",
+     "grade": "1차"
+    },
+    {
+     "date": "2025-12",
+     "outlet": "더팩트",
+     "title": "[단독] \"AI로 '마스가' 존재감 키운다\"…삼성중, 경영전략실 ADX총괄 신설",
+     "url": "https://news.tf.co.kr/read/economy/2268489.htm",
+     "summary": "경영전략실 산하 ADX총괄 신설, AX·DX 컨트롤타워",
+     "category": "조직",
+     "people": [
+      "김경희",
+      "박정서"
+     ],
+     "people_roles": {
+      "김경희": "경영전략실장 부사장",
+      "박정서": "ADX총괄 상무(IT솔루션팀장 겸)"
+     },
+     "units": [
+      "ADX총괄"
+     ],
+     "unit_hint": "",
+     "related": [
+      "김경희"
+     ],
+     "confirm": 1,
+     "single_source_note": "단독 기사. 일(日) 단위 날짜는 검색 결과에서 확인하지 못함(2025년 12월 보도)",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-07-09",
+     "outlet": "다음",
+     "title": "[삼성 2600조 투자] 최성안, 거제 '3X' 자율형 조선소 구축…10조 투입",
+     "url": "https://v.daum.net/v/20260709051002108",
+     "summary": "거제 10조 투자, AI팩토리·로봇·자율운항 결합 자율형 조선소",
+     "category": "사업",
+     "people": [
+      "최성안"
+     ],
+     "people_roles": {
+      "최성안": "대표이사 부회장"
+     },
+     "units": [],
+     "unit_hint": "3X 자율형 조선소",
+     "related": [
+      "최성안",
+      "김경희"
+     ],
+     "confirm": 1,
+     "single_source_note": "이 투자 계획을 다룬 다른 매체 결과는 확인 못 함",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-08-13",
+     "outlet": "CEO스코어데일리",
+     "title": "삼성重-KAIST, 차세대 선박연구센터 개소…AI·친환경 선박 선점",
+     "url": "https://m.ceoscoredaily.com/page/view/2026081316542830740",
+     "summary": "KAIST와 자율운항 AI·디지털트윈·로보틱스 연구센터 개소",
+     "category": "파트너십",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "차세대 선박연구센터(산학)",
+     "related": [
+      "김현조"
+     ],
+     "confirm": 1,
+     "single_source_note": "검색 결과에서 같은 사건을 다룬 다른 매체는 확인되지 않음",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "김경희"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "삼성바이오로직스",
+   "interest_summary": "존 림 대표는 2026년 1월 JP모건 헬스케어 콘퍼런스에서 2026년을 '디지털 기반 리더십 원년'으로 정하고, 국내외 공장을 AI·디지털 트윈·자동화가 모인 '지능형 바이오 공장'으로 바꾸겠다고 밝혔다. 2025년 3월에는 바이오연구소 아래 AI랩을 만들고 스탠다임 창업 멤버 김진한 상무를 영입했다. 2026년 6월 바이오USA에서는 이 조직을 제조·품질·개발까지 넓히는 방향으로 재편하겠다고 말했다. CDO 영역(세포주 개발·항체 설계)에도 AI를 접목한다.",
+   "themes": [
+    "지능형 바이오 공장(AI·디지털 트윈)",
+    "AI랩/AI팀 확대(제조·품질·개발)",
+    "CDO 영역 AI 적용",
+    "모델 기반 공정 사전 예측"
+   ],
+   "talking_points": [
+    "디지털 트윈은 어느 공장, 어느 공정(배양·정제·QC)부터 적용하고 있는가? 사전 예측으로 수율·리드타임이 얼마나 달라졌는가?",
+    "AI팀(김진한 상무)을 '프로세스 혁신까지' 재편한다는데, IT담당·바이오연구소와 역할은 어떻게 나뉘는가?",
+    "CDO 고객에게 AI 기반 세포주·항체 설계를 서비스로 내놓을 계획이 있는가?"
+   ],
+   "key_people": [
+    {
+     "name": "존림",
+     "role": "대표이사 사장",
+     "why": "지능형 공장 비전을 내고 AI 조직 확대를 직접 언급함",
+     "source": "기사"
+    },
+    {
+     "name": "김진한",
+     "role": "상무, AI팀장(기사: AI LAB장)",
+     "why": "스탠다임 창업 멤버로 AI 조직을 이끌며 확대 대상 조직의 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "정형남",
+     "role": "부사장, 바이오연구소장",
+     "why": "AI랩이 처음 속했던 바이오연구소의 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "이재선",
+     "role": "상무, IT담당",
+     "why": "디지털 트윈·데이터 인프라와 맞닿은 IT 책임자",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2025-10-13",
+     "outlet": "뉴시스",
+     "title": "\"패러다임을 바꿔야\"…제약바이오업계 'AI 투자' 가속화",
+     "url": "https://www.newsis.com/view/NISX20251013_0003360820",
+     "summary": "바이오연구소 산하 AI랩 신설(2025.3) 등 업계 AI 투자 정리",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "바이오연구소 산하 AI랩(AI Lab)",
+     "related": [
+      "정형남",
+      "김진한"
+     ],
+     "confirm": 1,
+     "single_source_note": "업계 동향 기사 안의 한 단락",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-01-13",
+     "outlet": "헤럴드경제",
+     "title": "존 림 삼성바이오로직스 대표 \"AI·디지털 트윈으로 '지능형 바이오 공장' 전환…초격차 1위 굳힌다\" [JP모건 헬스케어 콘퍼런스]",
+     "url": "https://www.heraldk.com/article/2026011316300005556",
+     "summary": "존 림: 2026년 디지털 원년, AI·디지털트윈 지능형 공장 전환",
+     "category": "발언",
+     "people": [
+      "존림"
+     ],
+     "people_roles": {
+      "존림": "대표이사"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "존림",
+      "이재선"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "김진한",
+      "이재선"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "삼성에피스홀딩스",
+   "interest_summary": "지주사 출범(2025년 11월) 뒤 삼성바이오에피스는 바이오시밀러 다음 단계로 신약을 키우고 있으며, AI는 그 수단이다. 2026년 5월 삼성서울병원과 임상 데이터·AI를 결합해 신약 타깃을 발굴하는 협약(2030년까지)을 맺었고, 7월에는 AI 항체 설계 기업 프로티나와 라이선스 옵션 계약(최소 418억원 보도)을 맺어 2027년 말까지 항체 후보 10종 발굴을 노린다. 신규 자회사 에피스넥스랩도 AI 활용 신약 후보 개발 계획이 언급됐다.",
+   "themes": [
+    "AI 신약 타깃 발굴(삼성서울병원)",
+    "AI 항체 설계(프로티나)",
+    "신약 파이프라인 확대",
+    "에피스넥스랩 플랫폼"
+   ],
+   "talking_points": [
+    "삼성서울병원 협약에서 데이터 거버넌스와 AI 분석 역량은 회사 안(바이오에피스)에 두는가, 밖에 맡기는가?",
+    "프로티나와 함께하는 항체 후보 10종(2027년 말) 가운데 ADC·비만 같은 중점 적응증과 겹치는 것은 무엇인가?",
+    "에피스넥스랩의 AI 활용 범위(펩타이드 플랫폼)와 별도 AI 조직 신설 계획은?"
+   ],
+   "key_people": [
+    {
+     "name": "김경아",
+     "role": "대표이사 사장(삼성에피스홀딩스·삼성바이오에피스)",
+     "why": "삼성서울병원 협약식에 참석했고 신약 확장 전략을 이끎",
+     "source": "기사"
+    },
+    {
+     "name": "홍성원",
+     "role": "에피스넥스랩 초대 대표(기사)",
+     "why": "AI 활용 신약 플랫폼 자회사 책임자",
+     "source": "기사"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-03-20",
+     "outlet": "한국경제",
+     "title": "삼성에피스홀딩스, 제1기 정기주주총회 개최",
+     "url": "https://www.hankyung.com/amp/202603204502P",
+     "summary": "첫 주총: 신약 확장, AI 활용 신약 후보 개발 추진 언급",
+     "category": "발언",
+     "people": [
+      "김경아"
+     ],
+     "people_roles": {
+      "김경아": "대표이사 사장"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "김경아"
+     ],
+     "confirm": 3,
+     "single_source_note": "AI 언급은 주총 관련 보도 요약에서 확인. 원문 표현은 확인하지 못함",
+     "grade": "1차"
+    },
+    {
+     "date": "2026-05-31",
+     "outlet": "헤럴드경제",
+     "title": "삼성바이오에피스-삼성서울병원, 차세대 바이오 헬스케어 공동 연구 협약 체결",
+     "url": "https://www.heraldk.com/article/2026053115574369156",
+     "summary": "삼성서울병원 임상데이터+AI로 신약 타깃 발굴, 2030년까지",
+     "category": "파트너십",
+     "people": [
+      "김경아",
+      "박승우"
+     ],
+     "people_roles": {
+      "김경아": "삼성바이오에피스 사장",
+      "박승우": "삼성서울병원장"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "김경아"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-07-09",
+     "outlet": "데일리팜",
+     "title": "삼성에피스-프로티나, 항체 신약 공동 개발…계약 규모 최소 418억",
+     "url": "https://www.dailypharm.com/user/news/340312",
+     "summary": "AI 항체설계 프로티나와 옵션계약, 2027년까지 후보 발굴",
+     "category": "파트너십",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-08-11",
+     "outlet": "다음",
+     "title": "신약개발 속도 내는 삼성바이오에피스…'협업·해외거점·AI·펀드' 총동원",
+     "url": "https://v.daum.net/v/20260811050007155",
+     "summary": "협업·해외거점·AI·펀드로 신약개발 가속 종합",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "종합 분석 기사",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "김경아"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "제일기획",
+   "interest_summary": "제일기획은 '에이전시에서 에이전틱으로(From Agency To Agentic)'를 내세워 광고대행사를 마케팅 테크 솔루션 파트너로 바꾸려 한다. 2026년 5월 테크 쇼케이스에서 AI 에이전트 8개를 단 광고·콘텐츠 제작 플랫폼 '커넥트 AI'와 AI 마케팅 솔루션 17종(AI 라이브커머스 쇼호스트 등)을 공개했다. 50년간 쌓은 마케팅 데이터를 무기로 삼는다. 증권가는 AI가 광고 제작을 대체할 위험도 함께 지적한다.",
+   "themes": [
+    "커넥트 AI(에이전트 8종) 사내 플랫폼",
+    "에이전틱 마케팅 솔루션 17종",
+    "AI 라이브커머스",
+    "데이터 기반 마케팅 테크 파트너"
+   ],
+   "talking_points": [
+    "커넥트 AI의 에이전트 8종 가운데 실제 사용량이 가장 많은 업무는 무엇이고, 제작 리드타임이나 비용은 얼마나 줄었는가?",
+    "커넥트 AI를 내부 도구에서 광고주용 상품으로 바꿀 계획이 있는가?",
+    "AI가 제작을 대체해 수익 모델이 흔들린다는 우려에 대응하는 과금 구조(성과형·솔루션형)는 무엇인가?"
+   ],
+   "key_people": [
+    {
+     "name": "김종현",
+     "role": "대표이사 사장",
+     "why": "'마케팅 테크 솔루션 파트너'로의 진화를 직접 내세움",
+     "source": "기사"
+    },
+    {
+     "name": "서지영",
+     "role": "부사장, 디지털 X 부문장",
+     "why": "디지털 부문 총괄. AI 솔루션 사업화의 상대방",
+     "source": "공시"
+    },
+    {
+     "name": "홍상우",
+     "role": "상무, 디지털테크본부장",
+     "why": "테크 쇼케이스·AI 플랫폼과 관련 있는 테크 조직(추정)",
+     "source": "공시"
+    },
+    {
+     "name": "김규철",
+     "role": "상무, 디지털플랫폼본부장",
+     "why": "디지털 플랫폼 책임자",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-05-26",
+     "outlet": "헤럴드경제",
+     "title": "제일기획, AI 기반 새 광고 제작 플랫폼 '커넥트 AI' 공개",
+     "url": "https://www.heraldk.com/article/2026052617193367304",
+     "summary": "AI 에이전트 8종 갖춘 광고·콘텐츠 제작 플랫폼 커넥트AI 공개",
+     "category": "도입",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "커넥트 AI(사내 AI 플랫폼)",
+     "related": [
+      "서지영",
+      "홍상우"
+     ],
+     "confirm": 5,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-05-27",
+     "outlet": "아시아경제",
+     "title": "제일기획, 테크 쇼케이스",
+     "url": "https://view.asiae.co.kr/article/2026052710314756253",
+     "summary": "'에이전시에서 에이전틱으로' 쇼케이스, 김종현 테크파트너 발언",
+     "category": "발언",
+     "people": [
+      "김종현"
+     ],
+     "people_roles": {
+      "김종현": "제일기획 사장"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "김종현"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-05-27",
+     "outlet": "머니투데이",
+     "title": "\"제일기획 기술력 이 정도였어?\"…50년 쌓은 데이터로 맞춤형 솔루션 제공",
+     "url": "https://www.mt.co.kr/article/2026052714513990301",
+     "summary": "AI·데이터 마케팅 솔루션 17종, AI 라이브커머스 등 소개",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "홍상우",
+      "김규철"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "서지영"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "에스원",
+   "interest_summary": "에스원은 인력 중심 보안을 AI·로봇 기반 기술 보안으로 바꾸는 중이다. 2026년 보안 트렌드로 'Detect에서 Predict로'(AI 예측 보안)를 내놓았고, SOP 안내·대화형 영상검색·CCTV 제어를 하는 AI 에이전트 관제를 시연했다. 2025년 11월 정해린 대표가 취임한 뒤 미래혁신센터를 새로 만들어 AI 중심 체질 개선을 추진한다. 2026년 3월 기업가치 제고 계획에는 AI 영상보안 공략이 담겼고, 무인매장 AI 보안 계약은 2024년보다 33% 늘었다는 보도가 있다.",
+   "themes": [
+    "AI 예측 보안(Detect→Predict)",
+    "AI 에이전트 관제(대화형 영상검색)",
+    "미래혁신센터 신설",
+    "무인매장·AI CCTV(SVMS) 사업"
+   ],
+   "talking_points": [
+    "미래혁신센터(사광호 부사장)의 과제 우선순위는 무엇인가? 관제 AI 고도화인가, 신사업(로봇)인가?",
+    "AI 에이전트 관제 도입 뒤 관제사 1인당 처리 사이트 수나 오탐률은 어떻게 바뀌었는가?",
+    "AI 예측 보안을 상품화할 때 B2C(현관 CCTV)와 B2B(산업현장 SVMS) 중 어디를 먼저 키우는가?"
+   ],
+   "key_people": [
+    {
+     "name": "정해린",
+     "role": "대표이사 사장",
+     "why": "취임 뒤 미래혁신센터를 만들고 AI 체질 개선을 주도함",
+     "source": "기사"
+    },
+    {
+     "name": "사광호",
+     "role": "부사장, 미래혁신센터장",
+     "why": "AI 전환 전담 조직의 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "서정배",
+     "role": "상품기획그룹장(기사)",
+     "why": "AI 에이전트 관제를 시연한 실무 책임자",
+     "source": "기사"
+    },
+    {
+     "name": "강항식",
+     "role": "부사장, 전략본부장",
+     "why": "기업가치 제고 계획(AI 영상보안)의 전략 책임자",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2025-11",
+     "outlet": "보안뉴스",
+     "title": "에스원 신임 대표에 정해린 삼성물산 사장",
+     "url": "https://m.boannews.com/html/detail.html?idx=140483",
+     "summary": "정해린 삼성물산 사장, 에스원 신임 대표로 이동",
+     "category": "인사",
+     "people": [
+      "정해린"
+     ],
+     "people_roles": {
+      "정해린": "삼성물산 사장→에스원 대표"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "정해린"
+     ],
+     "confirm": 2,
+     "single_source_note": "일(日) 단위 날짜는 검색 결과에서 확인하지 못함(2025년 말 삼성 사장단 인사)",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-01-11",
+     "outlet": "헤럴드경제",
+     "title": "\"AI가 미리 막는다\"…에스원이 내다본 2026년 보안의 표준",
+     "url": "https://www.heraldk.com/article/2026011114300004211",
+     "summary": "2026 보안트렌드 'Detect→Predict' AI 예측 보안 제시",
+     "category": "발언",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "2026 보안 트렌드 발표",
+     "related": [],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-02-12",
+     "outlet": "트윅",
+     "title": "AI가 위험 영상 '콕'… 사람은 긴급 대응에 집중",
+     "url": "https://www.twig24.com/news/2026/02/12/20260212032003",
+     "summary": "AI 에이전트 관제 시연: 자연어로 CCTV 영상 검색",
+     "category": "도입",
+     "people": [
+      "서정배"
+     ],
+     "people_roles": {
+      "서정배": "에스원 상품기획그룹장"
+     },
+     "units": [],
+     "unit_hint": "관제센터 AI 에이전트",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "사광호"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "호텔신라",
+   "interest_summary": "공개 기사 적음. 2025년 10월부터 2026년 10월 사이 호텔신라나 신라면세점의 AI·AX 도입을 다룬 기사는 찾지 못했다. 이 기간 보도는 인천공항 면세점 철수, '재도약의 해' 선언(이부진 사장, 2026년 3월 주총), 신라모노그램 확장 같은 수익성·사업구조 이야기다. 그 전에는 2023년 9월 네이버와 생성형 AI·클라우드 협약을 맺은 적이 있다. 경쟁사인 롯데·신세계면세점은 2026년 AI 상품검색과 챗GPT 기반 쇼핑을 도입했고, 그룹은 전 관계사에 AI 전담조직을 신설하라는 방침을 냈다.",
+   "themes": [
+    "공개 기사 적음",
+    "그룹 AI 전담조직 방침",
+    "경쟁 면세점 AI 쇼핑 도입(비교)"
+   ],
+   "talking_points": [
+    "2023년 네이버 생성형 AI 협약은 이후 어떤 서비스로 이어졌는가?",
+    "롯데·신세계면세점이 AI 쇼핑을 도입했는데, 신라면세점의 대응 계획은?",
+    "그룹 방침에 따른 AI 전담조직은 어디에(경영전략팀 등) 두는가?"
+   ],
+   "key_people": [
+    {
+     "name": "이부진",
+     "role": "대표이사 사장",
+     "why": "2026년 '재도약의 해'를 선언함. AI 관련 발언은 확인 안 됨",
+     "source": "공시"
+    },
+    {
+     "name": "김지훈",
+     "role": "상무, 경영전략팀장",
+     "why": "AX 전략 수립을 맡을 가능성이 있는 전략 조직(기사 근거 없음)",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "김지훈"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "삼성메디슨",
+   "interest_summary": "AI는 제품의 핵심 차별화 요소다. 2026년 2월 WHX(두바이)에서 AI 기능을 넣은 초음파 3종을, 3월 KIMES 2026에서 팬리스 초음파 V4를 공개했다. 심장을 자동 인식하는 하트어시스트, 신경을 찾는 너브트랙 같은 AI 진단 보조 기능으로 사용자 숙련도에 따른 편차를 줄이는 데 집중한다. 2024년 인수한 프랑스 AI 기업 소니오(산부인과 AI)와의 통합도 이어지고 있다. 공시에는 AI Next팀, AI Data Innovation Lab, AI&혁신팀 등 AI 조직이 여럿 있지만, 이 조직들을 다룬 기사는 찾지 못했다.",
+   "themes": [
+    "AI 진단 보조(하트어시스트·너브트랙)",
+    "초음파 원 플랫폼·신제품",
+    "소니오 산부인과 AI 통합",
+    "전담 AI 조직(공시)"
+   ],
+   "talking_points": [
+    "AI Next팀, AI Data Innovation Lab, AI&혁신팀은 각각 무엇을 맡는가? 제품 AI, 데이터, 사내 AX로 나뉘는가?",
+    "소니오의 AI(디텍트)를 삼성 장비 전 라인업에 넣는 일정과 미국 매출 기여는?",
+    "AI 기능의 규제 인허가(FDA 등)는 회사 안의 어느 조직이 맡는가?"
+   ],
+   "key_people": [
+    {
+     "name": "유규태",
+     "role": "대표이사(삼성전자 의료기기사업부장 겸)",
+     "why": "AI·저선량 기술로 진단 효율을 높이겠다는 방향을 제시함(발언 시점 확인 필요)",
+     "source": "공시"
+    },
+    {
+     "name": "김정민",
+     "role": "상무, AI Next팀장",
+     "why": "차세대 AI 기능 책임자로 보임",
+     "source": "공시"
+    },
+    {
+     "name": "선우준",
+     "role": "상무, AI Data Innovation Lab장",
+     "why": "의료영상 데이터·AI 학습 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "변상윤",
+     "role": "상무, AI&혁신팀장",
+     "why": "AI 기반 혁신(사내 AX 포함 추정) 책임자",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-03-16",
+     "outlet": "한국경제",
+     "title": "삼성메디슨, 차세대 초음파 솔루션 라인업 줄줄이 공개한다",
+     "url": "https://www.hankyung.com/article/202603163197i",
+     "summary": "KIMES서 팬리스 V4·하트어시스트 등 AI 진단보조 공개",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "초음파 AI 진단 보조 기능",
+     "related": [
+      "김정민",
+      "선우준"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-03",
+     "outlet": "데일리팜",
+     "title": "삼성, KIMES서 초음파 '원 플랫폼' 공개",
+     "url": "https://dailypharm.com/user/news/336526",
+     "summary": "KIMES 2026 초음파 원 플랫폼·AI 기능 시연",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "김정민"
+     ],
+     "confirm": 3,
+     "single_source_note": "일(日) 단위 날짜는 확인 못 함(KIMES 3/19~22)",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "변상윤"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "멀티캠퍼스",
+   "interest_summary": "멀티캠퍼스는 기업 AX 교육을 '배우는 AI'에서 '실행하는 AI'로 옮기려 한다. 2026년 초 CTO 고민정 상무를 센터장으로 AX러닝혁신센터를 새로 만들었고, '진단→교육→실습→적용' 4단계로 고객사 AX 실행을 돕겠다는 비전('Powered by AI, Driven by Multicampus')을 내놓았다. 2026년 5월에는 고용노동부 K-디지털 트레이닝 'AI 캠퍼스' 운영기관으로 뽑혀 AI 인력을 대규모로 양성한다. 삼성 전 관계사 임원 AI 교육처럼 그룹 차원의 AX 교육 수요도 사업 배경이다.",
+   "themes": [
+    "AX러닝혁신센터 신설",
+    "실행형 기업 AX 교육(4단계)",
+    "정부 AI 캠퍼스(KDT) 운영",
+    "그룹 AX 교육 수요"
+   ],
+   "talking_points": [
+    "4단계(진단·교육·실습·적용)의 '적용' 단계에서 고객사 성과를 어떻게 측정하는가?",
+    "삼성 관계사 임원 2,300명 AI 교육에서 멀티캠퍼스는 어떤 역할을 했는가? (기사 확인 안 됨)",
+    "사내 교육 콘텐츠 제작이나 튜터링에 생성형 AI를 얼마나 쓰고 있는가?"
+   ],
+   "key_people": [
+    {
+     "name": "고민정",
+     "role": "상무, AX러닝혁신센터장(CTO)",
+     "why": "신설 AX 조직의 책임자로 기업 AX 교육 방향을 직접 밝힘",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-05-06",
+     "outlet": "한국경제",
+     "title": "멀티캠퍼스, 고용노동부 'AI 캠퍼스' 운영기관 선정…",
+     "url": "https://www.hankyung.com/amp/202605067923P",
+     "summary": "고용부 KDT AI 캠퍼스 운영기관 선정, AI 직군 7개 과정",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-22",
+     "outlet": "전자신문",
+     "title": "“배우는 AI에서 실행하는 AI로”…멀티캠퍼스, 기업 AX 교육 진화 이끈다",
+     "url": "https://www.etnews.com/20260622000408",
+     "summary": "AX러닝혁신센터 신설, 고민정 센터장 4단계 AX 교육",
+     "category": "조직",
+     "people": [
+      "고민정"
+     ],
+     "people_roles": {
+      "고민정": "AX러닝혁신센터장(CTO) 상무"
+     },
+     "units": [
+      "AX러닝혁신센터"
+     ],
+     "unit_hint": "",
+     "related": [
+      "고민정"
+     ],
+     "confirm": 1,
+     "single_source_note": "센터 신설을 다룬 다른 매체 결과는 확인 못 함",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [
+      "고민정"
+     ],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  },
+  {
+   "company": "삼성웰스토리",
+   "interest_summary": "공개 기사 적음. 기사로 확인된 AI 관련 활동은 급식 인력난 대응용 푸드테크 '스마트 키친'뿐이다. 2026년 4월 B2B 식음박람회 '2026 푸드페스타'에서 AI·로봇 기반 스마트 키친과 자동화 장비 30종(웍 조리 로봇 등)을 선보였다. 식자재 입고·전처리·조리·배식·세척 전 과정에 적용 중이지만 아직 초기 단계라고 설명된다. AI 조직, 사내 AI 도입, 경영진의 AI 발언을 다룬 기사는 찾지 못했다.",
+   "themes": [
+    "AI·로봇 스마트 키친",
+    "급식 인력난 대응 자동화",
+    "푸드테크 오픈이노베이션"
+   ],
+   "talking_points": [
+    "스마트 키친을 구내식당에서 시험한 뒤 그룹 계열사 사업장으로 넓히는 일정과 인력 절감 효과는?",
+    "식수 예측이나 식단 추천 같은 데이터·AI 활용 계획이 있는가? (기사 확인 안 됨)",
+    "그룹 AI 전담조직 신설 방침에 따른 웰스토리의 조직 구성은?"
+   ],
+   "key_people": [],
+   "articles": [
+    {
+     "date": "2026-04-07",
+     "outlet": "헤럴드경제",
+     "title": "삼성웰스토리, 식음박람회 ‘푸드페스타’…미래동력 찾는다",
+     "url": "https://www.heraldk.com/article/2026040715242945357",
+     "summary": "푸드페스타서 AI·로봇 스마트키친, 자동화 장비 30종 전시",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "스마트 키친 솔루션(푸드테크)",
+     "related": [],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-04",
+     "outlet": "더팩트",
+     "title": "웍 돌리는 로봇·콩으로 만든 진미채… '2026 푸드페스타' 가보니 [TF현장]",
+     "url": "https://news.tf.co.kr/read/economy/2311529.htm",
+     "summary": "푸드페스타 현장 르포: 조리로봇 시연",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 4,
+     "single_source_note": "일(日) 단위 날짜는 확인 못 함",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환, 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "[그룹 공통] 전 관계사 AI 전담조직 신설·외부 생성형AI 도입·임원 AI교육",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [],
+     "confirm": 7,
+     "single_source_note": "",
+     "grade": "1차"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1090 @@
+[
+ {
+  "date": "2026-10-12",
+  "outlet": "데일리안",
+  "title": "삼성·SK·LG 연말 인사 초읽기…누가 남고 누가 떠나나",
+  "url": "https://www.dailian.co.kr/news/view/1700361/",
+  "summary": "11월 중하순 삼성 인사 전망, 전영현·노태문 겸직 해소 주목",
+  "company": "삼성전자",
+  "units": [
+   "DS부문",
+   "DX부문",
+   "메모리",
+   "Mobile eXperience"
+  ],
+  "unit_hint": "",
+  "people": [
+   "전영현",
+   "노태문"
+  ],
+  "category": "인사",
+  "confirm": 2,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DS부문",
+   "DX부문"
+  ],
+  "people_roles": {},
+  "kind": "전망",
+  "event": "https://www.dailian.co.kr/news/view/1700361/"
+ },
+ {
+  "date": "2026-09-30",
+  "outlet": "딜사이트",
+  "title": "MX 부사장 43명 중 20명 개발실 포진…AI·SW 인재 확대, 추가 사장 승진 가능성",
+  "url": "https://dealsite.co.kr/articles/169618",
+  "summary": "MX 개발실에 AI·SW 출신 부사장 집중, 갤럭시 AI 강화",
+  "company": "삼성전자",
+  "units": [
+   "Mobile eXperience›개발실"
+  ],
+  "unit_hint": "",
+  "people": [
+   "이윤수",
+   "김기환",
+   "최재인",
+   "노태문",
+   "최원준"
+  ],
+  "category": "인사",
+  "confirm": 1,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "Mobile eXperience›개발실"
+  ],
+  "people_roles": {
+   "이윤수": "MX 개발실 담당임원 부사장(삼성리서치 출신)",
+   "김기환": "MX 개발실 부사장",
+   "최재인": "MX 개발실 부사장(애플 출신)",
+   "노태문": "사장(개발실장 출신)",
+   "최원준": "사장(개발실장 출신)"
+  },
+  "single_source_note": "딜사이트 단독 분석 기사",
+  "kind": "전망",
+  "event": "https://dealsite.co.kr/articles/169618"
+ },
+ {
+  "date": "2026-09-19",
+  "outlet": "SammyFans",
+  "title": "Samsung appoints Stanford AI expert to lead North America",
+  "url": "https://www.sammyfans.com/2026/09/19/samsung-appoints-stanford-ai-expert-to-lead-north-america/",
+  "summary": "스탠퍼드 후안 카를로스 니블레스, 북미 AI센터장 선임",
+  "company": "삼성전자",
+  "units": [
+   "SRA"
+  ],
+  "unit_hint": "Samsung Research America 북미 AI센터(North America AI Center)",
+  "people": [
+   "Juan Carlos Niebles"
+  ],
+  "category": "인사",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "기타",
+  "primary": [
+   "SRA"
+  ],
+  "people_roles": {
+   "Juan Carlos Niebles": "North America AI Center head (EVP)"
+  },
+  "kind": "확정",
+  "event": "https://www.sammyfans.com/2026/09/19/samsung-appoints-stanford-ai-expert-to-lead-north-america/"
+ },
+ {
+  "date": "2026-09-18",
+  "outlet": "Korea JoongAng Daily",
+  "title": "Samsung forms team dedicated to developing robots for chip plants",
+  "url": "https://www.koreajoongangdaily.com/business/samsung-forms-team-dedicated-to-developing-robots-for-chip-plants/12880926",
+  "summary": "DS 글로벌제조&인프라총괄 산하 AX/PI팀 신설, 팹 로봇 개발",
+  "company": "삼성전자",
+  "units": [
+   "DS부문",
+   "글로벌 제조&인프라총괄"
+  ],
+  "unit_hint": "글로벌 제조&인프라총괄 산하 AX/PI팀(9월 1일 신설)",
+  "people": [],
+  "category": "조직신설",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "글로벌 제조&인프라총괄"
+  ],
+  "people_roles": {},
+  "new_unit": {
+   "name": "AX/PI팀",
+   "parent": "글로벌 제조&인프라총괄",
+   "date": "2026-09-01"
+  },
+  "event": "https://www.koreajoongangdaily.com/business/samsung-forms-team-dedicated-to-developing-robots-for-chip-plants/12880926"
+ },
+ {
+  "date": "2026-09-08",
+  "outlet": "뉴시스",
+  "title": "이준희 삼성SDS 대표 \"AI는 업무를 바꾸지만, AX는 비즈니스를 바꾼다\"",
+  "url": "https://www.newsis.com/view/NISX20260908_0003780077",
+  "summary": "이준희 대표, 리얼 서밋서 기업 AX 성과 전략 제시",
+  "company": "삼성에스디에스",
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "이준희"
+  ],
+  "category": "사업",
+  "confirm": 6,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [],
+  "people_roles": {
+   "이준희": "삼성SDS 대표"
+  },
+  "event": "https://www.newsis.com/view/NISX20260908_0003780077"
+ },
+ {
+  "date": "2026-07-21",
+  "outlet": "디지털데일리",
+  "title": "삼성전자, 대표 직속 ‘RX사업추진실’ 신설…로봇사업 본격화",
+  "url": "https://www.ddaily.co.kr/page/view/2026072109340228366",
+  "summary": "대표이사 직속 RX사업추진실 신설, 로봇 기술·인력 통합",
+  "company": "삼성전자",
+  "units": [
+   "DX부문",
+   "Samsung Research›Robot센터",
+   "생산기술연구소"
+  ],
+  "unit_hint": "RX사업추진실(신설, 대표이사 직속; 한경은 DX부문 산하로 보도); 미래로봇추진단 산하 편입",
+  "people": [
+   "이동건"
+  ],
+  "category": "조직신설",
+  "confirm": 8,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DX부문"
+  ],
+  "people_roles": {
+   "이동건": "로보틱스전략팀장(부사장)"
+  },
+  "new_unit": {
+   "name": "RX사업추진실",
+   "parent": "",
+   "date": "2026-07-21"
+  },
+  "event": "https://www.ddaily.co.kr/page/view/2026072109340228366"
+ },
+ {
+  "date": "2026-07-21",
+  "outlet": "머니투데이방송(MTN)",
+  "title": "삼성전자, 노태문 대표 직속 로봇사업실 신설…DX 신사업 속도",
+  "url": "https://news.mtn.co.kr/news-detail/2026072116381765880",
+  "summary": "노태문 대표 직속 로봇 조직 신설로 DX 신사업 가속",
+  "company": "삼성전자",
+  "units": [
+   "DX부문"
+  ],
+  "unit_hint": "RX사업추진실(신설)",
+  "people": [
+   "노태문"
+  ],
+  "category": "조직신설",
+  "confirm": 8,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DX부문"
+  ],
+  "people_roles": {
+   "노태문": "대표"
+  },
+  "new_unit": {
+   "name": "RX사업추진실",
+   "parent": "",
+   "date": "2026-07-21"
+  },
+  "event": "https://www.ddaily.co.kr/page/view/2026072109340228366"
+ },
+ {
+  "date": "2026-07-14",
+  "outlet": "머니투데이",
+  "title": "\"보름 걸리던 업무 이틀만에\"..AX·로봇 조직에 힘싣는 삼성, 왜?",
+  "url": "https://www.mt.co.kr/article/2026071414230588223",
+  "summary": "경영지원담당 산하 AX팀, 7월 1일 AX/PI센터로 확대 개편",
+  "company": "삼성전자",
+  "units": [
+   "AX팀"
+  ],
+  "unit_hint": "경영지원담당 산하 AX/PI센터(AX팀 격상, 7월 1일)",
+  "people": [],
+  "category": "조직신설",
+  "confirm": 2,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "AX팀"
+  ],
+  "people_roles": {},
+  "new_unit": {
+   "name": "AX/PI센터",
+   "parent": "경영지원담당",
+   "date": "2026-07-01"
+  },
+  "event": "https://www.mt.co.kr/article/2026071414230588223"
+ },
+ {
+  "units": [],
+  "unit_hint": "AX·PI센터(기존 AI센터 재편, 경영지원실 산하)",
+  "people": [],
+  "people_roles": {},
+  "primary": [],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2026-07-10",
+  "outlet": "비즈워치",
+  "title": "[단독]삼성 금융계열사도 AI 드라이브…생명·화재·카드 AI 조직개편",
+  "url": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023",
+  "summary": "기존 AI센터를 AX·PI센터로 재편, 경영지원실 산하 편제",
+  "company": "삼성생명",
+  "category": "조직신설",
+  "confirm": 1,
+  "grade": "주요",
+  "new_unit": {
+   "name": "AX·PI센터",
+   "parent": "경영지원실",
+   "date": "2026-07-10"
+  },
+  "single_source_note": "비즈워치 단독 보도",
+  "event": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023"
+ },
+ {
+  "units": [],
+  "unit_hint": "AX·PI센터(기존 고객DX혁신실 재편, 경영지원실 산하)",
+  "people": [],
+  "people_roles": {},
+  "primary": [],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2026-07-10",
+  "outlet": "비즈워치",
+  "title": "[단독]삼성 금융계열사도 AI 드라이브…생명·화재·카드 AI 조직개편",
+  "url": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023",
+  "summary": "고객DX혁신실을 AX·PI센터로 재편, 경영지원실 산하 편제",
+  "company": "삼성화재해상보험",
+  "category": "조직신설",
+  "confirm": 1,
+  "grade": "주요",
+  "new_unit": {
+   "name": "AX·PI센터",
+   "parent": "경영지원실",
+   "date": "2026-07-10"
+  },
+  "single_source_note": "비즈워치 단독 보도",
+  "event": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023"
+ },
+ {
+  "units": [],
+  "unit_hint": "AI 중심 조직 개편(세부 명칭 미확인)",
+  "people": [],
+  "people_roles": {},
+  "primary": [],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2026-07-10",
+  "outlet": "비즈워치",
+  "title": "[단독]삼성 금융계열사도 AI 드라이브…생명·화재·카드 AI 조직개편",
+  "url": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023",
+  "summary": "삼성카드도 AI 중심 조직 강화 개편, 금융계열사 AX 확산",
+  "company": "삼성카드",
+  "category": "조직신설",
+  "confirm": 2,
+  "grade": "주요",
+  "event": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023"
+ },
+ {
+  "date": "2026-06-11",
+  "outlet": "디지털데일리",
+  "title": "\"대표 AI 3종 모두 쓴다\"…삼성전자, 12일부터 사내 서비스 오픈",
+  "url": "https://www.ddaily.co.kr/page/view/2026061109275479555",
+  "summary": "DX부문, 챗GPT·제미나이·클로드 사내 업무에 공식 도입",
+  "company": "삼성전자",
+  "units": [
+   "DX부문"
+  ],
+  "unit_hint": "",
+  "people": [],
+  "category": "AI과제",
+  "confirm": 4,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DX부문"
+  ],
+  "people_roles": {},
+  "event": "https://www.ddaily.co.kr/page/view/2026061109275479555"
+ },
+ {
+  "date": "2026-06-09",
+  "outlet": "뉴시스",
+  "title": "삼성 모든 관계사 사장단·임원들, 'AI 집중교육' 받는다…\"AI 전담조직도 신설\"",
+  "url": "https://www.newsis.com/view/NISX20260609_0003661817",
+  "summary": "전 관계사 AI 전담조직 신설, 사장단 AX 부트캠프 실시",
+  "company": "삼성그룹",
+  "units": [],
+  "unit_hint": "전 관계사 AI 전담조직(신설)",
+  "people": [],
+  "category": "조직신설",
+  "confirm": 5,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [],
+  "people_roles": {},
+  "event": "https://www.newsis.com/view/NISX20260609_0003661817"
+ },
+ {
+  "units": [
+   "AX센터"
+  ],
+  "unit_hint": "AX센터(2025년 말 설립)",
+  "people": [
+   "김종필",
+   "이태희",
+   "신계영"
+  ],
+  "people_roles": {
+   "김종필": "AX센터장(부사장)",
+   "이태희": "AI개발팀장(부사장)",
+   "신계영": "AI사업팀장"
+  },
+  "primary": [
+   "AX센터"
+  ],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2026-05-29",
+  "outlet": "아시아경제",
+  "title": "삼성SDS, AX 서밋 개최…AI 네이티브 전환 전략 공개",
+  "url": "https://view.asiae.co.kr/article/2026052915500331288",
+  "summary": "김종필 AX센터장, AI 에이전트 기반 업무 혁신 오퍼링 발표",
+  "company": "삼성에스디에스",
+  "category": "AI과제",
+  "confirm": 4,
+  "grade": "주요",
+  "event": "https://view.asiae.co.kr/article/2026052915500331288"
+ },
+ {
+  "date": "2026-04-12",
+  "outlet": "파이낸셜뉴스",
+  "title": "삼성전자, 전사 AI 전환에 박차…DX부문 '임원 전원' 특별 교육",
+  "url": "https://www.fnnews.com/news/202604121315522577",
+  "summary": "DX부문 전 임원 AI 교육, AI전략팀·사업부 AX팀 체제 가동",
+  "company": "삼성전자",
+  "units": [
+   "DX부문",
+   "AX팀"
+  ],
+  "unit_hint": "AI전략팀(전사 AX 총괄)",
+  "people": [],
+  "category": "AI과제",
+  "confirm": 2,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DX부문"
+  ],
+  "people_roles": {},
+  "event": "https://www.fnnews.com/news/202604121315522577"
+ },
+ {
+  "date": "2026-03-01",
+  "outlet": "한국경제",
+  "title": "삼성전자 “2030년까지 AI 자율공장 전환”",
+  "url": "https://www.hankyung.com/article/202603012398i",
+  "summary": "2030년까지 국내외 전 공장 AI 자율공장 전환 추진",
+  "company": "삼성전자",
+  "units": [
+   "글로벌 제조&인프라총괄",
+   "DX부문"
+  ],
+  "unit_hint": "",
+  "people": [],
+  "category": "AI과제",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "글로벌 제조&인프라총괄"
+  ],
+  "people_roles": {},
+  "event": "https://www.hankyung.com/article/202603012398i"
+ },
+ {
+  "date": "2026-02-12",
+  "outlet": "머니투데이",
+  "title": "이재용 회장이 찍은 'AX'…삼성전자, AI로 조직 체질 바꾼다",
+  "url": "https://www.mt.co.kr/industry/2026/02/12/2026021215152082641",
+  "summary": "이재용 회장 AX 강조, AX 조직 신설·리스크 점검 진행",
+  "company": "삼성전자",
+  "units": [
+   "AX팀"
+  ],
+  "unit_hint": "",
+  "people": [
+   "이재용"
+  ],
+  "category": "AI과제",
+  "confirm": 1,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "AX팀"
+  ],
+  "people_roles": {
+   "이재용": "회장"
+  },
+  "single_source_note": "머니투데이 단독 보도",
+  "event": "https://www.mt.co.kr/industry/2026/02/12/2026021215152082641"
+ },
+ {
+  "date": "2026-02-04",
+  "outlet": "한국경제",
+  "title": "[단독] 삼성전자, MX사업부에 삼성리서치·메타 출신 반도체 전문가 전진 배치",
+  "url": "https://www.hankyung.com/article/202602042249i",
+  "summary": "MX사업부에 삼성리서치·메타 출신 반도체 전문가 배치",
+  "company": "삼성전자",
+  "units": [
+   "Mobile eXperience",
+   "Samsung Research"
+  ],
+  "unit_hint": "",
+  "people": [
+   "하헌재"
+  ],
+  "category": "인사",
+  "confirm": 2,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "Mobile eXperience",
+   "Samsung Research"
+  ],
+  "people_roles": {
+   "하헌재": "MX사업부 AP솔루션개발그룹장(상무)"
+  },
+  "kind": "확정",
+  "event": "https://www.hankyung.com/article/202602042249i"
+ },
+ {
+  "date": "2026-01-13",
+  "outlet": "헤럴드경제",
+  "title": "존 림 삼성바이오로직스 대표 “AI·디지털 트윈으로 ‘지능형 바이오 공장’ 전환…초격차 1위 굳힌다”",
+  "url": "https://www.heraldk.com/article/2026011316300005556",
+  "summary": "AI·디지털 트윈 기반 지능형 바이오 공장 전환 선언",
+  "company": "삼성바이오로직스",
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "존 림"
+  ],
+  "category": "AI과제",
+  "confirm": 1,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [],
+  "people_roles": {
+   "존 림": "삼성바이오로직스 대표"
+  },
+  "single_source_note": "헤럴드경제 단독(타 매체는 JPM 발표 일반만 보도)",
+  "event": "https://www.heraldk.com/article/2026011316300005556"
+ },
+ {
+  "date": "2025-11-28",
+  "outlet": "디지털데일리",
+  "title": "삼성, HBM TF '메모리 본대' 편입 이유는?…HBM4·커스텀 승부수",
+  "url": "https://www.ddaily.co.kr/page/view/2025112814584407552",
+  "summary": "HBM개발팀 해체 후 D램개발실 산하로 통합 재편",
+  "company": "삼성전자",
+  "units": [
+   "메모리›DRAM개발실"
+  ],
+  "unit_hint": "HBM개발팀 → D램개발실 설계팀 통합",
+  "people": [
+   "손영수"
+  ],
+  "category": "조직신설",
+  "confirm": 2,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "메모리›DRAM개발실"
+  ],
+  "people_roles": {
+   "손영수": "설계팀장(부사장, 전 HBM개발팀장)"
+  },
+  "event": "https://www.ddaily.co.kr/page/view/2025112814584407552"
+ },
+ {
+  "date": "2025-11-27",
+  "outlet": "파이낸셜뉴스",
+  "title": "[단독] 삼성전자, SAIT '센터→랩' 재전환… AI 조직도 늘린다",
+  "url": "https://www.fnnews.com/news/202511271039114796",
+  "summary": "CTO 산하 AI전략팀·사업부별 AX팀 신설, SAIT AI랩 부활",
+  "company": "삼성전자",
+  "units": [
+   "SAIT",
+   "DX부문",
+   "AX팀",
+   "Mobile eXperience",
+   "생활가전",
+   "영상디스플레이"
+  ],
+  "unit_hint": "DX부문 CTO 산하 AI전략팀(신설); 사업부 개발팀 AI전략그룹",
+  "people": [
+   "박홍근"
+  ],
+  "category": "조직신설",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "SAIT",
+   "DX부문"
+  ],
+  "people_roles": {
+   "박홍근": "SAIT 원장"
+  },
+  "new_unit": {
+   "name": "AI전략팀",
+   "parent": "DX부문 CTO",
+   "date": "2025-11-27"
+  },
+  "event": "https://www.fnnews.com/news/202511271039114796"
+ },
+ {
+  "date": "2025-11-27",
+  "outlet": "뉴스토마토",
+  "title": "삼성중공업 임원 인사…“성과주의 원칙”",
+  "url": "https://newstomato.com/ReadNews.aspx?no=1283080",
+  "summary": "부사장 4명 등 12명 승진, AI·스마트 조선소 인재 발탁",
+  "company": "삼성중공업",
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "김현조",
+   "윤재균",
+   "이동현",
+   "이성락"
+  ],
+  "category": "인사",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [],
+  "people_roles": {
+   "김현조": "부사장 승진",
+   "윤재균": "부사장 승진",
+   "이동현": "부사장 승진",
+   "이성락": "부사장 승진"
+  },
+  "kind": "확정",
+  "event": "https://newstomato.com/ReadNews.aspx?no=1283080"
+ },
+ {
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "김종민",
+   "양기영",
+   "이기열",
+   "조원식"
+  ],
+  "people_roles": {
+   "김종민": "부사장 승진",
+   "양기영": "부사장 승진",
+   "이기열": "부사장 승진",
+   "조원식": "부사장 승진"
+  },
+  "primary": [],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2025-11-27",
+  "outlet": "이데일리",
+  "title": "삼성E&A 정기 임원인사 단행…부사장 4명·상무 6명 승진",
+  "url": "https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=03663766642369984",
+  "summary": "부사장 4명·상무 6명 승진, 차세대 인재 발탁",
+  "company": "삼성E&A",
+  "category": "인사",
+  "confirm": 6,
+  "grade": "주요",
+  "kind": "확정",
+  "event": "https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=03663766642369984"
+ },
+ {
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "정유석",
+   "이슬기",
+   "이준호",
+   "최지원",
+   "엘다드 헤이윌"
+  ],
+  "people_roles": {
+   "정유석": "부사장 승진(중동지역 비즈니스)",
+   "이슬기": "상무 승진(크리에이티브)",
+   "이준호": "상무 승진(경영진단)",
+   "최지원": "상무 승진(CIS 지역 광고 총괄)",
+   "엘다드 헤이윌": "상무 승진"
+  },
+  "primary": [],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2025-11-27",
+  "outlet": "아주경제",
+  "title": "제일기획, 부사장 1명·상무 4명 승진···\"글로벌 마케팅 전문가 중용\"",
+  "url": "https://www.ajunews.com/view/20251127113402116",
+  "summary": "정유석 부사장 등 5명 승진, 여성·외국인 임원 발탁",
+  "company": "제일기획",
+  "category": "인사",
+  "confirm": 7,
+  "grade": "주요",
+  "kind": "확정",
+  "event": "https://www.ajunews.com/view/20251127113402116"
+ },
+ {
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "양완모",
+   "오선미",
+   "장효선",
+   "조제영",
+   "최화성"
+  ],
+  "people_roles": {
+   "양완모": "부사장 승진(전 강남지역본부장 상무)",
+   "오선미": "상무 승진",
+   "장효선": "상무 승진",
+   "조제영": "상무 승진",
+   "최화성": "상무 승진"
+  },
+  "primary": [],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2025-11-26",
+  "outlet": "EBN",
+  "title": "삼성증권, 2026년 정기 임원인사…부사장 등 5명 승진",
+  "url": "https://www.ebn.co.kr/news/articleView.html?idxno=1688374",
+  "summary": "양완모 부사장 등 5명 승진, 성과주의 인사 원칙",
+  "company": "삼성증권",
+  "category": "인사",
+  "confirm": 6,
+  "grade": "주요",
+  "kind": "확정",
+  "event": "https://www.ebn.co.kr/news/articleView.html?idxno=1688374"
+ },
+ {
+  "date": "2025-11-25",
+  "outlet": "삼성전자 뉴스룸",
+  "title": "삼성전자 2026년 정기 임원 인사",
+  "url": "https://news.samsung.com/kr/%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90-2026%EB%85%84-%EC%A0%95%EA%B8%B0-%EC%9E%84%EC%9B%90-%EC%9D%B8%EC%82%AC",
+  "summary": "부사장 51명 등 161명 승진, AI·로봇·반도체 리더 중용",
+  "company": "삼성전자",
+  "units": [
+   "DS부문",
+   "DX부문"
+  ],
+  "unit_hint": "",
+  "people": [
+   "권정현",
+   "이성진",
+   "강민석",
+   "이윤수",
+   "김철민",
+   "이강욱"
+  ],
+  "category": "인사",
+  "confirm": 5,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "1차",
+  "primary": [
+   "DS부문",
+   "DX부문"
+  ],
+  "people_roles": {
+   "권정현": "삼성리서치 로봇인텔리전스팀장(부사장 승진)",
+   "이성진": "MX사업부 랭귀지 AI 코어기술개발그룹장(부사장 승진)",
+   "강민석": "MX사업부 스마트폰PP팀장(부사장 승진)",
+   "이윤수": "삼성리서치 데이터 인텔리전스팀장(부사장 승진)",
+   "김철민": "MX사업부 시스템 퍼포먼스그룹장(상무 승진)",
+   "이강욱": "삼성리서치 AI모델팀 상무(승진)"
+  },
+  "kind": "확정",
+  "event": "https://news.samsung.com/kr/%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90-2026%EB%85%84-%EC%A0%95%EA%B8%B0-%EC%9E%84%EC%9B%90-%EC%9D%B8%EC%82%AC"
+ },
+ {
+  "date": "2025-11-25",
+  "outlet": "한국경제",
+  "title": "삼성, AI·로봇 인재 전면에…30대 상무·40대 부사장 대거 발탁",
+  "url": "https://www.hankyung.com/article/2025112551141",
+  "summary": "AI·로봇 인재 전면 배치, 30대 상무·40대 부사장 발탁",
+  "company": "삼성전자",
+  "units": [
+   "DS부문",
+   "DX부문"
+  ],
+  "unit_hint": "",
+  "people": [
+   "김철민",
+   "이강욱",
+   "권정현",
+   "이성진"
+  ],
+  "category": "인사",
+  "confirm": 4,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DX부문",
+   "DS부문"
+  ],
+  "people_roles": {
+   "김철민": "MX사업부 시스템 퍼포먼스그룹장(상무 승진)",
+   "이강욱": "삼성리서치 AI모델팀 상무(승진)",
+   "권정현": "삼성리서치 로봇인텔리전스팀장(부사장 승진)",
+   "이성진": "MX사업부 랭귀지 AI 코어기술개발그룹장(부사장 승진)"
+  },
+  "kind": "확정",
+  "event": "https://news.samsung.com/kr/%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90-2026%EB%85%84-%EC%A0%95%EA%B8%B0-%EC%9E%84%EC%9B%90-%EC%9D%B8%EC%82%AC"
+ },
+ {
+  "date": "2025-11-25",
+  "outlet": "삼성SDS",
+  "title": "삼성SDS, 2026년 정기 임원 인사 발표",
+  "url": "https://www.samsungsds.com/kr/news/c-251125.html",
+  "summary": "부사장 2명·상무 8명 승진, AI 플랫폼·에이전트 인재 등용",
+  "company": "삼성에스디에스",
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "김정욱",
+   "이태희"
+  ],
+  "category": "인사",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "1차",
+  "primary": [],
+  "people_roles": {
+   "김정욱": "전략마케팅실 컨설팅팀장(부사장 승진)",
+   "이태희": "연구소 AI연구팀장(부사장 승진)"
+  },
+  "kind": "확정",
+  "event": "https://www.samsungsds.com/kr/news/c-251125.html"
+ },
+ {
+  "date": "2025-11-25",
+  "outlet": "스마트투데이",
+  "title": "삼성전기, MLCC 파워..김현우·이충은 부사장 승진",
+  "url": "https://www.smarttoday.co.kr/ko-kr/articles/97136",
+  "summary": "MLCC 부문 김현우·이충은 부사장 승진 등 8명 인사",
+  "company": "삼성전기",
+  "units": [
+   "MLCC개발팀"
+  ],
+  "unit_hint": "MLCC 부문",
+  "people": [
+   "김현우",
+   "이충은"
+  ],
+  "category": "인사",
+  "confirm": 2,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "MLCC개발팀"
+  ],
+  "people_roles": {
+   "김현우": "천진생산법인장(부사장 승진)",
+   "이충은": "MLCC개발팀 담당임원(부사장 승진)"
+  },
+  "kind": "확정",
+  "event": "https://www.smarttoday.co.kr/ko-kr/articles/97136"
+ },
+ {
+  "units": [
+   "중대형事",
+   "소형事"
+  ],
+  "unit_hint": "",
+  "people": [
+   "김기준",
+   "이종훈",
+   "정현"
+  ],
+  "people_roles": {
+   "김기준": "중대형사업부 극판센터장(부사장 승진)",
+   "이종훈": "소형사업부 파우치개발팀장(부사장 승진)",
+   "정현": "경영진단팀장(부사장 승진)"
+  },
+  "primary": [
+   "중대형事",
+   "소형事"
+  ],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2025-11-25",
+  "outlet": "스마트투데이",
+  "title": "삼성SDI 부사장 3, 상무 5명 승진 임원인사 단행",
+  "url": "https://www.smarttoday.co.kr/ko-kr/articles/97139",
+  "summary": "부사장 3명·상무 5명 승진, 배터리 기술 리더 중용",
+  "company": "삼성SDI",
+  "category": "인사",
+  "confirm": 3,
+  "grade": "주요",
+  "kind": "확정",
+  "event": "https://www.smarttoday.co.kr/ko-kr/articles/97139"
+ },
+ {
+  "date": "2025-11-24",
+  "outlet": "헤럴드경제",
+  "title": "삼성전자, 검증된 AI·로봇 리더 전진배치…HBM 정상화 이끈 인재도 발탁",
+  "url": "https://www.heraldk.com/article/2025112417555046399",
+  "summary": "AI·로봇 리더와 HBM 정상화 기여 인재 승진 발탁",
+  "company": "삼성전자",
+  "units": [
+   "DS부문",
+   "DX부문",
+   "메모리"
+  ],
+  "unit_hint": "",
+  "people": [
+   "권정현",
+   "최고은"
+  ],
+  "category": "인사",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DX부문",
+   "메모리"
+  ],
+  "people_roles": {
+   "권정현": "삼성리서치 로봇인텔리전스팀장(최연소 부사장)",
+   "최고은": "로봇 플랫폼팀장(상무 승진)"
+  },
+  "kind": "확정",
+  "event": "https://news.samsung.com/kr/%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90-2026%EB%85%84-%EC%A0%95%EA%B8%B0-%EC%9E%84%EC%9B%90-%EC%9D%B8%EC%82%AC"
+ },
+ {
+  "date": "2025-11-21",
+  "outlet": "삼성전자 뉴스룸",
+  "title": "삼성전자, 사장단 인사",
+  "url": "https://news.samsung.com/kr/473579-2",
+  "summary": "윤장현 DX CTO 겸 SR장 승진, 2인 대표 복원, 박홍근 SAIT원장",
+  "company": "삼성전자",
+  "units": [
+   "DX부문",
+   "DS부문",
+   "Samsung Research",
+   "SAIT",
+   "메모리",
+   "Mobile eXperience"
+  ],
+  "unit_hint": "DX부문 CTO",
+  "people": [
+   "윤장현",
+   "전영현",
+   "노태문",
+   "박홍근"
+  ],
+  "category": "인사",
+  "confirm": 6,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "1차",
+  "primary": [
+   "DX부문",
+   "DS부문"
+  ],
+  "people_roles": {
+   "윤장현": "DX부문 CTO 사장 겸 삼성리서치장",
+   "전영현": "대표이사 부회장 겸 DS부문장·메모리사업부장",
+   "노태문": "대표이사 겸 DX부문장·MX사업부장",
+   "박홍근": "SAIT원장(사장)"
+  },
+  "kind": "확정",
+  "event": "https://news.samsung.com/kr/473579-2"
+ },
+ {
+  "date": "2025-11-21",
+  "outlet": "아주경제",
+  "title": "삼성전자, 2026년 정기 사장단 인사… 전영현·노태문 2인 체제 복원",
+  "url": "https://www.ajunews.com/view/20251121092046018",
+  "summary": "전영현·노태문 2인 대표 체제 복원, 4명 규모 사장단 인사",
+  "company": "삼성전자",
+  "units": [
+   "DS부문",
+   "DX부문"
+  ],
+  "unit_hint": "",
+  "people": [
+   "전영현",
+   "노태문",
+   "윤장현",
+   "박홍근"
+  ],
+  "category": "인사",
+  "confirm": 4,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DS부문",
+   "DX부문"
+  ],
+  "people_roles": {
+   "전영현": "대표이사 부회장 겸 DS부문장·메모리사업부장",
+   "노태문": "대표이사 겸 DX부문장·MX사업부장",
+   "윤장현": "DX부문 CTO 사장 겸 삼성리서치장",
+   "박홍근": "SAIT 원장"
+  },
+  "kind": "확정",
+  "event": "https://news.samsung.com/kr/473579-2"
+ },
+ {
+  "date": "2025-11-21",
+  "outlet": "삼성물산 뉴스룸",
+  "title": "삼성물산 사장단 인사 발표",
+  "url": "https://news.samsungcnt.com/ko/%EC%A0%84%EC%B2%B4%EA%B8%B0%EC%82%AC/%EC%A0%84%EC%82%AC%EA%B3%B5%ED%86%B5/2025-11-%EC%82%BC%EC%84%B1%EB%AC%BC%EC%82%B0-%EC%82%AC%EC%9E%A5%EB%8B%A8-%EC%9D%B8%EC%82%AC-%EB%B0%9C%ED%91%9C-4/",
+  "summary": "송규종 경영기획실장, 리조트부문 대표이사 사장 승진",
+  "company": "삼성물산",
+  "units": [
+   "리조트",
+   "경영기획실"
+  ],
+  "unit_hint": "",
+  "people": [
+   "송규종",
+   "정해린"
+  ],
+  "category": "인사",
+  "confirm": 3,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "1차",
+  "primary": [
+   "리조트"
+  ],
+  "people_roles": {
+   "송규종": "리조트부문 대표이사 사장 겸 삼성웰스토리 대표이사",
+   "정해린": "전임 리조트부문 대표(에스원 대표이사로 이동)"
+  },
+  "kind": "확정",
+  "event": "https://news.samsungcnt.com/ko/%EC%A0%84%EC%B2%B4%EA%B8%B0%EC%82%AC/%EC%A0%84%EC%82%AC%EA%B3%B5%ED%86%B5/2025-11-%EC%82%BC%EC%84%B1%EB%AC%BC%EC%82%B0-%EC%82%AC%EC%9E%A5%EB%8B%A8-%EC%9D%B8%EC%82%AC-%EB%B0%9C%ED%91%9C-4/"
+ },
+ {
+  "units": [],
+  "unit_hint": "",
+  "people": [
+   "정해린"
+  ],
+  "people_roles": {
+   "정해린": "에스원 신임 대표이사 사장(내정)"
+  },
+  "primary": [],
+  "verified": "검색결과 확인 2026-10-28",
+  "date": "2025-11-21",
+  "outlet": "보안뉴스",
+  "title": "에스원 신임 대표에 정해린 삼성물산 사장",
+  "url": "https://m.boannews.com/html/detail.html?idx=140483",
+  "summary": "정해린 삼성물산 사장, 에스원 신임 대표이사 내정",
+  "company": "에스원",
+  "category": "인사",
+  "confirm": 2,
+  "grade": "주요",
+  "kind": "확정",
+  "event": "https://m.boannews.com/html/detail.html?idx=140483"
+ },
+ {
+  "date": "2025-11-10",
+  "outlet": "CEO스코어데일리",
+  "title": "새 사업지원실장에 박학규…그룹 경영 현안·재무 상황 잘 아는 ‘재무통’",
+  "url": "https://ceoscoredaily.com/page/view/2025111013250825203",
+  "summary": "박학규 사장, 신설 사업지원실장 선임",
+  "company": "삼성전자",
+  "units": [
+   "사업지원실"
+  ],
+  "unit_hint": "",
+  "people": [
+   "박학규",
+   "정현호"
+  ],
+  "category": "인사",
+  "confirm": 4,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "사업지원실"
+  ],
+  "people_roles": {
+   "박학규": "사업지원실장(사장)",
+   "정현호": "부회장(전 사업지원TF장)"
+  },
+  "kind": "확정",
+  "event": "https://ceoscoredaily.com/page/view/2025111013250825203"
+ },
+ {
+  "date": "2025-11-07",
+  "outlet": "머니투데이",
+  "title": "'정현호 용퇴' 이재용, 새진용 꾸렸다…삼성 정상화·경쟁력 극대화",
+  "url": "https://www.mt.co.kr/industry/2025/11/07/2025110715523519848",
+  "summary": "사업지원TF를 상설 사업지원실로 전환, 정현호 용퇴",
+  "company": "삼성전자",
+  "units": [
+   "사업지원실",
+   "경영진단팀",
+   "People팀"
+  ],
+  "unit_hint": "사업지원실 산하 전략팀·경영진단팀·피플팀",
+  "people": [
+   "정현호",
+   "이재용",
+   "박학규",
+   "최윤호",
+   "주창훈",
+   "문희동"
+  ],
+  "category": "조직신설",
+  "confirm": 4,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "사업지원실"
+  ],
+  "people_roles": {
+   "정현호": "회장 보좌역(사업지원TF장 용퇴)",
+   "이재용": "회장",
+   "박학규": "사업지원실장",
+   "최윤호": "사업지원실 전략팀장",
+   "주창훈": "사업지원실 경영진단팀장",
+   "문희동": "사업지원실 피플팀장"
+  },
+  "event": "https://www.mt.co.kr/industry/2025/11/07/2025110715523519848"
+ },
+ {
+  "date": "2025-10-31",
+  "outlet": "머니투데이",
+  "title": "삼성전자, 엔비디아 손잡고 세계 최대 반도체 'AI 팩토리' 구축",
+  "url": "https://www.mt.co.kr/industry/2025/10/31/2025103114423691846",
+  "summary": "엔비디아 GPU 5만개 이상 도입해 반도체 AI 팩토리 구축",
+  "company": "삼성전자",
+  "units": [
+   "DS부문",
+   "글로벌 제조&인프라총괄"
+  ],
+  "unit_hint": "",
+  "people": [],
+  "category": "AI과제",
+  "confirm": 6,
+  "verified": "검색결과 확인 2026-10-28",
+  "grade": "주요",
+  "primary": [
+   "DS부문"
+  ],
+  "people_roles": {},
+  "event": "https://www.mt.co.kr/industry/2025/10/31/2025103114423691846"
+ }
+]

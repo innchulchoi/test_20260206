@@ -1,0 +1,29 @@
+{
+ "_comment": "담당업무 문구만으로는 알 수 없는 조직 관계. parents: 최상위에 따로 나오는 조직을 어느 부문 밑에 둘지. aliases: 같은 조직의 다른 표기. 회사 공식 발표·사업보고서 '사업의 내용'에서 확인된 것만 적습니다.",
+ "삼성전자": {
+  "parents": {
+   "메모리": "DS부문",
+   "System LSI": "DS부문",
+   "Foundry": "DS부문",
+   "Mobile eXperience": "DX부문",
+   "영상디스플레이": "DX부문",
+   "생활가전": "DX부문",
+   "네트워크": "DX부문",
+   "의료기기": "DX부문"
+  },
+  "aliases": {
+   "S.LSI사업부": "System LSI",
+   "System LSI사업부": "System LSI"
+  },
+  "head_aliases": {
+   "MX사업부": "Mobile eXperience",
+   "MX": "Mobile eXperience",
+   "VD사업부": "영상디스플레이",
+   "DA사업부": "생활가전",
+   "삼성리서치": "Samsung Research",
+   "메모리사업부": "메모리",
+   "SAIT원장": "SAIT",
+   "SAIT 원장": "SAIT"
+  }
+ }
+}

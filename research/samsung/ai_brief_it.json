@@ -1,0 +1,802 @@
+{
+ "companies": [
+  {
+   "company": "삼성에스디에스",
+   "interest_summary": "삼성SDS는 그룹 AX의 실행 주체이자 AI 공급자로서 'AI 도입'에서 'AI로 성과 내기'로 무게를 옮기고 있다(리얼 서밋 2026, 이준희 대표). 사업 측면에서는 오픈AI(챗GPT 엔터프라이즈 국내 첫 리셀러)·앤트로픽(국내 첫 전략 파트너, CPN 셀렉트 티어)과 손잡고 FabriX 기반 금융·공공 AI 에이전트(우리은행 등)와 FDE 200명 체제로 고객 현장 AX를 공략한다. 인프라 측면에서는 해남 국가 AI컴퓨팅센터(GPU 1만5천장 목표)와 B300 GPUaaS, 정부 연구용 GPU 공급 등 AI 데이터센터 사업을 키우고 있다. 내부적으로는 2025년 말 AX센터를 신설했고 클로드 엔터프라이즈를 자사와 20개 관계사 7만명에게 제공하는 등 그룹 AX의 허브 역할을 맡는다.",
+   "themes": [
+    "엔터프라이즈 AI 에이전트(FabriX·Brity Copilot)",
+    "오픈AI·앤트로픽 리셀러/파트너십",
+    "국가 AI컴퓨팅센터·GPUaaS 등 AI 인프라",
+    "금융·공공 AX 수주",
+    "피지컬 AI·로봇 오케스트레이션(RX)"
+   ],
+   "talking_points": [
+    "리얼 서밋 2026에서 'AI 도입 기업 88%, 성과는 6%'를 언급했는데, FDE 200명 체제에서 고객 성과를 어떤 지표로 측정하고 있는가?",
+    "자사·20개 관계사 7만명에 클로드 엔터프라이즈를 제공하면서 FabriX·챗GPT 엔터프라이즈와는 어떻게 역할을 나누는가(멀티 LLM 거버넌스)?",
+    "해남 국가 AI컴퓨팅센터(2028년 GPU 1만5천장)와 구미 AI 데이터센터의 수익 모델과 GPUaaS 수요 전망은?",
+    "우리은행 AI 에이전트 뱅킹(5개 영역 29개 업무)에서 얻은 교훈을 다른 금융·공공 고객에 어떻게 표준화할 계획인가?"
+   ],
+   "key_people": [
+    {
+     "name": "이준희",
+     "role": "대표이사 사장",
+     "why": "AI 풀스택·성과 중심 AX 전략의 대외 메시지를 직접 발표하는 최고 의사결정자",
+     "source": "공시"
+    },
+    {
+     "name": "김종필",
+     "role": "부사장, AX센터장",
+     "why": "2025년 말 신설된 AX센터를 이끌며 'AI Evangelist' 역할을 맡은 AX 실행 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "이호준",
+     "role": "부사장, 클라우드서비스사업부장",
+     "why": "오픈AI 리셀러 계약 서명 등 클라우드·GPUaaS·생성형 AI 상품 사업 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "신계영",
+     "role": "부사장, AX센터 AI사업팀장",
+     "why": "AX센터 내 AI 사업(외부 고객 AI 상품) 담당",
+     "source": "공시"
+    },
+    {
+     "name": "배순민",
+     "role": "상무, 클라우드서비스사업부 디지털팩토리담당 RX사업팀장",
+     "why": "피지컬 AI·로봇 오케스트레이션(RX) 신사업 담당",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-09-08",
+     "outlet": "삼성SDS 뉴스룸",
+     "title": "리얼 서밋 2026 '다차원 AI 풀스택' 전략 발표",
+     "url": "https://www.samsungsds.com/kr/news/sds20260908.html",
+     "summary": "이준희, AI 풀스택·FDE 200명·2027 로봇 플랫폼 제시",
+     "category": "발언",
+     "people": [
+      "이준희"
+     ],
+     "people_roles": {
+      "이준희": "대표이사"
+     },
+     "units": [],
+     "unit_hint": "FDE(전방배치엔지니어), 피지컬 AI 사업",
+     "related": [
+      "김종필",
+      "배순민"
+     ],
+     "confirm": 11,
+     "single_source_note": "",
+     "grade": "1차"
+    },
+    {
+     "date": "2026-09-15",
+     "outlet": "머니투데이방송(MTN)",
+     "title": "삼성SDS, 국내 첫 앤트로픽 '셀렉트 파트너'...클로드 기업시장 공략",
+     "url": "https://news.mtn.co.kr/news-detail/2026091508574797184",
+     "summary": "국내 최초 앤트로픽 CPN 셀렉트 티어 획득",
+     "category": "파트너십",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "클로드 기반 기업용 AI 사업",
+     "related": [],
+     "confirm": 5,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-08-03",
+     "outlet": "머니투데이방송(MTN)",
+     "title": "'국가 AI 컴퓨팅센터' 해남서 첫 삽…삼성SDS 컨소시엄이 맡아",
+     "url": "https://news.mtn.co.kr/news-detail/2026080309311558007",
+     "summary": "해남 국가AI컴퓨팅센터 착공, 2028년 GPU 1.5만장 목표",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "한국에이아이컴퓨팅센터(SPC)",
+     "related": [],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-07-25",
+     "outlet": "뉴시스",
+     "title": "삼성SDS, '클로드' 앞세워 기업 AI 시장 공략…앤트로픽과 '맞손'",
+     "url": "https://www.newsis.com/view/NISX20260725_0003723151",
+     "summary": "앤트로픽과 국내 첫 전략 제휴, 관계사 7만명 클로드 사용",
+     "category": "파트너십",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "응용형 AI 엔지니어 양성, 관계사 AI 네이티브 전환 지원",
+     "related": [],
+     "confirm": 5,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-04-07",
+     "outlet": "삼성SDS 뉴스룸",
+     "title": "삼성SDS, 우리은행 'AI 에이전트 뱅킹' 구축 나선다…금융권 AX 전환 주도",
+     "url": "https://www.samsungsds.com/kr/news/wr-260407.html",
+     "summary": "우리은행 AI 에이전트 사업 우선협상, FabriX 기반 구축",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "FabriX 기반 금융 AI 플랫폼",
+     "related": [],
+     "confirm": 6,
+     "single_source_note": "",
+     "grade": "1차"
+    },
+    {
+     "date": "2026-01-30",
+     "outlet": "삼성SDS 인사이트",
+     "title": "AX센터장 인터뷰",
+     "url": "https://www.samsungsds.com/kr/insights/ax-center-leader-interview.html",
+     "summary": "김종필 AX센터장, AX센터를 'AI Evangelist' 조직으로 규정",
+     "category": "조직",
+     "people": [
+      "김종필"
+     ],
+     "people_roles": {
+      "김종필": "AX센터장(부사장)"
+     },
+     "units": [
+      "AX센터"
+     ],
+     "unit_hint": "",
+     "related": [
+      "김종필",
+      "신계영",
+      "이태희",
+      "이준형"
+     ],
+     "confirm": 1,
+     "single_source_note": "회사 자체 인터뷰 콘텐츠로 언론 중복 보도 미확인",
+     "grade": "1차"
+    },
+    {
+     "date": "2025-12-23",
+     "outlet": "머니투데이",
+     "title": "이재용-샘올트먼 회동 첫 결실…삼성SDS, 챗GPT 리셀러 계약",
+     "url": "https://www.mt.co.kr/tech/2025/12/23/2025122310000468256",
+     "summary": "오픈AI와 국내 첫 리셀러 계약, 챗GPT 엔터프라이즈 공급",
+     "category": "파트너십",
+     "people": [
+      "이호준"
+     ],
+     "people_roles": {
+      "이호준": "클라우드서비스사업부장"
+     },
+     "units": [
+      "클라우드서비스사업부"
+     ],
+     "unit_hint": "",
+     "related": [
+      "이호준"
+     ],
+     "confirm": 10,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-08-11",
+     "outlet": "머니투데이방송(MTN)",
+     "title": "삼성SDS, 국가 AI 인프라 사업 잇단 선점... 연구용 GPU 자원 공급",
+     "url": "https://news.mtn.co.kr/news-detail/2026081108563068126",
+     "summary": "정부 연구용 GPU 공급 1순위 사업자로 서비스 개시",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "GPUaaS",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "검색 결과에서 동일 사안의 타 매체 보도는 확인하지 못함",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "삼성SDI",
+   "interest_summary": "삼성SDI의 AI 관심은 'AI를 위한 배터리' 사업에 쏠려 있다: AI 데이터센터용 ESS·UPS/BBU 배터리 수주(ESS 수주 4조원 육박 보도)와 피지컬 AI(로봇)용 전고체 배터리, AI 기반 화재예방 SW(SBI)를 전면에 내세운다. 최주선 사장은 2026년 7월 창립 기념식에서 '진정한 AI 네이티브 기업'으로의 체질 전환과 에이전틱 AI를 패러다임 전환으로 강조했다. 다만 사내 AI 도입 과제나 제조공정 AI, 전담 조직에 관한 구체적 기사는 찾지 못했다.",
+   "themes": [
+    "AI 데이터센터용 ESS·UPS/BBU 배터리",
+    "피지컬 AI(로봇)용 전고체 배터리",
+    "AI 네이티브 기업 전환(경영진 메시지)",
+    "AI 기반 배터리 안전 SW(SBI)"
+   ],
+   "talking_points": [
+    "최주선 사장이 말한 'AI 네이티브 기업' 전환을 위해 어떤 조직·KPI·도입 과제를 정했는가?",
+    "AI 데이터센터발 ESS 수주(4조원 육박 보도)가 늘면서 제조·품질 쪽 AI 적용 계획도 있는가?",
+    "인터배터리 2026에서 공개한 AI 기반 화재 예방 SW 'SBI'의 상용화 일정과 고객 반응은?",
+    "피지컬 AI용 전고체 배터리 샘플 이후 로봇 고객사와의 협업 구조는?"
+   ],
+   "key_people": [
+    {
+     "name": "최주선",
+     "role": "대표이사 사장",
+     "why": "'AI 네이티브 기업' 전환과 에이전틱 AI를 직접 주문한 최고경영자",
+     "source": "공시"
+    },
+    {
+     "name": "주용락",
+     "role": "부사장, 연구소장",
+     "why": "전고체 등 AI 수요 대응 차세대 배터리 개발 총괄(공시 담당업무 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    },
+    {
+     "name": "박종선",
+     "role": "부사장, 전략마케팅실장",
+     "why": "AI 데이터센터 ESS·BBU 수주 전략 담당(공시 담당업무 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-06-30",
+     "outlet": "헤럴드경제",
+     "title": "최주선 삼성SDI 사장 “올해 실적 턴어라운드…‘AI 네이티브 기업’으로 체질 개선”",
+     "url": "https://www.heraldk.com/article/2026063016243482549",
+     "summary": "창립 56주년, AI 네이티브 전환·에이전틱 AI 강조",
+     "category": "발언",
+     "people": [
+      "최주선"
+     ],
+     "people_roles": {
+      "최주선": "대표이사 사장"
+     },
+     "units": [],
+     "unit_hint": "전사 AI 도입",
+     "related": [],
+     "confirm": 10,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-10-26",
+     "outlet": "CEO스코어데일리",
+     "title": "AI 데이터센터발 ESS 배터리 수주 4조원 육박",
+     "url": "https://ceoscoredaily.com/page/view/2026102616084574071",
+     "summary": "AI 데이터센터발 ESS 수주 4조원 육박, NCA·LFP 병행",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "제목 기준 확인, 동일 수치를 다룬 타 매체 결과는 찾지 못함",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-03-01",
+     "outlet": "헤럴드경제",
+     "title": "삼성SDI, ‘인터배터리’서 AI시대 겨냥한 배터리 혁신 기술 대거 공개",
+     "url": "https://www.heraldk.com/article/2026030117101026583",
+     "summary": "AI DC용 BBU·AI 화재예방 SW 'SBI' 공개 예고",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-03-08",
+     "outlet": "헤럴드경제",
+     "title": "삼성SDI, ‘피지컬 AI용’ 전고체 배터리 첫 공개…“AI 시대 정조준”",
+     "url": "https://www.heraldk.com/article/2026030815290129751",
+     "summary": "로봇용 파우치형 전고체 배터리 샘플 첫 공개",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "삼성전기",
+   "interest_summary": "삼성전기는 AI를 '팔 부품'과 '일하는 방식' 두 축으로 본다. 사업에서는 AI 서버용 MLCC(4,500억원 공급 계약), AI 가속기용 패키지 기판, 글라스 기판 합작법인을 앞세워 AI 인프라 수요를 잡고 있다. 장덕현 사장은 2026년 시무식에서 'AI를 활용한 전사 혁신'을 4대 과제로 꼽았고, 자체 에이전틱 AI 플랫폼 'SEMCo-Work'로 첫 사내 해커톤(임직원 200명)을 열어 '1인 1 AI 에이전트'를 추진 중이다. 공시상 Agentic AI개발 TF와 AI Solution팀이 있다.",
+   "themes": [
+    "사내 에이전틱 AI 플랫폼 SEMCo-Work",
+    "AI 서버용 MLCC·AI 가속기용 기판",
+    "글라스 기판 신사업",
+    "AI 활용 전사 혁신(시무식 과제)"
+   ],
+   "talking_points": [
+    "SEMCo-Work 해커톤에서 나온 에이전트 가운데 전사로 확산되는 것은 무엇이며, '1인 1 AI 에이전트'의 목표 시점은?",
+    "자체 서버 기반 SEMCo-Work를 택한 이유(보안·시스템 연동)와 외부 LLM 활용 범위는?",
+    "Agentic AI개발 TF와 AI Solution팀의 역할 분담은 어떻게 되는가?",
+    "AI 서버용 MLCC 장기공급 확대 논의가 생산·품질 공정 AI 투자에도 반영되는가?"
+   ],
+   "key_people": [
+    {
+     "name": "장덕현",
+     "role": "대표이사 사장",
+     "why": "시무식에서 AI 전사 혁신을 핵심 과제로 제시, 'One Person, One AI Agent' 강조",
+     "source": "공시"
+    },
+    {
+     "name": "반영민",
+     "role": "상무, Agentic AI개발 TF장",
+     "why": "사내 에이전틱 AI(SEMCo-Work) 개발 조직 책임자로 추정되는 공시 임원",
+     "source": "공시"
+    },
+    {
+     "name": "손용훈",
+     "role": "상무, AI Solution팀장",
+     "why": "AI 솔루션 조직 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "최재열",
+     "role": "부사장, 컴포넌트사업부 총괄",
+     "why": "AI 서버용 MLCC 사업 책임(공시 담당업무 기준)",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-10-14",
+     "outlet": "SBS Biz",
+     "title": "삼성전기, 첫 사내 해커톤 개최…자체 개발 생성형AI 활용",
+     "url": "https://biz.sbs.co.kr/amp/article/20000339566",
+     "summary": "SEMCo-Work로 첫 사내 해커톤, 임직원 200명 참가",
+     "category": "도입",
+     "people": [
+      "장덕현"
+     ],
+     "people_roles": {
+      "장덕현": "사장"
+     },
+     "units": [],
+     "unit_hint": "SEMCo-Work(자체 에이전틱 AI 플랫폼)",
+     "related": [
+      "반영민",
+      "손용훈"
+     ],
+     "confirm": 5,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-01-01",
+     "outlet": "헤럴드경제",
+     "title": "[신년사] 장덕현 삼성전기 대표이사 “1%의 디테일이 좌우…AI·로봇 기술에 주력”",
+     "url": "https://www.heraldk.com/article/2026010121191100477",
+     "summary": "시무식에서 AI 활용 전사 혁신 등 4대 과제 제시",
+     "category": "발언",
+     "people": [
+      "장덕현"
+     ],
+     "people_roles": {
+      "장덕현": "대표이사"
+     },
+     "units": [],
+     "unit_hint": "AI 활용 전사 혁신",
+     "related": [],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-30",
+     "outlet": "머니투데이방송(MTN)",
+     "title": "삼성전기, 4500억원 규모 AI 서버용 MLCC 공급…\"내년 공급 확대 논의\"",
+     "url": "https://news.mtn.co.kr/news-detail/2026063010254397702",
+     "summary": "빅테크와 4,500억원 AI 서버용 MLCC 공급 계약",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [
+      "최재열"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-04-22",
+     "outlet": "헤럴드경제",
+     "title": "장덕현 삼성전기 사장 “AI 시대 최적의 파트너 될 것”",
+     "url": "https://www.heraldk.com/article/2026042218241453108",
+     "summary": "장덕현, AI 시대 최적 파트너 목표 발언",
+     "category": "발언",
+     "people": [
+      "장덕현"
+     ],
+     "people_roles": {
+      "장덕현": "사장"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "같은 매체의 동일 기사 2개 URL만 확인됨",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-01-23",
+     "outlet": "헤럴드경제",
+     "title": "삼성전기 “올 상반기 글라스 기판 합작법인 설립…AI·로봇 겨냥 투자 확대”",
+     "url": "https://www.heraldk.com/article/2026012300091510177",
+     "summary": "상반기 글라스 기판 JV 설립, AI·로봇 투자 확대",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "동일 사안의 타 매체 결과는 이번 검색에서 확인하지 못함",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "삼성디스플레이",
+   "interest_summary": "공개 기사 적음. 삼성디스플레이는 AI 기기(AI OLED 봇·펜던트, XR, 휴머노이드용 OLED)를 새 시장으로 보고 OLED 적용처를 넓히는 데 집중한다(CES 2026, K-디스플레이 2026). 내부적으로는 AX연구소를 두고 2017년부터 제조에 쓰던 AI를 OLED 재료 설계·소자 개발 등 R&D로 넓히며 '전 영역 AI 개발 자동화'를 목표로 한다고 보도됐다. 이청 사장의 AX 관련 직접 발언은 찾지 못했다.",
+   "themes": [
+    "AI 기기·휴머노이드용 OLED",
+    "R&D AX(재료 설계·소자 개발)",
+    "AX연구소"
+   ],
+   "talking_points": [
+    "AX연구소가 OLED 재료 설계·소자 개발에 AI를 적용해 개발 기간을 얼마나 줄였는가?",
+    "'전 영역 AI 개발 자동화' 목표의 범위와 일정은?",
+    "휴머노이드·AI 기기용 OLED(6.9형 아이트래킹 등)의 상용화 고객과 시점은?"
+   ],
+   "key_people": [
+    {
+     "name": "이청",
+     "role": "사장(대표)",
+     "why": "AI 기기·휴머노이드를 새 시장으로 지목한 최고경영자",
+     "source": "기사"
+    },
+    {
+     "name": "유동곤",
+     "role": "AX연구소 AI팀장(상무)",
+     "why": "삼성디스플레이 AX 사례를 대외 발표한 실무 책임자",
+     "source": "기사"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-07-22",
+     "outlet": "CEO스코어데일리",
+     "title": "22~24일 사흘 간 서울 코엑스서 ‘K-디스플레이 2026’ 개막",
+     "url": "https://ceoscoredaily.com/page/view/2026072216404293781",
+     "summary": "휴머노이드용 OLED 첫 공개, 이청 'AI 기기 새 시장'",
+     "category": "발언",
+     "people": [
+      "이청"
+     ],
+     "people_roles": {
+      "이청": "사장"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-03-16",
+     "outlet": "딜사이트",
+     "title": "삼성D, 전 영역 AI 개발 자동화 목표…LGD, 전 영역 에이전트 AI 도입",
+     "url": "https://dealsite.co.kr/articles/158524",
+     "summary": "AX연구소 유동곤 상무, R&D AI 적용 사례 소개",
+     "category": "도입",
+     "people": [
+      "유동곤"
+     ],
+     "people_roles": {
+      "유동곤": "AX연구소 AI팀장 상무"
+     },
+     "units": [],
+     "unit_hint": "AX연구소",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "유료 기사로 본문 일부만 확인. 날짜는 포럼일(16일) 기준이며 기사 게재일과 다를 수 있음",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-01-03",
+     "outlet": "헤럴드경제",
+     "title": "“로봇 얼굴에 눈코입 대신 OLED” 삼성D가 제시한 AI 시대 라이프스타일 [CES 2026]",
+     "url": "https://www.heraldk.com/article/2026010314300000754",
+     "summary": "CES 2026서 AI OLED 봇·펜던트 등 AI 기기 공개",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 5,
+     "single_source_note": "",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "세메스",
+   "interest_summary": "공개 기사 적음. 세메스는 2026년 7월 'AI 포럼 2026'을 열어 설계 초기부터 공정 최적화·무인 자동화까지 AI를 활용하고, 산학연 협력으로 HBM·첨단 패키징 장비의 자율·지능화를 단계적으로 추진하겠다고 밝혔다. 심상필 대표는 AI로 설비 개발의 속도와 질을 높이겠다고 했다. 사내 AI 도입 성과나 전담 조직에 관한 기사는 찾지 못했다.",
+   "themes": [
+    "AI 기반 장비 개발 가속",
+    "HBM·첨단 패키징 장비 자율·지능화",
+    "산학연·칩메이커 협력"
+   ],
+   "talking_points": [
+    "AI 포럼에서 밝힌 '설계~공정 최적화~무인 자동화' AI 적용의 첫 성과는 어디서 나오고 있는가?",
+    "HBM TC 본더 등 장비 자율화를 위해 칩메이커(삼성전자)와 데이터를 어떻게 공유하는가?",
+    "SW센터·자동화팀이 AI 장비 SW 개발에서 맡는 역할은?"
+   ],
+   "key_people": [
+    {
+     "name": "심상필",
+     "role": "대표이사",
+     "why": "AI 포럼에서 AI 기반 설비 개발 전략을 직접 발표",
+     "source": "공시"
+    },
+    {
+     "name": "최길현",
+     "role": "이사, CTO/CSO",
+     "why": "기술 전략 총괄(공시 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    },
+    {
+     "name": "조철형",
+     "role": "상무, SW센터장",
+     "why": "장비 SW·AI 적용 실무 조직 책임(공시 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-07-02",
+     "outlet": "아시아경제",
+     "title": "\"반도체 장비 패러다임 전환\"…세메스, 'AI 포럼 2026' 개최",
+     "url": "https://core.asiae.co.kr/article/2026070217180702180",
+     "summary": "AI 포럼 개최, 설계~자동화 AI 활용·장비 자율화 추진",
+     "category": "발언",
+     "people": [
+      "심상필"
+     ],
+     "people_roles": {
+      "심상필": "대표"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "미라콤아이앤씨",
+   "interest_summary": "공개 기사 적음. 미라콤아이앤씨는 2026년을 '제조 AI 사업 원년'으로 삼고 MES(Nexplant MESplus)에 쌓인 데이터를 AI가 분석·판단하고 로봇·설비가 실행하는 '자율제조' 모델(AX+RX)을 내세운다. 자연어 대화형 제조 분석 솔루션과 엔지니어링 AI 에이전트를 AW 2026에 선보였고, 중소 제조사 대상 협업형 AX 선도모델 사업(휴머노이드 적용 포함)에 착수했다. 안대중 대표는 이를 28년 MES 경험을 AX·RX로 넓히는 출발점이라고 했다.",
+   "themes": [
+    "MES 기반 제조 AI(자율제조)",
+    "제조 AI 에이전트·자연어 분석",
+    "AX+RX(로보틱스) 결합",
+    "중소 제조사 AX 선도모델 사업"
+   ],
+   "talking_points": [
+    "AX 선도모델 사업 6개 제조사에서 휴머노이드 로봇은 어떤 공정에 적용하는가?",
+    "MES 데이터를 쓰는 엔지니어링 AI 에이전트의 첫 고객 적용 성과는?",
+    "모회사 삼성SDS의 RX·디지털팩토리 사업과 어떻게 역할을 나누는가?"
+   ],
+   "key_people": [
+    {
+     "name": "안대중",
+     "role": "대표이사",
+     "why": "MES 경험을 제조 AX·RX로 넓히겠다고 밝힌 대표. 삼성SDS 공시에도 같은 이름이 클라우드서비스사업부 디지털팩토리담당 부사장으로 올라 있음",
+     "source": "공시"
+    },
+    {
+     "name": "고해준",
+     "role": "상무, 스마트팩토리사업부장",
+     "why": "스마트팩토리·제조 AI 사업 책임(공시 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    },
+    {
+     "name": "남기상",
+     "role": "상무, 팩토리자동화팀장",
+     "why": "자동화·로보틱스(RX) 실행 담당(공시 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-01-30",
+     "outlet": "한국경제",
+     "title": "미라콤아이앤씨, 반도체 소부장 대상 세미나 성료…제조 AI 사업 원년",
+     "url": "https://www.hankyung.com/article/202601303020P",
+     "summary": "반도체 소부장 세미나, 2026년을 제조 AI 사업 원년으로",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "동일 행사의 타 매체 보도는 검색 결과에서 확인하지 못함",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-02",
+     "outlet": "헬로티",
+     "title": "[AW 2026 프리뷰] “MES에 AI를 더하다” 미라콤아이앤씨, 자연어 대화형 제조 분석 솔루션으로 주목 예고",
+     "url": "https://www.hellot.net/news/article.html?no=110259",
+     "summary": "AW 2026서 자연어 제조 분석·엔지니어링 AI 에이전트 공개",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "검색 결과상 '2026년 2월' 보도로만 확인되어 일 단위 날짜 미상. 동일 매체 인터뷰 기사(no=110624)도 있음",
+     "grade": "기타"
+    }
+   ]
+  },
+  {
+   "company": "에스코어",
+   "interest_summary": "공개 기사 적음. 2025-10-01~2026-10-29 기간에 에스코어의 AI·AX 관련 기사를 검색으로 찾지 못했다. 검색에 걸린 'Double S-Core(더블에스코어)'는 이름이 비슷한 다른 회사일 가능성이 커 넣지 않았다.",
+   "themes": [],
+   "talking_points": [
+    "소프트웨어·컨설팅·오픈소스 사업부에서 생성형 AI·에이전트 관련 서비스를 준비하고 있는가?",
+    "삼성SDS의 AX센터·FDE 확대와 에스코어 컨설팅사업부의 역할 분담은?"
+   ],
+   "key_people": [
+    {
+     "name": "김장현",
+     "role": "대표이사",
+     "why": "회사 AI 전략 방향 확인 대상",
+     "source": "공시"
+    },
+    {
+     "name": "이진우",
+     "role": "전무, 컨설팅사업부장",
+     "why": "AX 컨설팅 수요 대응 책임자로 추정(공시 기준)",
+     "source": "공시"
+    },
+    {
+     "name": "강현구",
+     "role": "전무, 소프트웨어사업부장",
+     "why": "AI 관련 SW 개발 사업 담당(공시 기준)",
+     "source": "공시"
+    }
+   ],
+   "articles": []
+  },
+  {
+   "company": "시큐아이",
+   "interest_summary": "시큐아이는 하드웨어 중심 네트워크 보안 회사에서 'AI 기반 초연결 보안 플랫폼' 기업으로 옮겨가려 한다(시큐아이 맥스 서밋 2026, 정삼용 대표). 2026년을 'AI 대 AI' 보안 경쟁의 해로 보고, AI 기반 통합 위협 대응 플랫폼 'TARP'로 보안관제센터를 AI SOC로 고도화하려 한다. 정 대표는 기업 보안이 AI 사용을 막기보다 섀도우 AI 식별, 입력 데이터 마스킹 등으로 안전한 사용을 돕는 쪽으로 가야 한다고 강조했다.",
+   "themes": [
+    "AI 기반 보안 플랫폼 전환",
+    "AI SOC·위협대응 플랫폼 TARP",
+    "AI 사용 보안(섀도우 AI·데이터 마스킹)",
+    "'AI 대 AI' 위협 대응"
+   ],
+   "talking_points": [
+    "TARP 기반 AI SOC 전환에서 정·오탐 분석 자동화의 현재 수준은?",
+    "섀도우 AI 식별·데이터 마스킹 기능을 삼성 관계사의 외부 생성형 AI 도입에 적용하고 있는가?",
+    "'하이퍼 네트워킹 플랫폼'으로의 전환이 매출 구성을 어떻게 바꾸는가?"
+   ],
+   "key_people": [
+    {
+     "name": "정삼용",
+     "role": "대표이사",
+     "why": "AI 기반 플랫폼 전환과 AI 보안 관점을 직접 제시",
+     "source": "공시"
+    },
+    {
+     "name": "조원용",
+     "role": "상무, 개발실장",
+     "why": "TARP 등 AI 보안 제품 개발 책임(공시 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    },
+    {
+     "name": "김형동",
+     "role": "상무, 보안서비스실장",
+     "why": "보안관제(AI SOC) 서비스 담당(공시 기준, 기사 직접 언급 없음)",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-09-30",
+     "outlet": "아이뉴스24",
+     "title": "시큐아이, AI 기반 차세대 보안 전략 공개",
+     "url": "https://www.inews24.com/view/2011220",
+     "summary": "맥스 서밋 2026, AI 초연결 보안 플랫폼·AI 관제 제시",
+     "category": "발언",
+     "people": [
+      "정삼용"
+     ],
+     "people_roles": {
+      "정삼용": "대표"
+     },
+     "units": [],
+     "unit_hint": "AI SOC(AI 기반 보안관제센터)",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-03-19",
+     "outlet": "바이라인네트워크",
+     "title": "시큐아이, AI·서비스·플랫폼 중심 전략 강화…‘풀스택 보안’ 확장",
+     "url": "https://byline.network/2026/03/19-603/",
+     "summary": "파트너스 데이서 AI·서비스·플랫폼 중심 전략 공유",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "동일 행사의 타 매체 결과는 검색에서 확인하지 못함",
+     "grade": "주요"
+    },
+    {
+     "date": "2025-12-16",
+     "outlet": "바이라인네트워크",
+     "title": "시큐아이 “2026년 사이버 보안, AI 대 AI 경쟁 본격화”",
+     "url": "https://byline.network/2025/12/16-595/",
+     "summary": "2026 보안 트렌드로 'AI 대 AI' 경쟁 등 5대 키워드",
+     "category": "발언",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2025-10-23",
+     "outlet": "바이라인네트워크",
+     "title": "시큐아이, 고성능 방화벽·AI 위협 대응 플랫폼 공개",
+     "url": "https://byline.network/2025/10/23-518/",
+     "summary": "고성능 방화벽과 AI 위협 대응 플랫폼 공개",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "검색 결과에서 동일 사안의 타 매체 보도는 확인하지 못함",
+     "grade": "주요"
+    }
+   ]
+  }
+ ]
+}

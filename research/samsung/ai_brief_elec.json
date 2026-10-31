@@ -1,0 +1,330 @@
+{
+ "companies": [
+  {
+   "company": "삼성전자",
+   "interest_summary": "DS부문은 엔비디아 GPU 5만장 기반 'AI 팩토리'와 옴니버스 디지털트윈·에이전틱 AI로 설계~제조를 통합 최적화하고(송용호 AI센터), HBM4 세계 첫 양산으로 AI 메모리 주도권 회복을 노린다. DX부문은 갤럭시 S26을 '모바일 에이전틱 AI'로 내세워 갤럭시 AI 탑재 기기를 8억대로 늘리고, CTO 산하 AI전략팀·사업부 AX팀을 신설했다. 전사 차원에서는 이재용 회장 주도로 2026년 6월 'AI 대전환'을 선언해 챗GPT·제미나이·클로드를 도입하고, 7월 경영지원 산하 AX팀을 AX/PI센터로 격상했다. 휴머노이드는 미래로봇추진단을 키워 반도체 팹부터 투입하는 방향이다.",
+   "themes": [
+    "반도체 AI 팩토리·디지털트윈(엔비디아)",
+    "HBM4·AI 메모리",
+    "갤럭시 에이전틱 AI",
+    "전사 AX/PI 조직과 외부 생성형 AI 도입",
+    "휴머노이드·팹 로봇"
+   ],
+   "talking_points": [
+    "AX/PI센터 격상(7월) 이후 DS·DX 사업부 AX팀과의 역할 분담, 그리고 '보름→이틀' 같은 성과를 어떤 지표로 관리하나?",
+    "6월 챗GPT·제미나이·클로드 전면 도입 후 보안 체계와 실제 활용률·생산성 측정은 어떻게 하고 있나?",
+    "GPU 5만장 AI 팩토리와 평택 디지털트윈에서 수율·이상대응 개선이 어디까지 확인됐나?",
+    "갤럭시 AI 8억대 목표와 구글·퍼플렉시티 협업 속에서 Samsung Research·AI플랫폼센터의 자체 모델 역할은?"
+   ],
+   "key_people": [
+    {
+     "name": "이재용",
+     "role": "회장",
+     "why": "AX를 '경쟁의 전제조건'으로 규정, 전 관계사 AI 대전환을 주도",
+     "source": "공시"
+    },
+    {
+     "name": "전영현",
+     "role": "대표이사 부회장, DS부문장",
+     "why": "반도체 AI 팩토리·HBM4와 DS 업무방식 AX의 최종 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "노태문",
+     "role": "대표이사 사장, DX부문장",
+     "why": "갤럭시 에이전틱 AI와 DX AX·로봇 전략을 직접 발표",
+     "source": "공시"
+    },
+    {
+     "name": "송용호",
+     "role": "AI센터장(부사장, DS부문)",
+     "why": "GTC 2026서 디지털트윈·에이전틱 AI 자율형 팹을 발표한 DS AI 실무 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "윤장현",
+     "role": "DX부문 CTO 사장 겸 Samsung Research장",
+     "why": "CTO 산하 AI전략팀과 AI·로봇 기술 로드맵을 총괄",
+     "source": "공시"
+    },
+    {
+     "name": "안재용",
+     "role": "AX팀장(상무)",
+     "why": "경영지원 산하 AX팀(현 AX/PI센터 전신) 책임자로 공시됨. 현 센터장 여부는 기사로 미확인",
+     "source": "공시"
+    },
+    {
+     "name": "최승범",
+     "role": "AI플랫폼센터장(부사장)",
+     "why": "DX CTO 산하 AI플랫폼센터(구 디바이스플랫폼센터) 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "강혁",
+     "role": "미래로봇추진단 담당임원(상무)",
+     "why": "확대 중인 미래로봇추진단의 공시상 담당 임원",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "경영지원담당 산하 AX/PI센터(기존 AX팀 확대), DX부문 AX·로봇 사내 잡포스팅",
+     "related": [
+      "안재용",
+      "김상하",
+      "김영상",
+      "정주영"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2026-07-14",
+     "outlet": "머니투데이",
+     "title": "\"보름 걸리던 업무 이틀만에\"..AX·로봇 조직에 힘싣는 삼성, 왜?",
+     "url": "https://www.mt.co.kr/article/2026071414230588223",
+     "summary": "AX팀을 AX/PI센터로 격상, DX 디지털트윈 HPC 517대로 TV 검증 15일→2일",
+     "category": "조직"
+    },
+    {
+     "people": [
+      "이재용"
+     ],
+     "people_roles": {
+      "이재용": "회장"
+     },
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직 신설, DX부문 6/12부터 외부 생성형 AI 제공",
+     "related": [],
+     "confirm": 10,
+     "single_source_note": "",
+     "grade": "1차",
+     "date": "2026-06-09",
+     "outlet": "삼성전자 뉴스룸",
+     "title": "삼성 AI 대전환 모든 업무에 AI 도입 본격화",
+     "url": "https://news.samsung.com/kr/삼성-ai-대전환-모든-업무에-ai-도입-본격화",
+     "summary": "전 관계사 업무에 AI 전면 도입, 챗GPT·제미나이·클로드 도입과 사장단·임원 AX 교육",
+     "category": "도입"
+    },
+    {
+     "people": [],
+     "people_roles": {},
+     "units": [
+      "미래로봇추진단"
+     ],
+     "unit_hint": "",
+     "related": [
+      "강혁"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2026-05-08",
+     "outlet": "헤럴드경제",
+     "title": "‘삼성표’ 휴머노이드 개발 박차…몸집 불리는 미래로봇추진단",
+     "url": "https://www.heraldk.com/article/2026050814000059794",
+     "summary": "미래로봇추진단 확대, 자체 휴머노이드 개발과 반도체 공정 투입 추진",
+     "category": "사업"
+    },
+    {
+     "people": [
+      "송용호"
+     ],
+     "people_roles": {
+      "송용호": "DS부문 AI센터장(부사장)"
+     },
+     "units": [
+      "AI센터"
+     ],
+     "unit_hint": "",
+     "related": [
+      "송용호",
+      "류경동",
+      "이근호",
+      "이종열",
+      "최창규"
+     ],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2026-03-17",
+     "outlet": "헤럴드경제",
+     "title": "[영상] 삼성, 엔비디아와 구축할 미래 반도체 팹 최초 공개…“세계 최고 고품질 칩 생산” [GTC 2026]",
+     "url": "https://www.heraldk.com/article/2026031716561734753",
+     "summary": "GTC 2026서 옴니버스 디지털트윈·에이전틱 AI 기반 자율형 팹 공개",
+     "category": "발언"
+    },
+    {
+     "people": [
+      "노태문"
+     ],
+     "people_roles": {
+      "노태문": "DX부문장 사장"
+     },
+     "units": [],
+     "unit_hint": "MX사업부(Galaxy AI), 구글·퍼플렉시티 협업",
+     "related": [],
+     "confirm": 5,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2026-02-26",
+     "outlet": "머니투데이",
+     "title": "\"갤럭시 S26 시리즈는 3세대 AI폰, '모바일 에이전틱 AI'다\"",
+     "url": "https://www.mt.co.kr/tech/2026/02/26/2026022606231558975",
+     "summary": "S26을 에이전틱 AI폰으로 소개, 갤럭시 AI 탑재 기기 4억대→8억대 목표",
+     "category": "발언"
+    },
+    {
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "메모리사업부 HBM",
+     "related": [],
+     "confirm": 8,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2026-02-12",
+     "outlet": "머니투데이",
+     "title": "삼성전자, 엔비디아에 '세계 최초' HBM4 양산 출하 개시",
+     "url": "https://www.mt.co.kr/industry/2026/02/12/2026021215150041209",
+     "summary": "1c D램 기반 HBM4 세계 첫 양산 출하, 올해 HBM 매출 3배 이상 목표",
+     "category": "사업"
+    },
+    {
+     "people": [
+      "이재용"
+     ],
+     "people_roles": {
+      "이재용": "회장"
+     },
+     "units": [
+      "AX팀"
+     ],
+     "unit_hint": "",
+     "related": [
+      "안재용",
+      "김상하",
+      "김영상",
+      "정주영"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2026-02-12",
+     "outlet": "머니투데이",
+     "title": "이재용 회장이 찍은 'AX'…삼성전자, AI로 조직 체질 바꾼다",
+     "url": "https://www.mt.co.kr/industry/2026/02/12/2026021215152082641",
+     "summary": "이재용 신년 사장단 만찬서 AX 강조, R&D부터 재무 백오피스까지 AI 적용 검토",
+     "category": "발언"
+    },
+    {
+     "people": [
+      "전영현",
+      "노태문"
+     ],
+     "people_roles": {
+      "전영현": "대표이사 부회장, DS부문장",
+      "노태문": "대표이사 사장, DX부문장"
+     },
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 6,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2026-01-01",
+     "outlet": "헤럴드경제",
+     "title": "삼성전자 투톱 “AI 시대 맞춰 반도체 기술·업무 방식 대혁신”",
+     "url": "https://www.heraldk.com/article/2026010116440600208",
+     "summary": "전영현·노태문 신년사, AI 반도체 수요 대응과 AX로 일하는 방식 혁신 강조",
+     "category": "발언"
+    },
+    {
+     "people": [],
+     "people_roles": {},
+     "units": [
+      "AX팀"
+     ],
+     "unit_hint": "DX부문 CTO 산하 AI전략팀, DA·VD·MX 사업부 AX팀, 개발팀 AI전략그룹",
+     "related": [
+      "안재용",
+      "김상하",
+      "김영상",
+      "정주영",
+      "윤장현"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2025-11-27",
+     "outlet": "다음뉴스 전재(원 매체 표기 미확인)",
+     "title": "[단독] 삼성전자 조직 개편 핵심은 'AI'…'AI 드리븐 컴퍼니'로 첫발",
+     "url": "https://v.daum.net/v/20251127170946289?from=naver",
+     "summary": "DX CTO 산하 AI전략팀, 사업부별 AX팀·AI전략그룹 신설, DS HBM 조직 재편",
+     "category": "조직"
+    },
+    {
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2025-11-25",
+     "outlet": "한국경제",
+     "title": "삼성, AI·로봇 인재 전면에…30대 상무·40대 부사장 대거 발탁",
+     "url": "https://www.hankyung.com/article/2025112551141",
+     "summary": "2026년 임원인사서 AI·로봇 인재 대거 승진, 젊은 기술 리더 발탁",
+     "category": "인사"
+    },
+    {
+     "people": [
+      "윤장현",
+      "박홍근"
+     ],
+     "people_roles": {
+      "윤장현": "DX부문 CTO 사장 겸 Samsung Research장",
+      "박홍근": "SAIT 원장"
+     },
+     "units": [],
+     "unit_hint": "DX부문 CTO, Samsung Research, SAIT",
+     "related": [
+      "윤장현",
+      "박홍근"
+     ],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2025-11-24",
+     "outlet": "헤럴드경제",
+     "title": "삼성전자, 검증된 AI·로봇 리더 전진배치…HBM 정상화 이끈 인재도 발탁",
+     "url": "https://www.heraldk.com/article/2025112417555046399",
+     "summary": "윤장현 DX CTO 겸 삼성리서치장 사장 승진, 박홍근 SAIT 원장 영입",
+     "category": "인사"
+    },
+    {
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "DS부문 반도체 AI 팩토리",
+     "related": [
+      "송용호"
+     ],
+     "confirm": 6,
+     "single_source_note": "",
+     "grade": "주요",
+     "date": "2025-10-31",
+     "outlet": "머니투데이",
+     "title": "삼성전자, 엔비디아 손잡고 세계 최대 반도체 'AI 팩토리' 구축",
+     "url": "https://www.mt.co.kr/industry/2025/10/31/2025103114423691846",
+     "summary": "엔비디아 GPU 5만장 도입해 반도체 AI 팩토리·옴니버스 디지털트윈 구축",
+     "category": "파트너십"
+    }
+   ]
+  }
+ ]
+}

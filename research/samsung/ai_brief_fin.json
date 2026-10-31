@@ -1,0 +1,628 @@
+{
+ "companies": [
+  {
+   "company": "삼성생명",
+   "interest_summary": "삼성생명은 2026년 7월 사장 직속 AI센터를 AX·PI센터로 재편했다. 경영지원실 산하로 옮기면서 PI, 데이터 거버넌스, IT 기능을 합쳤고 조직 규모는 약 2배가 됐다. 현장에서는 컨설턴트(FC) 쪽 생성형 AI 적용이 가장 눈에 띈다. 5단계 AI 교육체계를 만들었고, 금융위 혁신금융서비스로 지정된 LLM 기반 'AI롤플레잉'을 출시했다. 6월 1일부터는 AI위원회 세칙과 AI 윤리·위험관리 규정을 시행하고 있다. 기간 내 AI 언더라이팅이나 보험금 심사 AI를 다룬 기사는 찾지 못했다.",
+   "themes": [
+    "AX·PI센터 재편(AI+PI+데이터+IT)",
+    "컨설턴트 생성형 AI 교육·AI롤플레잉",
+    "AI 거버넌스(AI위원회·위험관리 규정)",
+    "외부 AI 인재 영입"
+   ],
+   "talking_points": [
+    "AX·PI센터가 PI·데이터 거버넌스·IT까지 통합한 뒤 과제 발굴부터 운영까지 실제 의사결정 구조는 어떻게 바뀌었나?",
+    "혁신금융서비스로 지정된 AI롤플레잉을 고객 대면 상담(생성형 AI 자문)으로 넓힐 계획이 있나?",
+    "AI 윤리·위험관리 규정의 고위험 AI 승인 절차는 언더라이팅·보험금 심사 AI에 어떻게 적용되나?",
+    "AI센터가 AX·PI센터로 바뀐 뒤 이팔훈 부사장과 AI기획·추진·혁신 3개 팀의 역할은 어떻게 나뉘나?"
+   ],
+   "key_people": [
+    {
+     "name": "이팔훈",
+     "role": "부사장, AI센터장",
+     "why": "AI센터(현 AX·PI센터) 총괄 책임자",
+     "source": "공시"
+    },
+    {
+     "name": "김성철",
+     "role": "상무, AI혁신팀장",
+     "why": "휴매나 출신 외부 영입 AI 전문가, 혁신 과제 담당",
+     "source": "공시"
+    },
+    {
+     "name": "손익준",
+     "role": "상무, AI기획팀장",
+     "why": "AI 전략·기획 담당",
+     "source": "공시"
+    },
+    {
+     "name": "양경용",
+     "role": "상무, AI추진팀장",
+     "why": "AI 현업 적용 추진",
+     "source": "공시"
+    },
+    {
+     "name": "이완삼",
+     "role": "부사장, 경영지원실장",
+     "why": "AX·PI센터가 경영지원실 산하로 편제됨",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-07-10",
+     "outlet": "비즈워치",
+     "title": "[단독]삼성 금융계열사도 AI 드라이브…생명·화재·카드 AI 조직개편",
+     "url": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023",
+     "summary": "7월 개편으로 AI센터를 AX·PI센터로 재편, 경영지원실 산하로 이동",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [
+      "AI센터",
+      "경영지원실"
+     ],
+     "unit_hint": "AX·PI센터(기존 AI센터 재편)",
+     "related": [
+      "이팔훈",
+      "손익준",
+      "양경용",
+      "김성철",
+      "이완삼"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "1차"
+    },
+    {
+     "date": "2026-09-02",
+     "outlet": "디지털데일리",
+     "title": "AI 도입 넘어 데이터·기간계·통제로…KB증권·SKT·삼성생명 AX 현장",
+     "url": "https://www.ddaily.co.kr/page/view/2026090209215155583",
+     "summary": "AX·PI센터에 PI·데이터 거버넌스·IT 통합, 조직 약 2배로 확대",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [
+      "AI센터"
+     ],
+     "unit_hint": "AX·PI센터(PI·데이터 거버넌스·IT 기능 통합)",
+     "related": [
+      "이팔훈",
+      "김진형"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "한국경제",
+     "title": "전담조직 꾸리고 전문가 영입…AX에 사활 건 생명보험사들",
+     "url": "https://www.hankyung.com/article/2026060965031",
+     "summary": "사장 직속 100여명 AI센터, 이팔훈 총괄·휴매나 출신 김성철 영입",
+     "category": "인사",
+     "people": [
+      "이팔훈",
+      "김성철"
+     ],
+     "people_roles": {
+      "이팔훈": "부사장(AI센터 총괄)",
+      "김성철": "상무(AI혁신팀장)"
+     },
+     "units": [
+      "AI센터",
+      "AI혁신팀",
+      "AI기획팀",
+      "AI추진팀"
+     ],
+     "unit_hint": "",
+     "related": [
+      "이팔훈",
+      "김성철",
+      "손익준",
+      "양경용"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-05-03",
+     "outlet": "한국금융신문",
+     "title": "삼성생명, 이팔훈 부사장 AI센터장 선임…인프라 고도화 [금융권 AI 人포그래픽]",
+     "url": "https://www.fntimes.com/html/view.php?ud=202605030031184004dd55077bc2_18",
+     "summary": "이팔훈 부사장 AI센터장 선임, AI 인프라 고도화",
+     "category": "인사",
+     "people": [
+      "이팔훈"
+     ],
+     "people_roles": {
+      "이팔훈": "부사장, AI센터장"
+     },
+     "units": [
+      "AI센터"
+     ],
+     "unit_hint": "",
+     "related": [
+      "이팔훈"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-09-07",
+     "outlet": "SBS Biz",
+     "title": "AI 고객과 보험상담 연습…삼성생명, 'AI롤플레잉' 출시",
+     "url": "https://biz.sbs.co.kr/amp/article/20000333087",
+     "summary": "클레온과 LLM 기반 AI 가상고객 상담훈련 출시, 금융위 혁신금융 지정",
+     "category": "도입",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "컨설턴트 교육(혁신금융서비스 지정, 클레온 협업)",
+     "related": [],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-08-06",
+     "outlet": "디지털데일리",
+     "title": "삼성생명, 컨설턴트 생성형 AI 교육 강화…영업 현장 적용 확대",
+     "url": "https://www.ddaily.co.kr/page/view/2026080609200110920",
+     "summary": "FC 대상 5단계 생성형 AI 역량강화 교육체계 운영",
+     "category": "도입",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "컨설턴트(FC) AI 역량강화 교육체계",
+     "related": [],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-09-21",
+     "outlet": "메트로경제",
+     "title": "보험금 심사까지 AI가 돕는데…위험관리 공개 37곳 중 3곳",
+     "url": "https://www.metroseoul.co.kr/article/20260921500298",
+     "summary": "AI위원회 세칙·AI 윤리 및 위험관리 규정 시행, 고위험 AI 별도 승인",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "AI위원회(세칙), AI 윤리 및 위험관리 규정",
+     "related": [
+      "이팔훈",
+      "이지선",
+      "황은아"
+     ],
+     "confirm": 2,
+     "single_source_note": "삼성생명 규정 세부(6월 1일 시행·11개 위험유형)는 이 기사에서만 확인됨",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "삼성화재해상보험",
+   "interest_summary": "삼성화재는 2026년 7월 고객DX혁신실을 AX·PI센터로 재편해 경영지원실 산하에 두었다. 무게중심이 DX에서 AX로 옮겨 간 셈이다. 보험금 심사와 보상 쪽 적용이 가장 구체적이다. 장기보험 의료심사 AI '장기U'를 도입했고 실손 자동지급 체계로 청구~지급을 평균 10분으로 줄였다. 10월에는 설계사용 'AI 어드바이저'를 내놨고, 앞으로 상품 제안·계약·보상까지 넓힐 계획이다. AI위원회와 위험관리 전담조직을 두고, 고위험 AI는 위원회가 심의하며 사람이 최종 판단한다는 원칙도 공개했다.",
+   "themes": [
+    "AX·PI센터 재편(고객DX혁신실→AX)",
+    "보험금 심사·보상 AI(장기U, 자동지급)",
+    "설계사 AI 어드바이저",
+    "AI 거버넌스·인간 최종판단 원칙"
+   ],
+   "talking_points": [
+    "고객DX혁신실이 AX·PI센터로 바뀌면서 한호규 부사장 체제의 역할과 범위는 어떻게 달라졌나?",
+    "장기U가 암 심사 등에서 실제로 대체한 비중과 오류·이의제기 대응 절차는?",
+    "AI 어드바이저를 상품 제안·계약 단계로 넓힐 때 판매 규제(설명의무)는 어떻게 관리하나?",
+    "고위험 AI 심의 대상에 언더라이팅 모델이 들어가나?"
+   ],
+   "key_people": [
+    {
+     "name": "한호규",
+     "role": "부사장, 고객DX혁신실장",
+     "why": "AX·PI센터로 재편된 고객DX혁신실의 책임자(현 직함은 확인 필요)",
+     "source": "공시"
+    },
+    {
+     "name": "황보현우",
+     "role": "상무, AI추진팀장",
+     "why": "AI 과제 추진 실무 책임",
+     "source": "공시"
+    },
+    {
+     "name": "김철진",
+     "role": "상무, 고객DX전략팀장",
+     "why": "DX→AX 전략 실무",
+     "source": "공시"
+    },
+    {
+     "name": "구영민",
+     "role": "부사장, 경영지원실장",
+     "why": "AX·PI센터가 경영지원실 산하로 편제됨",
+     "source": "공시"
+    },
+    {
+     "name": "이문화",
+     "role": "대표이사",
+     "why": "AI 어드바이저 등 전사 AI 영업지원 발표 주체",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-07-10",
+     "outlet": "비즈워치",
+     "title": "[단독]삼성 금융계열사도 AI 드라이브…생명·화재·카드 AI 조직개편",
+     "url": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023",
+     "summary": "고객DX혁신실을 AX·PI센터로 재편, 경영지원실 산하로 편제",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [
+      "고객DX혁신실",
+      "경영지원실"
+     ],
+     "unit_hint": "AX·PI센터(기존 고객DX혁신실 재편)",
+     "related": [
+      "한호규",
+      "김철진",
+      "황보현우",
+      "구영민"
+     ],
+     "confirm": 1,
+     "single_source_note": "삼성화재 개편은 비즈워치 단독 보도로, 다른 매체의 교차 보도는 찾지 못함",
+     "grade": "1차"
+    },
+    {
+     "date": "2026-10-26",
+     "outlet": "토요경제",
+     "title": "삼성화재, AI로 고객 상담·계약관리 지원…설계사 영업체계 고도화",
+     "url": "https://sateconomy.co.kr/news/view/1065590159514131",
+     "summary": "설계사용 'AI 어드바이저' 도입: 상담 대상·시점 제안, AI 롤플레잉",
+     "category": "도입",
+     "people": [
+      "이문화"
+     ],
+     "people_roles": {
+      "이문화": "대표"
+     },
+     "units": [],
+     "unit_hint": "설계사(RC) 영업지원 시스템",
+     "related": [],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2025-10-21",
+     "outlet": "한국경제",
+     "title": "삼성화재, AI 의료보험 심사 '장기U' 도입…병원 동행·보험료 환급 상품도 출시",
+     "url": "https://www.hankyung.com/article/2025102120331",
+     "summary": "장기보험 의료심사 AI '장기U' 도입",
+     "category": "도입",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "장기보험 의료(상병)심사",
+     "related": [
+      "김범중",
+      "노재영"
+     ],
+     "confirm": 1,
+     "single_source_note": "장기U 도입 자체를 다룬 다른 매체 기사는 검색에서 찾지 못함",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-04-06",
+     "outlet": "디지털데일리",
+     "title": "삼성화재, 실손보험 10분 지급 시대…24시간 자동 보상 체계 구축",
+     "url": "https://www.ddaily.co.kr/page/view/2026040609220771469",
+     "summary": "실손 청구~지급 평균 10분, 24시간 자동 보상 체계(청구 전산화 기반)",
+     "category": "도입",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "보상(실손 자동지급)",
+     "related": [
+      "김범중"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-09-21",
+     "outlet": "메트로경제",
+     "title": "보험금 심사까지 AI가 돕는데…위험관리 공개 37곳 중 3곳",
+     "url": "https://www.metroseoul.co.kr/article/20260921500298",
+     "summary": "AI위원회·위험관리 전담조직, 고위험 AI 심의·인간 최종판단 원칙",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "AI위원회, AI 위험관리 전담조직",
+     "related": [
+      "강윤미",
+      "이용복"
+     ],
+     "confirm": 2,
+     "single_source_note": "삼성화재 거버넌스 세부는 이 기사에서만 확인됨",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "삼성증권",
+   "interest_summary": "공개 기사 적음. 삼성증권 자체 AI 조직이나 책임자를 다룬 기사는 기간 내에 찾지 못했다. 가장 최근(2026-10-29) 동향은 C-Lab Outside에서 뽑힌 퀀팃과 손잡고 AI 기반 비대면 투자상담과 모니모 투자 시그널을 검토하는 것이다. 다만 출시 여부와 일정은 미정이다. 고객 소통과 콘텐츠에 생성형 AI를 쓰는 것은 업계 기획기사에서 확인된다. 그룹 'AI 대전환' 방침에 따라 AI 전담조직 신설이 예상되지만 실제 신설 여부는 확인되지 않았다.",
+   "themes": [
+    "AI 투자정보·비대면 상담(퀀팃 협력)",
+    "생성형 AI 기반 고객 콘텐츠",
+    "그룹 AI 대전환 대응"
+   ],
+   "talking_points": [
+    "퀀팃과의 AI 투자 시그널을 비대면 상담에 넣을 때 투자권유 규제(적합성·설명의무)는 어떻게 다룰 계획인가?",
+    "그룹 방침의 'AI 전담조직'을 증권은 어느 조직(디지털&연금부문 등)에 두었나?",
+    "생성형 AI 기반 자문(AI PB)을 할 계획이 있나?"
+   ],
+   "key_people": [
+    {
+     "name": "이찬우",
+     "role": "부사장, 디지털&연금부문장",
+     "why": "디지털·비대면 채널 총괄(AI 서비스 적용 예상 조직)",
+     "source": "공시"
+    },
+    {
+     "name": "백승목",
+     "role": "상무, 디지털자산관리본부장",
+     "why": "비대면 자산관리 담당",
+     "source": "공시"
+    },
+    {
+     "name": "박종문",
+     "role": "사장, 대표이사",
+     "why": "전사 전략 결정권자",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-10-29",
+     "outlet": "디지털데일리",
+     "title": "삼성증권, AI 투자정보 서비스 확대 추진…퀀팃과 기술 협력",
+     "url": "https://www.ddaily.co.kr/page/view/2026102909573519668",
+     "summary": "C-Lab Outside 선정 퀀팃과 AI 비대면 투자상담·모니모 시그널 검토",
+     "category": "파트너십",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "비대면 투자상담",
+     "related": [
+      "이찬우",
+      "백승목"
+     ],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "이코노미스트",
+     "title": "‘증권사 AI’가 PB 된다…투자 조언도 자산관리도 척척[AI, 회사를 다시 쓴다]④",
+     "url": "https://economist.co.kr/article/view/ecn202606090042",
+     "summary": "증권사 AI PB 흐름; 삼성증권은 생성형 AI로 고객 소통·콘텐츠 확대",
+     "category": "도입",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "고객 소통·콘텐츠(유튜브)",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "업계 기획기사 속 삼성증권 언급으로 다른 매체 교차 확인 못함",
+     "grade": "기타"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "뉴시스",
+     "title": "삼성 모든 관계사 사장단·임원들, 'AI 집중교육' 받는다…\"AI 전담조직도 신설\"",
+     "url": "https://www.newsis.com/view/NISX20260609_0003661817",
+     "summary": "삼성 전 관계사 'AI 대전환': 사장단 AX 부트캠프, 사별 AI 전담조직 신설",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "삼성카드",
+   "interest_summary": "공개 기사 적음. 삼성카드는 2026년 7월 전사 AI 전환과 프로세스 혁신을 맡는 AX·PI센터를 새로 만들었고, 경영지원실 산하에 두었다. 모니모를 총괄하는 황성원 부사장이 센터장을 겸한다. 그래서 모니모 플랫폼, 데이터 역량, AI 전략을 한데 묶는 것이 핵심 과제로 꼽힌다. 기간 내에 생성형 AI 상담 챗봇 출시나 AI 에이전트 결제 실증을 보도한 기사는 찾지 못했다.",
+   "themes": [
+    "AX·PI센터 신설(황성원 겸임)",
+    "모니모 플랫폼·데이터 연계",
+    "AI 마케팅/큐레이션(기간 외 보도)"
+   ],
+   "talking_points": [
+    "AX·PI센터와 AI/빅데이터담당·모니모본부는 업무를 어떻게 나누나?",
+    "경쟁사(신한 AI 에이전트 페이, KB AI센터)와 비교해 AI 에이전트 결제 계획은?",
+    "고객 상담에 생성형 AI(가우스 등)를 적용하는 검토는 어디까지 왔나?"
+   ],
+   "key_people": [
+    {
+     "name": "황성원",
+     "role": "부사장, 모니모본부장 겸 디지털혁신실장(기사: AX·PI센터 겸임)",
+     "why": "신설 AX·PI센터 책임자",
+     "source": "기사"
+    },
+    {
+     "name": "이우성",
+     "role": "상무, AI/빅데이터담당",
+     "why": "AI 모델·데이터 실무 책임",
+     "source": "공시"
+    },
+    {
+     "name": "고상경",
+     "role": "상무, 데이터BIZ담당",
+     "why": "데이터 사업화 담당",
+     "source": "공시"
+    },
+    {
+     "name": "김태선",
+     "role": "부사장, 경영지원실장",
+     "why": "AX·PI센터가 경영지원실 산하로 편제됨",
+     "source": "공시"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-07-10",
+     "outlet": "비즈워치",
+     "title": "[단독]삼성 금융계열사도 AI 드라이브…생명·화재·카드 AI 조직개편",
+     "url": "https://news.bizwatch.co.kr/article/finance/2026/07/10/0023",
+     "summary": "생명·화재와 함께 AI 중심 조직 개편(AX·PI센터, 경영지원실 산하)",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [
+      "경영지원실"
+     ],
+     "unit_hint": "AX·PI센터(신설)",
+     "related": [
+      "황성원",
+      "이우성",
+      "김태선"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "1차"
+    },
+    {
+     "date": "2026-07-22",
+     "outlet": "뉴스웨이(다음)",
+     "title": "삼성카드도 'AX·PI센터' 신설…황성원 부사장의 '3가지 과제'",
+     "url": "https://v.daum.net/v/20260722150304553",
+     "summary": "AX·PI센터 신설, 모니모 총괄 황성원 부사장 겸임; AI·데이터 과제",
+     "category": "인사",
+     "people": [
+      "황성원"
+     ],
+     "people_roles": {
+      "황성원": "부사장(모니모 총괄, AX·PI센터 겸임)"
+     },
+     "units": [
+      "모니모본부",
+      "디지털혁신실"
+     ],
+     "unit_hint": "AX·PI센터(신설)",
+     "related": [
+      "황성원",
+      "이우성",
+      "고상경"
+     ],
+     "confirm": 2,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "뉴시스",
+     "title": "삼성 모든 관계사 사장단·임원들, 'AI 집중교육' 받는다…\"AI 전담조직도 신설\"",
+     "url": "https://www.newsis.com/view/NISX20260609_0003661817",
+     "summary": "삼성 전 관계사 'AI 대전환': 사장단 AX 부트캠프, 사별 AI 전담조직 신설",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    }
+   ]
+  },
+  {
+   "company": "삼성자산운용",
+   "interest_summary": "공개 기사 적음. 사내 AI 조직이나 업무 AI 도입을 다룬 기사는 찾지 못했다(공시 임원 명단에도 없음). 공개된 AI 관련 활동은 투자 상품 쪽이다. KODEX 코리아소버린AI ETF를 상장했고, 김도형 ETF컨설팅본부장이 'AI 병목' 테마로 ETF 라인업을 짜는 데 집중하고 있다고 밝혔다. 그룹 'AI 대전환' 방침이 있지만 운용사 내부 적용 사례는 아직 보도되지 않았다.",
+   "themes": [
+    "AI 테마 ETF(소버린AI·AI 병목)",
+    "ETF 상품 전략 발언",
+    "그룹 AI 대전환 대응(내부 사례 미확인)"
+   ],
+   "talking_points": [
+    "운용(리서치·퀀트)과 내부 업무에 생성형 AI를 어디까지 쓰고 있나?",
+    "그룹 방침의 AI 전담조직을 운용사는 어떻게 꾸렸나?",
+    "'AI 병목' 다음 테마(휴머노이드·로봇 등)는 어떤 데이터로 고르나?"
+   ],
+   "key_people": [
+    {
+     "name": "김도형",
+     "role": "ETF컨설팅본부장",
+     "why": "AI 테마 ETF 전략의 대외 발언 창구",
+     "source": "기사"
+    }
+   ],
+   "articles": [
+    {
+     "date": "2026-08-12",
+     "outlet": "머니투데이",
+     "title": "\"AI 계속 간다\"… 1등 운용사가 추천하는 투자전략은",
+     "url": "https://www.mt.co.kr/article/2026081216121969554",
+     "summary": "김도형 본부장: AI 병목 수혜 업종을 ETF로 구현, 다음 병목 탐색",
+     "category": "발언",
+     "people": [
+      "김도형"
+     ],
+     "people_roles": {
+      "김도형": "ETF컨설팅본부장"
+     },
+     "units": [],
+     "unit_hint": "ETF컨설팅본부",
+     "related": [],
+     "confirm": 1,
+     "single_source_note": "인터뷰 기사(단독 발언)",
+     "grade": "주요"
+    },
+    {
+     "date": "2025-10-20",
+     "outlet": "더팩트",
+     "title": "'소버린 AI' 품은 삼성운용 \"오천피 주도주 확신, 100조 시대 첫 상품\"",
+     "url": "https://news.tf.co.kr/read/economy/2253596.htm",
+     "summary": "KODEX 코리아소버린AI ETF 상장, 소버린 AI 테마 투자",
+     "category": "사업",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "",
+     "related": [],
+     "confirm": 4,
+     "single_source_note": "",
+     "grade": "주요"
+    },
+    {
+     "date": "2026-06-09",
+     "outlet": "뉴시스",
+     "title": "삼성 모든 관계사 사장단·임원들, 'AI 집중교육' 받는다…\"AI 전담조직도 신설\"",
+     "url": "https://www.newsis.com/view/NISX20260609_0003661817",
+     "summary": "삼성 전 관계사 'AI 대전환': 사장단 AX 부트캠프, 사별 AI 전담조직 신설",
+     "category": "조직",
+     "people": [],
+     "people_roles": {},
+     "units": [],
+     "unit_hint": "관계사별 AI 전담조직(그룹 공통 방침)",
+     "related": [],
+     "confirm": 3,
+     "single_source_note": "",
+     "grade": "주요"
+    }
+   ]
+  }
+ ]
+}

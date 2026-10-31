@@ -19,6 +19,8 @@ compatibility: Python 3.9+ (openpyxl은 명단 재생성 때만 필요), OpenDAR
 | `scripts/collect.py` | DART 수집. 결과는 그룹별 JSON (`data/001_삼성.json`), 모든 응답은 `data/cache/`에 캐시 |
 | `scripts/report_doc.py` | 공시 원문(document.xml)에서 임원 표를 읽는다. API가 등기임원만 줄 때 미등기임원을 채운다 |
 | `scripts/build_html.py` | 수집 결과를 단일 HTML로 렌더링 (`assets/orgchart_template.html` 사용) |
+| `scripts/prev_roster.py` | 1년 전 같은 보고서의 임원 명단(`data/prev/<corp_code>.json`). 페이지가 신규·승진·이동을 표시한다 |
+| `references/unit_structure.json` | 담당업무만으로 알 수 없는 조직 관계(사업부를 어느 부문 밑에 둘지, 같은 조직의 다른 표기, 조직장 별칭) |
 | `scripts/build_groups.py` | 새해 공정위 발표 엑셀(별첨2·별첨5)로 `groups_<연도>.json` 재생성 |
 
 ## 작업 순서
@@ -98,3 +100,14 @@ python scripts/build_groups.py --designation 별첨2.xlsx --affiliates 별첨5.x
 - **"조직도"의 범위**: DART에는 부서 단위 조직도가 없다. 공시된 것은 임원 명단과 담당업무다. 여기서 만드는 조직도는
   이 담당업무를 묶어 재구성한 것이므로, 사용자에게도 그렇게 설명한다.
 - **개인정보**: 페이지에는 공시된 범위(이름, 생년월, 경력)만 담는다. 다른 출처에서 개인정보를 덧붙이지 않는다.
+
+## 보도·브리핑 연계 (선택)
+
+`build_html.py`에 다음을 주면 해당 그룹 페이지에 탭이 늘어난다. 없으면 공시만으로 만든다.
+
+- `--news <json>`: 조직·인사 기사(제목·매체·날짜·URL·요약·조직·인물·확인 건수). 조직 행과 인물 시트에 연결되고, 공시 이후 신설 조직은 "보도상 신설" 점선 행으로 보인다. `--annotate-news`를 주면 판정(확정/전망, 같은 사건 묶음, 신설일)을 같은 파일에 적어 검수할 수 있게 한다.
+- `--briefs <json ...>`: 계열사별 AI·AX 브리핑(관심사 요약, 미팅 질문, 만날 사람, 근거 기사). 수집 규칙은 `research/samsung/ai_brief_spec.md`.
+- 사람 연결은 그 회사 공시 명단에서 이름이 하나뿐일 때만 붙인다. 기사에 '○○장'으로 나온 사람은 공시에 장이 없을 때 "보도 기반 장"으로 표시한다.
+- 기능 태그·결정권자·AX 책임 라인·관심사 요약은 추정이므로 화면에서 공시 정보 아래 "추정 · 보도 기반" 영역에 둔다.
+
+페이지를 바꾼 뒤에는 `node research/samsung/click_test.js <html 절대경로>`로 모든 버튼·링크를 실제로 눌러 본다(스크린샷 검토만으로는 링크 오류를 못 잡는다).

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ITB Reviewer</title>
+<style>
+:root{
+  --bg:#f6f7f9;--panel:#fff;--text:#16181d;--muted:#5d6470;--line:#e3e6eb;--accent:#1f5eff;--accent-soft:#e8efff;
+  --high:#c62828;--high-bg:#fdecec;--med:#a15c00;--med-bg:#fff4e0;--low:#1b7a3d;--low-bg:#e7f6ec;--none:#5d6470;--none-bg:#eef0f3;
+  --radius:10px;--shadow:0 1px 2px rgba(16,24,40,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1115;--panel:#171a21;--text:#e7e9ee;--muted:#9aa3b2;--line:#2a2f3a;--accent:#7aa2ff;--accent-soft:#1d2740;
+    --high:#ff8a80;--high-bg:#3a1d1d;--med:#ffc266;--med-bg:#3a2c12;--low:#7ad694;--low-bg:#163222;--none:#9aa3b2;--none-bg:#232833;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+header h1{font-size:17px;margin:0;font-weight:700}
+header .sub{color:var(--muted);font-size:13px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.engine-claude{background:var(--accent-soft);color:var(--accent)}
+.engine-rule{background:var(--none-bg);color:var(--muted)}
+.layout{display:grid;grid-template-columns:280px 1fr;gap:16px;padding:16px 20px;max-width:1500px;margin:0 auto}
+@media (max-width:900px){.layout{grid-template-columns:1fr;padding:12px 16px}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.drop{border:2px dashed var(--line);border-radius:var(--radius);padding:22px 14px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+.drop.over,.drop:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.drop strong{display:block;color:var(--text);margin-bottom:4px}
+.side{padding:14px;display:flex;flex-direction:column;gap:12px;align-self:start;position:sticky;top:84px;max-height:calc(100vh - 100px);overflow:auto}
+@media (max-width:900px){.side{position:static;max-height:none}}
+.doclist{display:flex;flex-direction:column;gap:6px}
+.doc{padding:10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--panel)}
+.doc.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.doc .name{font-weight:600;word-break:break-all}
+.doc .meta{font-size:12px;color:var(--muted);margin-top:2px}
+.main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.empty{padding:60px 20px;text-align:center;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:700px){.cards{grid-template-columns:repeat(2,1fr)}}
+.card{padding:14px}
+.card .k{font-size:12px;color:var(--muted)}
+.card .v{font-size:24px;font-weight:700;margin-top:2px}
+.v.high{color:var(--high)}.v.medium{color:var(--med)}.v.low{color:var(--low)}
+.section{padding:16px}
+.section h2{font-size:15px;margin:0 0 10px}
+.toprisks{margin:8px 0 0;padding-left:18px}
+.toprisks li{margin:3px 0}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:4px 12px;border-radius:999px;cursor:pointer;font-size:13px}
+.chip.on{background:var(--text);color:var(--panel);border-color:var(--text)}
+.spacer{flex:1}
+button.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.btn:disabled{opacity:.5;cursor:default}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+tr.item{cursor:pointer}
+tr.item:hover td{background:var(--bg)}
+tr.cat td{background:var(--bg);font-weight:700;font-size:12px;color:var(--muted);padding:6px 10px}
+td.label{white-space:nowrap;font-weight:600}
+td.value{max-width:420px}
+.notfound{color:var(--muted);font-style:italic}
+.risk{padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.risk.high{background:var(--high-bg);color:var(--high)}.risk.medium{background:var(--med-bg);color:var(--med)}
+.risk.low{background:var(--low-bg);color:var(--low)}.risk.none,.risk.unknown{background:var(--none-bg);color:var(--none)}
+.pagelink{color:var(--accent);cursor:pointer;text-decoration:underline;margin-right:4px;white-space:nowrap}
+tr.detail td{background:var(--bg);font-size:13px}
+.quote{border-left:3px solid var(--accent);padding:4px 10px;margin:6px 0;color:var(--text);background:var(--panel);border-radius:0 6px 6px 0}
+.muted{color:var(--muted)}
+.status{display:flex;align-items:center;gap:10px;padding:14px 16px}
+.spin{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msgs{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto}
+.msg{padding:10px 12px;border-radius:10px;white-space:pre-wrap;word-break:break-word}
+.msg.user{background:var(--accent-soft);align-self:flex-end;max-width:85%}
+.msg.bot{background:var(--bg);border:1px solid var(--line)}
+.trace{font-size:12px;color:var(--muted);margin-top:6px}
+.passage{font-size:13px;margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.ask{display:flex;gap:8px}
+.ask input{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);font-size:14px}
+.suggest{display:flex;flex-wrap:wrap;gap:6px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal.open{display:flex}
+.modal .box{background:var(--panel);border-radius:var(--radius);max-width:860px;width:100%;max-height:86vh;display:flex;flex-direction:column}
+.modal .head{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.modal pre{margin:0;padding:16px;overflow:auto;white-space:pre-wrap;font-family:inherit;font-size:13px}
+mark{background:#ffe58a;color:#16181d;border-radius:2px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>ITB Reviewer · 입찰안내서 검토</h1>
+    <div class="sub">입찰안내서(ITB)를 올리면 주요 항목을 추출하고 계약 리스크를 판정합니다.</div>
+  </div>
+  <div class="spacer"></div>
+  <span id="engine" class="badge engine-rule">엔진 확인 중</span>
+</header>
+
+<div class="layout">
+  <aside class="panel side">
+    <label class="drop" id="drop">
+      <strong>ITB 파일 올리기</strong>
+      PDF · DOCX · TXT를 끌어다 놓거나 클릭
+      <input type="file" id="file" accept=".pdf,.docx,.txt,.md" hidden>
+    </label>
+    <div class="muted" style="font-size:12px">문서</div>
+    <div class="doclist" id="docs"><div class="muted">아직 올린 문서가 없습니다.</div></div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="panel empty">왼쪽에서 입찰안내서를 올리거나 문서를 선택하세요.</div>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="head">
+      <strong id="mtitle">페이지</strong>
+      <div class="spacer"></div>
+      <button class="btn" id="mprev">이전</button>
+      <button class="btn" id="mnext">다음</button>
+      <button class="btn" id="mclose">닫기</button>
+    </div>
+    <pre id="mbody"></pre>
+  </div>
+</div>
+
+<script>
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const RISK = {high:"높음", medium:"주의", low:"양호", none:"-", unknown:"확인 필요"};
+const STATUS = {queued:"대기", parsing:"문서 읽는 중", extracting:"항목 추출 중", done:"완료", error:"오류"};
+const SUGGEST = ["지체상금 조건과 상한을 정리해줘", "계약자에게 불리한 조항 Top 5는?", "입찰 일정(현장설명회·질의·마감)을 표로", "보증서 종류와 비율, 유효기간은?", "물가변동 조정이 가능한가?"];
+
+let state = {docs:[], current:null, detail:null, cat:"전체", risk:"all", open:new Set(), chat:{}, poll:null, modal:{page:1,total:1,hl:""}};
+
+async function api(path, opt={}) {
+  const r = await fetch(path, opt);
+  if (!r.ok) { let m = r.statusText; try { m = (await r.json()).detail || m } catch {} ; throw new Error(m); }
+  return r.json();
+}
+
+async function loadStatus() {
+  try {
+    const s = await api("/api/status");
+    const el = $("#engine");
+    if (s.llm) { el.className = "badge engine-claude"; el.textContent = "Claude 연결됨 · " + s.model; }
+    else { el.className = "badge engine-rule"; el.textContent = "규칙 엔진 모드 (LLM 미설정)"; el.title = "ANTHROPIC_API_KEY를 설정하면 Claude가 근거를 읽고 추출·답변합니다."; }
+  } catch {}
+}
+
+async function loadDocs() {
+  state.docs = await api("/api/documents");
+  renderDocs();
+}
+
+function renderDocs() {
+  const box = $("#docs");
+  if (!state.docs.length) { box.innerHTML = '<div class="muted">아직 올린 문서가 없습니다.</div>'; return; }
+  box.innerHTML = state.docs.map(d => `
+    <div class="doc ${d.id===state.current?"active":""}" data-id="${d.id}">
+      <div class="name">${esc(d.filename)}</div>
+      <div class="meta">${STATUS[d.status]||d.status}${d.pages?` · ${d.pages}p`:""}${d.status==="done"?` · 높음 ${d.risk_counts.high} · 주의 ${d.risk_counts.medium}`:""}</div>
+    </div>`).join("");
+  box.querySelectorAll(".doc").forEach(el => el.onclick = () => select(el.dataset.id));
+}
+
+async function upload(file) {
+  const fd = new FormData(); fd.append("file", file);
+  try {
+    const d = await api("/api/documents", {method:"POST", body:fd});
+    await loadDocs(); select(d.id);
+  } catch (e) { alert("업로드 실패: " + e.message); }
+}
+
+async function select(id) {
+  state.current = id; state.open = new Set(); state.cat = "전체"; state.risk = "all";
+  renderDocs(); await refresh();
+}
+
+async function refresh() {
+  clearTimeout(state.poll);
+  if (!state.current) return;
+  const d = await api(`/api/documents/${state.current}`);
+  state.detail = d;
+  render();
+  if (d.status !== "done" && d.status !== "error") state.poll = setTimeout(async () => { await refresh(); loadDocs(); }, 1200);
+}
+
+function render() {
+  const d = state.detail, main = $("#main");
+  if (d.status === "error") { main.innerHTML = `<div class="panel status">⚠️ 분석 실패: ${esc(d.message)}</div>`; return; }
+  if (d.status !== "done") { main.innerHTML = `<div class="panel status"><div class="spin"></div><div><strong>${esc(d.filename)}</strong><div class="muted">${STATUS[d.status]} ${esc(d.message||"")}</div></div></div>`; return; }
+  const ex = d.extraction, items = ex.items;
+  const cnt = l => items.filter(i => i.risk === l).length;
+  const cats = ["전체", ...ex.categories];
+  const filtered = items.filter(i => (state.cat==="전체"||i.category===state.cat) && (state.risk==="all"||i.risk===state.risk||(state.risk==="missing"&&!i.found)));
+
+  let rows = "";
+  for (const c of ex.categories) {
+    const its = filtered.filter(i => i.category === c);
+    if (!its.length) continue;
+    rows += `<tr class="cat"><td colspan="4">${esc(c)}</td></tr>`;
+    for (const it of its) {
+      const open = state.open.has(it.key);
+      rows += `<tr class="item" data-key="${it.key}">
+        <td class="label">${open?"▾":"▸"} ${esc(it.label)}</td>
+        <td class="value">${it.found ? esc(it.value) : '<span class="notfound">문서에서 찾지 못함</span>'}${it.summary?`<div class="muted" style="font-size:12px">${esc(it.summary)}</div>`:""}</td>
+        <td><span class="risk ${it.risk}">${RISK[it.risk]||it.risk}</span></td>
+        <td>${it.pages.map(p => `<span class="pagelink" data-page="${p}" data-hl="${esc(it.evidence.slice(0,80))}">p.${p}</span>`).join("")}</td>
+      </tr>`;
+      if (open) rows += `<tr class="detail"><td colspan="4">
+        ${it.risk_reason?`<div><strong>리스크 판단:</strong> ${esc(it.risk_reason)}</div>`:""}
+        ${it.evidence?`<div class="quote">${esc(it.evidence)}</div>`:'<div class="muted">근거 문장 없음</div>'}
+        <div class="muted" style="font-size:12px">${it.section?`조항: ${esc(it.section)} · `:""}추출: ${it.source==="claude"?"Claude":"규칙 엔진"}${it.rule_value!==undefined&&it.rule_value!==it.value?` · 규칙 엔진 값: ${esc(it.rule_value||"없음")}`:""}</div>
+      </td></tr>`;
+    }
+  }
+
+  main.innerHTML = `
+    <div class="panel section" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+      <div><h2 style="margin:0">${esc(d.filename)}</h2><div class="muted">${d.pages}${d.kind==="pdf"?"페이지":"구간"} · <span class="badge ${ex.engine==="claude"?"engine-claude":"engine-rule"}">${ex.engine==="claude"?"Claude 추출":"규칙 엔진 추출"}</span> ${d.message?`<span class="muted">${esc(d.message)}</span>`:""}</div></div>
+      <div class="spacer"></div>
+      <button class="btn" id="reanalyze">다시 분석</button>
+      <a href="/api/documents/${d.id}/export.csv"><button class="btn primary">CSV 내보내기</button></a>
+    </div>
+    <div class="cards">
+      <div class="panel card"><div class="k">추출된 항목</div><div class="v">${d.found} / ${d.total}</div></div>
+      <div class="panel card"><div class="k">리스크 높음</div><div class="v high">${cnt("high")}</div></div>
+      <div class="panel card"><div class="k">주의</div><div class="v medium">${cnt("medium")}</div></div>
+      <div class="panel card"><div class="k">양호</div><div class="v low">${cnt("low")}</div></div>
+    </div>
+    ${(ex.overall_summary || ex.top_risks.length) ? `<div class="panel section">
+      <h2>검토 요약</h2>
+      ${ex.overall_summary?`<div>${esc(ex.overall_summary)}</div>`:""}
+      ${ex.top_risks.length?`<div style="margin-top:8px"><strong>입찰 전 확인할 리스크</strong><ul class="toprisks">${ex.top_risks.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div>`:""}
+    </div>`:""}
+    <div class="panel section">
+      <h2>주요 항목</h2>
+      <div class="toolbar">
+        ${cats.map(c=>`<button class="chip ${state.cat===c?"on":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("")}
+        <div class="spacer"></div>
+        ${[["all","전체"],["high","높음"],["medium","주의"],["missing","못 찾음"]].map(([k,l])=>`<button class="chip ${state.risk===k?"on":""}" data-risk="${k}">${l}</button>`).join("")}
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>항목</th><th>추출 값</th><th>리스크</th><th>근거</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="4" class="muted">조건에 맞는 항목이 없습니다.</td></tr>'}</tbody>
+      </table></div>
+    </div>
+    <div class="panel section chat">
+      <h2>문서에 질문하기</h2>
+      <div class="suggest">${SUGGEST.map(s=>`<button class="chip" data-q="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+      <div class="msgs" id="msgs"></div>
+      <form class="ask" id="ask"><input id="q" placeholder="예: 지체상금 상한은 얼마이고 어느 조항에 있나요?" autocomplete="off"><button class="btn primary" id="send">질문</button></form>
+    </div>`;
+
+  main.querySelectorAll("tr.item").forEach(tr => tr.onclick = e => {
+    if (e.target.classList.contains("pagelink")) return;
+    const k = tr.dataset.key; state.open.has(k) ? state.open.delete(k) : state.open.add(k); render();
+  });
+  main.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { state.cat = b.dataset.cat; render(); });
+  main.querySelectorAll("[data-risk]").forEach(b => b.onclick = () => { state.risk = b.dataset.risk; render(); });
+  main.querySelectorAll("[data-q]").forEach(b => b.onclick = () => ask(b.dataset.q));
+  $("#reanalyze").onclick = async () => { await api(`/api/documents/${d.id}/reanalyze`, {method:"POST"}); refresh(); };
+  $("#ask").onsubmit = e => { e.preventDefault(); const q = $("#q").value.trim(); if (q) ask(q); };
+  renderChat();
+}
+
+function bindPageLinks(root) {
+  root.querySelectorAll(".pagelink").forEach(a => a.onclick = e => { e.stopPropagation(); openPage(+a.dataset.page, a.dataset.hl || ""); });
+}
+
+function linkify(text) {
+  return esc(text).replace(/\[p\.?\s*(\d+)(?:\s*[-~–]\s*(\d+))?\]/g, (m, a) => `<span class="pagelink" data-page="${a}">${m}</span>`);
+}
+
+function renderChat() {
+  const box = $("#msgs"); if (!box) return;
+  const msgs = state.chat[state.current] || [];
+  box.innerHTML = msgs.map(m => {
+    if (m.role === "user") return `<div class="msg user">${esc(m.content)}</div>`;
+    if (m.pending) return `<div class="msg bot"><div class="spin"></div></div>`;
+    const trace = (m.trace||[]).map(t => t.tool==="search_document" ? `🔎 검색 "${esc(t.input.query)}"` : t.tool==="read_pages" ? `📄 p.${t.input.start_page}–${t.input.end_page} 열람` : "📋 추출표 참조").join(" → ");
+    const passages = (m.passages||[]).map(p => `<div class="passage"><span class="pagelink" data-page="${p.page}">p.${p.page}</span> <span class="muted">${esc(p.section||"")}</span><div>${esc(p.text)}</div></div>`).join("");
+    return `<div class="msg bot">${linkify(m.content)}${trace?`<div class="trace">에이전트 단계: ${trace}</div>`:""}${passages}</div>`;
+  }).join("");
+  bindPageLinks(box);
+  bindPageLinks($("#main"));
+  box.scrollTop = box.scrollHeight;
+}
+
+async function ask(q) {
+  const id = state.current; const list = state.chat[id] = state.chat[id] || [];
+  const history = list.filter(m => !m.pending).map(m => ({role:m.role, content:m.content}));
+  list.push({role:"user", content:q}, {role:"assistant", pending:true});
+  if ($("#q")) $("#q").value = "";
+  renderChat();
+  try {
+    const r = await api(`/api/documents/${id}/chat`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({question:q, history})});
+    list[list.length-1] = {role:"assistant", content:r.answer, trace:r.trace, passages:r.passages};
+  } catch (e) { list[list.length-1] = {role:"assistant", content:"오류: " + e.message}; }
+  if (state.current === id) renderChat();
+}
+
+async function openPage(n, hl) {
+  const r = await api(`/api/documents/${state.current}/pages/${n}`);
+  state.modal = {page:n, total:r.total, hl};
+  $("#mtitle").textContent = `${r.kind==="pdf"?"페이지":"구간"} ${n} / ${r.total}`;
+  let html = esc(r.text);
+  const key = (hl||"").replace(/\s+/g," ").trim().slice(0,40);
+  if (key.length > 8) {
+    const flat = esc(key).replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+");
+    try { html = html.replace(new RegExp(flat), m => `<mark>${m}</mark>`); } catch {}
+  }
+  $("#mbody").innerHTML = html;
+  $("#modal").classList.add("open");
+  const m = $("#mbody mark"); if (m) m.scrollIntoView({block:"center"});
+}
+$("#mclose").onclick = () => $("#modal").classList.remove("open");
+$("#modal").onclick = e => { if (e.target.id === "modal") $("#modal").classList.remove("open"); };
+$("#mprev").onclick = () => state.modal.page > 1 && openPage(state.modal.page - 1, "");
+$("#mnext").onclick = () => state.modal.page < state.modal.total && openPage(state.modal.page + 1, "");
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("#modal").classList.remove("open"); });
+
+const drop = $("#drop");
+$("#file").onchange = e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; };
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); const f = e.dataTransfer.files[0]; if (f) upload(f); };
+
+loadStatus(); loadDocs();
+</script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<title>ITB Reviewer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: 왼쪽 문서 레일 + 오른쪽 검토 작업면(요약 → 항목 표 → 질의). 도면 대장처럼 차분한 청록·회색 */
+:root{
+  --bg:#f3f6f6; --panel:#ffffff; --sunk:#eaf0ef; --ink:#14201f; --muted:#566765; --line:#d9e2e0;
+  --accent:#0d6b66; --accent-ink:#ffffff; --accent-soft:#e0efed;
+  --high:#b42318; --high-bg:#fdecea; --med:#9a5b00; --med-bg:#fff2dc; --low:#1f7a45; --low-bg:#e5f4ea; --none:#5f6f6d; --none-bg:#e9eeed;
+  --mark:#ffe08a; --mark-ink:#14201f;
+  --font-body:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1514; --panel:#152020; --sunk:#1b2928; --ink:#e4ecea; --muted:#93a6a3; --line:#2a3a38;
+  --accent:#5cc2b8; --accent-ink:#0b1514; --accent-soft:#17312e;
+  --high:#ff8f84; --high-bg:#3b1c19; --med:#f3be6a; --med-bg:#362813; --low:#7fd39d; --low-bg:#16301f; --none:#93a6a3; --none-bg:#1f2c2b;
+  --mark:#6b5a1a; --mark-ink:#fff4cc; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1514; --panel:#152020; --sunk:#1b2928; --ink:#e4ecea; --muted:#93a6a3; --line:#2a3a38;
+  --accent:#5cc2b8; --accent-ink:#0b1514; --accent-soft:#17312e;
+  --high:#ff8f84; --high-bg:#3b1c19; --med:#f3be6a; --med-bg:#362813; --low:#7fd39d; --low-bg:#16301f; --none:#93a6a3; --none-bg:#1f2c2b;
+  --mark:#6b5a1a; --mark-ink:#fff4cc; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+h1,h2,h3{text-wrap:balance;margin:0}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--panel);border-bottom:1px solid var(--line)}
+header.top .in{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding-block:12px;max-width:1440px;margin:0 auto}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.brand span{color:var(--muted);font-size:13px}
+.grow{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--none-bg);color:var(--none);white-space:nowrap}
+.pill.on{background:var(--accent-soft);color:var(--accent)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px;padding-block:16px 40px;max-width:1440px;margin:0 auto}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)}}
+.rail{display:flex;flex-direction:column;gap:12px;align-self:start;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+@media (max-width:880px){.rail{position:static}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.drop{display:block;border:1.5px dashed var(--line);border-radius:var(--r);padding:18px 14px;text-align:center;color:var(--muted);cursor:pointer;background:var(--panel)}
+.drop:hover,.drop.over,.drop:focus-within{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.drop strong{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+.drop small{display:block;margin-top:6px;font-size:12px}
+.kicker{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.docs{display:flex;flex-direction:column;gap:6px}
+.doc{all:unset;box-sizing:border-box;display:block;width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer}
+.doc:hover{border-color:var(--accent)}
+.doc[aria-current="true"]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.doc .n{font-weight:600;word-break:break-all}
+.doc .m{font-size:12px;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);padding:10px 12px}
+.main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.sec{padding:16px 18px}
+.sec h2{font-size:15px;font-weight:700}
+.dochead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.dochead h2{font-size:18px;word-break:break-all}
+.sub{color:var(--muted);font-size:13px}
+.tag{font-family:var(--font-data);font-size:11.5px;padding:2px 7px;border-radius:5px;background:var(--sunk);color:var(--muted)}
+.tag.sample{background:var(--med-bg);color:var(--med)}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 13px;border-radius:8px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.tally{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+@media (max-width:560px){.tally{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tally>div{padding:12px 16px;border-left:1px solid var(--line)}
+.tally>div:first-child{border-left:0}
+@media (max-width:560px){.tally>div:nth-child(3){border-left:0}.tally>div:nth-child(n+3){border-top:1px solid var(--line)}}
+.tally .k{font-size:12px;color:var(--muted)}
+.tally .v{font-family:var(--font-data);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums}
+.v.high{color:var(--high)}.v.medium{color:var(--med)}.v.low{color:var(--low)}
+.summary p{margin:8px 0 0;max-width:72ch}
+.risks{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.risks li{display:flex;gap:8px;align-items:flex-start;max-width:90ch}
+.risks li::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:2px;background:var(--high)}
+.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:4px 11px;border-radius:999px;cursor:pointer;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+tr.cat td{background:var(--sunk);font-size:12px;font-weight:700;color:var(--muted);padding:5px 10px;letter-spacing:.02em}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--bg)}
+td.lab{white-space:nowrap;font-weight:600}
+td.lab .car{display:inline-block;width:12px;color:var(--muted)}
+td.val{font-family:var(--font-data);font-size:13px;max-width:460px;word-break:break-word}
+td.val .s{font-family:var(--font-body);color:var(--muted);font-size:12px;margin-top:2px}
+.miss{font-family:var(--font-body);color:var(--muted);font-style:italic}
+.risk{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.risk.high{background:var(--high-bg);color:var(--high)}.risk.medium{background:var(--med-bg);color:var(--med)}
+.risk.low{background:var(--low-bg);color:var(--low)}.risk.none,.risk.unknown{background:var(--none-bg);color:var(--none)}
+.src{font-size:11px;color:var(--muted);margin-left:6px}
+.pg{all:unset;cursor:pointer;color:var(--accent);font-family:var(--font-data);font-size:12.5px;text-decoration:underline;text-underline-offset:2px;margin-right:6px;white-space:nowrap}
+.pg:focus-visible{outline:2px solid var(--accent)}
+tr.det td{background:var(--bg);font-size:13px}
+.quote{margin:6px 0;padding:6px 12px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 6px 6px 0;max-width:90ch}
+.meta{font-size:12px;color:var(--muted)}
+.status{display:flex;align-items:center;gap:10px}
+.spin{width:16px;height:16px;flex:none;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+.err{color:var(--high)}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msgs{display:flex;flex-direction:column;gap:10px;max-height:560px;overflow:auto}
+.msg{padding:10px 12px;border-radius:10px;white-space:pre-wrap;word-break:break-word;max-width:100%}
+.msg.u{background:var(--accent-soft);align-self:flex-end;max-width:85%}
+.msg.a{background:var(--bg);border:1px solid var(--line)}
+.trace{font-size:12px;color:var(--muted);margin-top:6px;white-space:normal}
+.psg{margin-top:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);white-space:normal;font-size:13px}
+.ask{display:flex;gap:8px}
+.ask input{flex:1;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}
+.modal{position:fixed;inset:0;background:rgba(8,14,13,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal .card{background:var(--panel);border-radius:var(--r);max-width:880px;width:100%;max-height:86vh;display:flex;flex-direction:column;border:1px solid var(--line)}
+.modal .hd{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.modal pre{margin:0;padding:16px;overflow:auto;white-space:pre-wrap;font-family:var(--font-data);font-size:12.5px;line-height:1.6}
+mark{background:var(--mark);color:var(--mark-ink);border-radius:2px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--panel);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30}
+</style>
+
+<header class="top wrap">
+  <div class="in">
+    <div class="brand"><h1>ITB Reviewer</h1><span>입찰안내서 주요 항목 추출 · 계약 리스크 검토</span></div>
+    <div class="grow"></div>
+    <span id="engine" class="pill"><span class="dot"></span>규칙 엔진</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <aside class="rail">
+      <label class="drop" id="drop">
+        <strong>ITB 파일 올리기</strong>
+        PDF · DOCX · TXT를 끌어다 놓거나 클릭
+        <small>파일은 이 브라우저 안에서만 읽습니다. 서버로 올라가지 않습니다.</small>
+        <input type="file" id="file" accept=".pdf,.docx,.txt,.md" hidden>
+      </label>
+      <div class="kicker">문서</div>
+      <div class="docs" id="docs"></div>
+      <div class="box note" id="railnote"></div>
+    </aside>
+    <main class="main" id="main" aria-live="polite"></main>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="card">
+    <div class="hd"><strong id="mt">페이지</strong><div class="grow"></div>
+      <button class="btn" id="mprev">이전</button><button class="btn" id="mnext">다음</button><button class="btn" id="mclose">닫기</button></div>
+    <pre id="mbody"></pre>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script id="samples" type="application/json">__SAMPLES__</script>
+<script>__ENGINE__</script>
+<script>
+(() => {
+"use strict";
+const E = window.ITBEngine;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const RISK = { high:"높음", medium:"주의", low:"양호", none:"-", unknown:"확인 필요" };
+const SUGG = ["지체상금 조건과 상한을 정리해줘", "계약자에게 불리한 조항 Top 5는?", "입찰 일정(현장설명회·질의·마감)을 정리해줘", "보증서 종류와 비율, 유효기간은?", "물가변동 조정이 가능한가?"];
+const CDN = "https://cdnjs.cloudflare.com/ajax/libs/";
+
+const st = { docs: [], cur: null, cat: "전체", risk: "all", open: new Set(), modal: { page: 1, total: 1 },
+  sample: null, tools: false, downloads: null, busy: null };
+let seq = 0;
+
+// ── 라이브러리 지연 로딩 ─────────────────────────────
+const loaded = {};
+function loadScript(src) {
+  return loaded[src] ||= new Promise((ok, no) => {
+    const s = document.createElement("script"); s.src = src; s.onload = ok;
+    s.onerror = () => { delete loaded[src]; no(new Error("문서 해석 라이브러리를 불러오지 못했습니다. 네트워크 연결을 확인한 뒤 다시 올려 주세요.")); };
+    document.head.appendChild(s);
+  });
+}
+async function readPdf(buf) {
+  await loadScript(CDN + "pdf.js/3.11.174/pdf.min.js");
+  await loadScript(CDN + "pdf.js/3.11.174/pdf.worker.min.js"); // 메인 스레드 워커(pdfjsWorker 전역)로 동작
+  const pdf = await window.pdfjsLib.getDocument({ data: buf, isEvalSupported: false }).promise;
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const tc = await (await pdf.getPage(i)).getTextContent();
+    let text = "", lastY = null;
+    for (const it of tc.items) {
+      const y = it.transform ? Math.round(it.transform[5]) : null;
+      if (lastY !== null && y !== null && Math.abs(y - lastY) > 2 && !text.endsWith("\n")) text += "\n";
+      text += it.str; if (it.hasEOL) text += "\n";
+      if (y !== null) lastY = y;
+    }
+    pages.push({ number: i, text: text.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim() });
+    if (i % 20 === 0) setStatus(`PDF 읽는 중 · ${i} / ${pdf.numPages}쪽`);
+  }
+  return pages;
+}
+async function readDocx(buf) {
+  await loadScript(CDN + "mammoth/1.6.0/mammoth.browser.min.js");
+  const { value } = await window.mammoth.extractRawText({ arrayBuffer: buf });
+  return E.pseudoPages(value.split(/\n+/).map(s => s.trim()).filter(Boolean));
+}
+async function readTxt(buf) {
+  let text;
+  try { text = new TextDecoder("utf-8", { fatal: true }).decode(buf); } catch { text = new TextDecoder("euc-kr").decode(buf); }
+  return E.pseudoPages(text.split(/\n\s*\n/).filter(b => b.trim()));
+}
+
+// ── 문서 처리 ───────────────────────────────────────
+function analyze(rec) {
+  rec.index = new E.BM25(rec.doc.chunks);
+  rec.rules = E.extractRules(rec.doc, rec.index);
+  rec.ex = { engine: "rule", items: rec.rules, overall: "", top: rec.rules.filter(i => i.risk === "high").map(i => `${i.label}: ${i.risk_reason}`) };
+  rec.status = "done";
+}
+function addSample(key, name) {
+  const s = SAMPLES[key];
+  const rec = { id: "s" + (++seq), name, kind: s.kind, sample: true, status: "parsing", chat: [] };
+  rec.doc = E.buildDocument(name, s.kind, s.pages); analyze(rec);
+  st.docs.push(rec); return rec;
+}
+async function upload(file) {
+  const ext = (file.name.match(/\.[^.]+$/) || [""])[0].toLowerCase();
+  if (![".pdf", ".docx", ".txt", ".md"].includes(ext)) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다.");
+  const rec = { id: "d" + (++seq), name: file.name, kind: ext.slice(1), status: "parsing", msg: "문서를 읽는 중", chat: [] };
+  st.docs.unshift(rec); select(rec.id);
+  try {
+    const buf = await file.arrayBuffer();
+    const pages = ext === ".pdf" ? await readPdf(buf) : ext === ".docx" ? await readDocx(buf) : await readTxt(buf);
+    rec.doc = E.buildDocument(file.name, ext === ".pdf" ? "pdf" : "docx", pages);
+    rec.msg = "주요 항목 추출 중"; render();
+    await new Promise(r => setTimeout(r, 0));
+    analyze(rec);
+  } catch (e) { rec.status = "error"; rec.msg = e.message || String(e); }
+  renderDocs(); if (st.cur === rec.id) render();
+}
+function setStatus(msg) { const r = curRec(); if (r && r.status === "parsing") { r.msg = msg; render(); } }
+const curRec = () => st.docs.find(d => d.id === st.cur);
+function select(id) { st.cur = id; st.cat = "전체"; st.risk = "all"; st.open = new Set(); renderDocs(); render(); }
+
+// ── Claude (sample capability) ──────────────────────
+function evidencePrompt(rec, perItem) {
+  const used = new Map(), lines = [];
+  for (const it of E.ITEMS) {
+    const ids = rec.index.search(it.query, perItem).map(h => { used.set(h.chunk.id, h.chunk); return h.chunk.id; });
+    lines.push(`- ${it.key} (${it.label}; ${it.guide}) → chunk ${ids.join(", ") || "없음"}`);
+  }
+  const chunks = [...used.values()].sort((a, b) => a.id - b.id)
+    .map(c => `<chunk id="${c.id}" page="${c.page}" section="${esc(c.section).slice(0, 80)}">\n${c.text}\n</chunk>`).join("\n");
+  const head = rec.doc.pages.slice(0, 2).map(p => `[p.${p.number}]\n${p.text}`).join("\n").slice(0, 5000);
+  const hints = JSON.stringify(rec.rules.filter(r => r.found).map(r => ({ key: r.key, value: r.value, pages: r.pages })));
+  return `당신은 해외 건설·EPC 입찰을 20년 검토한 입찰안내서(ITB) 검토 전문가입니다.
+아래 근거 발췌(<chunk>)만 사용해 26개 검토 항목의 값을 추출하고 계약자 입장의 리스크를 판정하세요.
+
+규칙:
+- 근거에 없는 내용은 추측하지 말고 found=false, value="" 로 두세요.
+- value: 원문 수치·날짜·명칭을 살린 짧은 값 (예: "5% of Contract Price", "2026-03-15 14:00").
+- summary: 한국어 1~2문장. evidence: 근거 원문 문장 그대로(300자 이내). pages: 근거 chunk 의 page 번호 배열.
+- risk: high(입찰 전 반드시 협의·가격 반영) | medium(주의) | low(통상 수준) | none(판단 대상 아님) | unknown(근거 부족).
+- 상한·한도·선급금처럼 '없음'이 리스크인 항목을 찾지 못했다면 high 또는 medium 으로 두고 이유를 적으세요.
+- risk_reason: 한국어, 업계 통상 수준과 비교한 설명.
+- 규칙 엔진 힌트는 틀릴 수 있습니다. 근거 원문을 우선하세요.
+
+반드시 아래 형태의 JSON 하나만 답하세요:
+{"overall_summary":"한국어 3~5문장","top_risks":["입찰 전 꼭 확인할 리스크 3~6개"],"items":[{"key":"bid_bond","found":true,"value":"2% of Bid Price","summary":"...","evidence":"...","pages":[3],"risk":"low","risk_reason":"..."}]}
+items 에는 다음 26개 key 를 모두 한 번씩 넣으세요.
+
+문서: ${rec.name} (${rec.doc.pages.length}${rec.doc.kind === "pdf" ? "쪽" : "구간"})
+<document_head>
+${head}
+</document_head>
+
+<items>
+${lines.join("\n")}
+</items>
+
+<chunks>
+${chunks}
+</chunks>
+
+<rule_engine_hints>${hints}</rule_engine_hints>`;
+}
+async function claudeExtract(rec) {
+  if (!st.sample || st.busy) return;
+  const ctl = new AbortController(); st.busy = { kind: "extract", ctl, rec: rec.id, msg: "Claude가 근거를 읽는 중…" }; render();
+  try {
+    let prompt = evidencePrompt(rec, 3);
+    if (new Blob([prompt]).size > 220000) prompt = evidencePrompt(rec, 2);
+    const data = await st.sample.json(prompt, { signal: ctl.signal, onText: () => { if (st.busy) { st.busy.msg = "결과를 받는 중…"; render(); } } });
+    if (!data || !Array.isArray(data.items)) throw { code: "invalid_json" };
+    const by = new Map(data.items.filter(x => x && x.key).map(x => [x.key, x]));
+    rec.ex = { engine: "claude", overall: String(data.overall_summary || ""), top: (data.top_risks || []).map(String),
+      items: rec.rules.map(r => { const x = by.get(r.key); if (!x) return r;
+        const pages = Array.isArray(x.pages) ? [...new Set(x.pages.map(Number).filter(n => n > 0))].sort((a, b) => a - b) : [];
+        return { ...r, found: !!x.found, value: String(x.value || ""), summary: String(x.summary || ""), evidence: String(x.evidence || r.evidence),
+          pages: pages.length ? pages : r.pages, risk: RISK[x.risk] ? x.risk : "unknown", risk_reason: String(x.risk_reason || ""), source: "claude", rule_value: r.value }; }) };
+    toast("Claude 분석을 반영했습니다.");
+  } catch (e) {
+    if (e.code !== "cancelled") toast(errCopy(e.code));
+    if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e.code)) disableClaude();
+  }
+  st.busy = null; render();
+}
+function errCopy(code) {
+  return ({ not_granted: "Claude 사용이 허용되지 않아 규칙 엔진 결과만 표시합니다.", rate_limited: "요청이 많습니다. 잠시 뒤 다시 눌러 주세요.",
+    prompt_too_large: "문서 발췌가 너무 깁니다. 질문을 좁혀 주세요.", invalid_json: "Claude 응답을 표로 읽지 못했습니다. 다시 시도해 주세요.",
+    refused: "Claude가 이 요청에 답하지 않았습니다.", session_expired: "다시 로그인한 뒤 시도해 주세요." })[code]
+    || "Claude 호출이 실패했습니다. 잠시 뒤 다시 시도해 주세요.";
+}
+function disableClaude() { st.sample = null; st.tools = false; paintEngine(); }
+
+const CHAT_RULES = `당신은 입찰안내서(ITB) 검토 어시스턴트입니다. 사용자는 건설사 입찰 담당자입니다.
+문서 내용은 반드시 도구(search_document, read_pages, get_extracted_items)로 직접 찾아 읽고 답하세요. 기억이나 일반 지식으로 문서 내용을 지어내지 마세요.
+- 동의어(영문/한글, 예: liquidated damages/지체상금)로 여러 번 검색해도 됩니다. 조항이 다른 조항을 참조하면 read_pages 로 앞뒤를 읽으세요.
+- 답은 한국어로, 결론 먼저. 모든 사실에 [p.12] 처럼 페이지를 붙이세요.
+- 찾지 못한 내용은 "문서에서 확인되지 않음"이라고 쓰세요.
+- 계약자에게 불리한 조항이면 리스크와 대응(질의서·가격 반영·예외 조건 제시)을 짧게 제안하세요.`;
+
+function chatTools(rec) {
+  return [
+    { name: "search_document", description: "입찰안내서 전체를 키워드로 검색해 관련 발췌를 페이지 번호와 함께 돌려줍니다. 한글·영문 키워드 모두 가능.",
+      inputSchema: { type: "object", properties: { query: { type: "string" }, top_k: { type: "integer", description: "1~6" } }, required: ["query"] },
+      execute: inp => { const q = String(inp.query || ""); progress(`🔎 "${q}" 검색`);
+        const hits = rec.index.search(E.expandQuery(q), Math.max(1, Math.min(Number(inp.top_k) || 4, 6)));
+        return hits.length ? hits.map(h => `<result page="${h.chunk.page}" section="${h.chunk.section.slice(0, 80)}">\n${h.chunk.text}\n</result>`).join("\n") : "검색 결과가 없습니다. 동의어로 다시 검색하세요."; } },
+    { name: "read_pages", description: "지정한 페이지 범위의 전문을 읽습니다. 한 번에 최대 3페이지.",
+      inputSchema: { type: "object", properties: { start_page: { type: "integer" }, end_page: { type: "integer" } }, required: ["start_page"] },
+      execute: inp => { const n = rec.doc.pages.length, a = Math.max(1, Number(inp.start_page) || 1), b = Math.min(Number(inp.end_page) || a, a + 2, n);
+        if (a > n) throw new Error(`문서는 ${n}쪽까지 있습니다.`); progress(`📄 p.${a}${b > a ? "–" + b : ""} 열람`);
+        return rec.doc.pages.slice(a - 1, b).map(p => `<page number="${p.number}">\n${p.text.slice(0, 9000)}\n</page>`).join("\n"); } },
+    { name: "get_extracted_items", description: "이 문서에서 이미 추출한 26개 주요 항목(값·페이지·리스크 판정) 표를 돌려줍니다.",
+      execute: () => { progress("📋 추출표 참조"); return rec.ex.items.map(i => ({ label: i.label, value: i.value, pages: i.pages, risk: i.risk, why: i.risk_reason })); } },
+  ];
+}
+function progress(step) { const b = st.busy; if (b && b.kind === "chat") { b.trace.push(step); paintChat(); } }
+
+async function ask(q) {
+  const rec = curRec(); if (!rec || rec.status !== "done" || st.busy) return;
+  rec.chat.push({ role: "user", content: q });
+  if (!st.sample) { rec.chat.push({ role: "assistant", content: "관련 조항의 핵심 문장입니다. (Claude를 쓸 수 없는 환경이라 발췌만 보여 드립니다.)", passages: E.offlineAnswer(rec.index, q) }); paintChat(); return; }
+  const ctl = new AbortController(); const msg = { role: "assistant", content: "", pending: true, trace: [] };
+  rec.chat.push(msg); st.busy = { kind: "chat", ctl, rec: rec.id, trace: msg.trace }; paintChat();
+  const turns = rec.chat.filter(m => !m.pending && m.content && !m.offline).slice(-7, -1).map(m => ({ role: m.role, content: m.content }));
+  let input;
+  if (st.tools) input = [{ role: "user", content: `${CHAT_RULES}\n\n[문서: ${rec.name}, 총 ${rec.doc.pages.length}쪽]` }, ...turns, { role: "user", content: q }];
+  else {
+    const ctx = rec.index.search(E.expandQuery(q), 6).map(h => `<chunk page="${h.chunk.page}">\n${h.chunk.text}\n</chunk>`).join("\n");
+    input = [{ role: "user", content: CHAT_RULES.replace(/문서 내용은 반드시 도구[^\n]+\n/, "아래 발췌만 근거로 답하세요.\n") }, ...turns,
+      { role: "user", content: `[문서: ${rec.name}]\n<excerpts>\n${ctx}\n</excerpts>\n\n질문: ${q}` }];
+  }
+  try {
+    const opts = { signal: ctl.signal, cache: false, onText: ({ text }) => { msg.content = text; paintChat(); } };
+    if (st.tools) { opts.tools = chatTools(rec); delete opts.cache; }
+    const r = await st.sample(input, opts);
+    msg.content = r.text + (r.truncated ? "\n\n(답이 길어 중간에 끊겼습니다. 질문을 좁혀 주세요.)" : "");
+  } catch (e) {
+    msg.content = e.text || ""; if (e.code === "refused") msg.content = "";
+    if (e.code !== "cancelled") { msg.content += (msg.content ? "\n\n" : "") + errCopy(e.code); msg.offline = true; msg.passages = E.offlineAnswer(rec.index, q); }
+    else msg.content += (msg.content ? "\n\n" : "") + "(중지함)";
+    if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e.code)) disableClaude();
+    if (e.code === "tools_unavailable") st.tools = false;
+  }
+  msg.pending = false; st.busy = null; paintChat(); render();
+}
+
+// ── 내보내기 ────────────────────────────────────────
+function rowsFor(rec) {
+  return [["분류", "항목", "값", "요약", "리스크", "리스크 사유", "페이지", "근거 원문", "추출 엔진"],
+    ...rec.ex.items.map(i => [i.category, i.label, i.value, i.summary, RISK[i.risk] || i.risk, i.risk_reason, i.pages.join(", "), i.evidence, i.source === "claude" ? "Claude" : "규칙"])];
+}
+async function saveCsv(rec) {
+  const csv = "﻿" + rowsFor(rec).map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
+  try { await st.downloads.save({ filename: rec.name.replace(/\.[^.]+$/, "") + "_ITB검토.csv", data: csv }); toast("CSV를 저장했습니다."); }
+  catch (e) { if (e.code !== "declined") toast("저장하지 못했습니다. '표 복사'로 엑셀에 붙여 넣어 주세요."); }
+}
+async function copyTable(rec) {
+  const tsv = rowsFor(rec).map(r => r.map(v => String(v ?? "").replace(/[\t\n]+/g, " ")).join("\t")).join("\n");
+  try { await navigator.clipboard.writeText(tsv); toast("표를 복사했습니다. 엑셀에 붙여 넣으세요."); }
+  catch { toast("복사가 막혀 있습니다. 표를 직접 선택해 복사해 주세요."); }
+}
+
+// ── 화면 ────────────────────────────────────────────
+function paintEngine() {
+  const el = $("#engine");
+  el.className = "pill" + (st.sample ? " on" : "");
+  el.lastChild.textContent = st.sample ? "Claude 연결됨" : "규칙 엔진";
+  $("#railnote").innerHTML = st.sample
+    ? "규칙 엔진이 먼저 26개 항목을 뽑습니다. <b>Claude로 정밀 분석</b>을 누르면 Claude가 근거 조항을 읽고 값과 리스크를 다시 판정합니다. 질문에는 Claude가 문서를 직접 검색해 답합니다. Claude 호출은 보는 사람의 Claude 사용량을 씁니다."
+    : "지금은 규칙 엔진으로 동작합니다. claude.ai에서 이 페이지를 열면 Claude 정밀 분석과 문서 질의응답을 쓸 수 있습니다.";
+}
+function renderDocs() {
+  $("#docs").innerHTML = st.docs.map(d => {
+    const rc = d.ex ? d.ex.items.reduce((a, i) => (a[i.risk] = (a[i.risk] || 0) + 1, a), {}) : {};
+    const meta = d.status === "done" ? `${d.doc.pages.length}${d.doc.kind === "pdf" ? "쪽" : "구간"} · 높음 ${rc.high || 0} · 주의 ${rc.medium || 0}` : d.status === "error" ? "읽기 실패" : "읽는 중…";
+    return `<button class="doc" data-id="${d.id}" aria-current="${d.id === st.cur}"><div class="n">${esc(d.name)}</div><div class="m">${d.sample ? "가상 샘플 · " : ""}${meta}</div></button>`;
+  }).join("");
+  $("#docs").querySelectorAll(".doc").forEach(b => b.onclick = () => select(b.dataset.id));
+}
+function render() {
+  const rec = curRec(), main = $("#main");
+  if (!rec) { main.innerHTML = `<div class="box sec">왼쪽에서 입찰안내서를 올려 주세요.</div>`; return; }
+  if (rec.status === "parsing") { main.innerHTML = `<div class="box sec status"><div class="spin"></div><div><b>${esc(rec.name)}</b><div class="sub">${esc(rec.msg || "")}</div></div></div>`; return; }
+  if (rec.status === "error") { main.innerHTML = `<div class="box sec"><b>${esc(rec.name)}</b><p class="err">${esc(rec.msg)}</p></div>`; return; }
+  const ex = rec.ex, items = ex.items, n = l => items.filter(i => i.risk === l).length;
+  const busy = st.busy && st.busy.kind === "extract" && st.busy.rec === rec.id;
+  const vis = items.filter(i => (st.cat === "전체" || i.category === st.cat) && (st.risk === "all" || i.risk === st.risk || (st.risk === "missing" && !i.found)));
+  let rows = "";
+  for (const c of E.CATEGORIES) {
+    const its = vis.filter(i => i.category === c); if (!its.length) continue;
+    rows += `<tr class="cat"><td colspan="4">${esc(c)}</td></tr>`;
+    for (const it of its) {
+      const o = st.open.has(it.key);
+      rows += `<tr class="row" data-k="${it.key}" tabindex="0" aria-expanded="${o}"><td class="lab"><span class="car">${o ? "▾" : "▸"}</span>${esc(it.label)}</td>
+        <td class="val">${it.found ? esc(it.value) : '<span class="miss">문서에서 찾지 못함</span>'}${it.summary ? `<div class="s">${esc(it.summary)}</div>` : ""}</td>
+        <td><span class="risk ${it.risk}">${RISK[it.risk] || it.risk}</span></td>
+        <td>${it.pages.map(p => `<button class="pg" data-p="${p}" data-hl="${esc(it.evidence.slice(0, 60))}">p.${p}</button>`).join("")}</td></tr>`;
+      if (o) rows += `<tr class="det"><td colspan="4">${it.risk_reason ? `<div><b>리스크 판단</b> · ${esc(it.risk_reason)}</div>` : ""}
+        ${it.evidence ? `<div class="quote">${esc(it.evidence)}</div>` : '<div class="meta">근거 문장 없음</div>'}
+        <div class="meta">${it.section ? `조항: ${esc(it.section)} · ` : ""}추출: ${it.source === "claude" ? "Claude" : "규칙 엔진"}${it.rule_value !== undefined && it.rule_value !== it.value ? ` · 규칙 엔진 값: ${esc(it.rule_value || "없음")}` : ""}</div></td></tr>`;
+    }
+  }
+  main.innerHTML = `
+  <section class="box sec dochead">
+    <div style="min-width:0"><h2>${esc(rec.name)}</h2>
+      <div class="sub">${rec.doc.pages.length}${rec.doc.kind === "pdf" ? "쪽" : "구간"} · <span class="tag">${ex.engine === "claude" ? "Claude 분석" : "규칙 엔진 추출"}</span>${rec.sample ? ' <span class="tag sample">가상 샘플 문서</span>' : ""}</div></div>
+    <div class="grow"></div>
+    <div class="btns">
+      ${st.sample ? (busy ? `<span class="status sub"><span class="spin"></span>${esc(st.busy.msg)}</span><button class="btn" id="stop">중지</button>`
+        : `<button class="btn primary" id="deep" ${st.busy ? "disabled" : ""}>${ex.engine === "claude" ? "Claude로 다시 분석" : "Claude로 정밀 분석"}</button>`) : ""}
+      ${st.downloads ? `<button class="btn" id="csv">CSV 저장</button>` : ""}
+      <button class="btn" id="copy">표 복사</button>
+    </div>
+  </section>
+  <div class="tally">
+    <div><div class="k">추출된 항목</div><div class="v">${items.filter(i => i.found).length}/${items.length}</div></div>
+    <div><div class="k">리스크 높음</div><div class="v high">${n("high")}</div></div>
+    <div><div class="k">주의</div><div class="v medium">${n("medium")}</div></div>
+    <div><div class="k">양호</div><div class="v low">${n("low")}</div></div>
+  </div>
+  ${ex.overall || ex.top.length ? `<section class="box sec summary"><h2>입찰 전 확인할 리스크</h2>${ex.overall ? `<p>${esc(ex.overall)}</p>` : ""}
+    ${ex.top.length ? `<ul class="risks">${ex.top.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}</section>` : ""}
+  <section class="box sec">
+    <h2>주요 항목</h2>
+    <div class="bar">${["전체", ...E.CATEGORIES].map(c => `<button class="chip" data-cat="${esc(c)}" aria-pressed="${st.cat === c}">${esc(c)}</button>`).join("")}
+      <div class="grow"></div>${[["all", "전체"], ["high", "높음"], ["medium", "주의"], ["missing", "못 찾음"]].map(([k, l]) => `<button class="chip" data-risk="${k}" aria-pressed="${st.risk === k}">${l}</button>`).join("")}</div>
+    <div class="scroll"><table><thead><tr><th>항목</th><th>추출 값</th><th>리스크</th><th>근거</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="4" class="meta">조건에 맞는 항목이 없습니다.</td></tr>'}</tbody></table></div>
+  </section>
+  <section class="box sec chat">
+    <h2>문서에 질문하기</h2>
+    <div class="sub">${st.sample ? (st.tools ? "Claude가 문서를 직접 검색·열람해 페이지를 붙여 답합니다." : "Claude가 관련 조항 발췌를 읽고 답합니다.") : "관련 조항의 핵심 문장을 찾아 보여 줍니다."}</div>
+    <div class="sugg">${SUGG.map(s => `<button class="chip" data-q="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+    <div class="msgs" id="msgs"></div>
+    <form class="ask" id="ask"><input id="q" placeholder="예: 지체상금 상한은 얼마이고 어느 조항에 있나요?" autocomplete="off" aria-label="질문">
+      <button class="btn primary" id="send">질문</button></form>
+  </section>`;
+  main.querySelectorAll("tr.row").forEach(tr => {
+    const tog = () => { const k = tr.dataset.k; st.open.has(k) ? st.open.delete(k) : st.open.add(k); render(); };
+    tr.onclick = e => { if (!e.target.closest(".pg")) tog(); };
+    tr.onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target === tr) { e.preventDefault(); tog(); } };
+  });
+  main.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { st.cat = b.dataset.cat; render(); });
+  main.querySelectorAll("[data-risk]").forEach(b => b.onclick = () => { st.risk = b.dataset.risk; render(); });
+  main.querySelectorAll("[data-q]").forEach(b => b.onclick = () => ask(b.dataset.q));
+  bindPages(main);
+  const on = (id, fn) => { const el = $("#" + id); if (el) el.onclick = fn; };
+  on("deep", () => claudeExtract(rec)); on("stop", () => st.busy && st.busy.ctl.abort());
+  on("csv", () => saveCsv(rec)); on("copy", () => copyTable(rec));
+  $("#ask").onsubmit = e => { e.preventDefault(); const q = $("#q").value.trim(); if (q) { $("#q").value = ""; ask(q); } };
+  paintChat();
+}
+function paintChat() {
+  const rec = curRec(), box = $("#msgs"); if (!box || !rec) return;
+  const chatBusy = st.busy && st.busy.kind === "chat" && st.busy.rec === rec.id;
+  box.innerHTML = rec.chat.map(m => {
+    if (m.role === "user") return `<div class="msg u">${esc(m.content)}</div>`;
+    const body = m.content ? linkPages(m.content) : m.pending ? `<span class="status sub"><span class="spin"></span>생각하는 중…</span>` : "";
+    const tr = m.trace && m.trace.length ? `<div class="trace">${m.trace.map(esc).join(" → ")}</div>` : "";
+    const ps = (m.passages || []).map(p => `<div class="psg"><button class="pg" data-p="${p.page}" data-hl="${esc(p.text.slice(0, 60))}">p.${p.page}</button><span class="meta">${esc(p.section || "")}</span><div>${esc(p.text)}</div></div>`).join("");
+    return `<div class="msg a">${body}${tr}${ps}${m.passages && !m.passages.length ? '<div class="meta">관련 조항을 찾지 못했습니다.</div>' : ""}</div>`;
+  }).join("");
+  const send = $("#send"); if (send) { send.textContent = chatBusy ? "중지" : "질문"; send.type = chatBusy ? "button" : "submit"; send.onclick = chatBusy ? () => st.busy.ctl.abort() : null; send.disabled = !!st.busy && !chatBusy; }
+  bindPages(box); box.scrollTop = box.scrollHeight;
+}
+const linkPages = t => esc(t).replace(/\[p\.?\s*(\d+)(?:\s*[-~–]\s*\d+)?\]/g, (m, a) => `<button class="pg" data-p="${a}">${m}</button>`);
+function bindPages(root) { root.querySelectorAll(".pg").forEach(b => b.onclick = e => { e.stopPropagation(); openPage(+b.dataset.p, b.dataset.hl || ""); }); }
+
+function openPage(n, hl) {
+  const rec = curRec(); if (!rec || !rec.doc) return;
+  const total = rec.doc.pages.length; n = Math.max(1, Math.min(n, total));
+  st.modal = { page: n, total };
+  $("#mt").textContent = `${rec.doc.kind === "pdf" ? "페이지" : "구간"} ${n} / ${total}`;
+  let html = esc(rec.doc.pages[n - 1].text);
+  const key = (hl || "").replace(/\s+/g, " ").trim().slice(0, 40);
+  if (key.length > 8) {
+    const words = esc(key).split(" ").map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    try { html = html.replace(new RegExp(words.join("\\s+")), m => `<mark>${m}</mark>`); } catch {}
+  }
+  $("#mbody").innerHTML = html; $("#modal").hidden = false; $("#mclose").focus();
+  const m = $("#mbody mark"); if (m) m.scrollIntoView({ block: "center" }); else $("#mbody").scrollTop = 0;
+}
+const closeModal = () => { $("#modal").hidden = true; };
+$("#mclose").onclick = closeModal;
+$("#modal").onclick = e => { if (e.target.id === "modal") closeModal(); };
+$("#mprev").onclick = () => st.modal.page > 1 && openPage(st.modal.page - 1, "");
+$("#mnext").onclick = () => st.modal.page < st.modal.total && openPage(st.modal.page + 1, "");
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#modal").hidden) closeModal(); });
+
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+
+const drop = $("#drop");
+$("#file").onchange = e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; };
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); const f = e.dataTransfer.files[0]; if (f) upload(f); };
+
+// ── 시작: 가상 샘플 2건으로 바로 동작하는 상태 ─────────────
+const SAMPLES = JSON.parse($("#samples").textContent);
+addSample("ko", "샘플_하수처리장_입찰안내서.docx");
+const en = addSample("en", "Sample_Riverside_CCPP_ITB.pdf");
+st.docs.reverse();
+paintEngine(); select(en.id);
+
+(async () => {
+  const c = window.claude; if (!c || !c.use) return;
+  const [sample, downloads] = await Promise.all([c.use("sample").catch(() => null), c.use("downloads").catch(() => null)]);
+  st.downloads = downloads;
+  if (sample) { st.sample = sample; const lim = await sample.limits().catch(() => null); st.tools = !!(lim && lim.tools); }
+  paintEngine(); render();
+})();
+})();
+</script>

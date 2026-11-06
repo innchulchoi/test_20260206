@@ -31,6 +31,12 @@ AWS Summit Seoul 2025 발표 「AI 기반 대용량 문서 분석 업무: 삼성
   규칙 엔진 값은 Claude에게 힌트로 주고, 화면에서 Claude 값과 규칙 값이 다르면 함께 표시합니다.
   안전 분류기 거절에 대비해 서버측 대체 모델(`fallbacks: "default"`)을 켜 두었습니다. 끄려면 `ITB_FALLBACKS=0`.
 
+## 단독 HTML 버전 (서버 없이)
+
+`standalone/itb_reviewer.html` 하나로 브라우저에서 바로 쓸 수 있습니다. 파일은 브라우저 안에서만 읽고(pdf.js·mammoth), 규칙 엔진은 `standalone/engine.js`(Python 엔진과 같은 결과를 내는 JavaScript 이식본)로 동작합니다.
+claude.ai 아티팩트로 열면 보는 사람의 Claude 계정으로 정밀 분석과 문서 질의응답(검색·페이지 열람 도구 사용)이 켜집니다. 그 밖의 곳에서는 규칙 엔진과 발췌 검색만 동작합니다.
+`template.html`이나 `engine.js`를 고친 뒤에는 `python standalone/build.py`로 다시 만듭니다.
+
 ## 실행
 
 ```bash

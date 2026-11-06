@@ -1,0 +1,896 @@
+<title>ITB Reviewer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: 왼쪽 문서 레일 + 오른쪽 검토 작업면(요약 → 항목 표 → 질의). 도면 대장처럼 차분한 청록·회색 */
+:root{
+  --bg:#f3f6f6; --panel:#ffffff; --sunk:#eaf0ef; --ink:#14201f; --muted:#566765; --line:#d9e2e0;
+  --accent:#0d6b66; --accent-ink:#ffffff; --accent-soft:#e0efed;
+  --high:#b42318; --high-bg:#fdecea; --med:#9a5b00; --med-bg:#fff2dc; --low:#1f7a45; --low-bg:#e5f4ea; --none:#5f6f6d; --none-bg:#e9eeed;
+  --mark:#ffe08a; --mark-ink:#14201f;
+  --font-body:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1514; --panel:#152020; --sunk:#1b2928; --ink:#e4ecea; --muted:#93a6a3; --line:#2a3a38;
+  --accent:#5cc2b8; --accent-ink:#0b1514; --accent-soft:#17312e;
+  --high:#ff8f84; --high-bg:#3b1c19; --med:#f3be6a; --med-bg:#362813; --low:#7fd39d; --low-bg:#16301f; --none:#93a6a3; --none-bg:#1f2c2b;
+  --mark:#6b5a1a; --mark-ink:#fff4cc; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1514; --panel:#152020; --sunk:#1b2928; --ink:#e4ecea; --muted:#93a6a3; --line:#2a3a38;
+  --accent:#5cc2b8; --accent-ink:#0b1514; --accent-soft:#17312e;
+  --high:#ff8f84; --high-bg:#3b1c19; --med:#f3be6a; --med-bg:#362813; --low:#7fd39d; --low-bg:#16301f; --none:#93a6a3; --none-bg:#1f2c2b;
+  --mark:#6b5a1a; --mark-ink:#fff4cc; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+h1,h2,h3{text-wrap:balance;margin:0}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--panel);border-bottom:1px solid var(--line)}
+header.top .in{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding-block:12px;max-width:1440px;margin:0 auto}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.brand span{color:var(--muted);font-size:13px}
+.grow{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--none-bg);color:var(--none);white-space:nowrap}
+.pill.on{background:var(--accent-soft);color:var(--accent)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px;padding-block:16px 40px;max-width:1440px;margin:0 auto}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)}}
+.rail{display:flex;flex-direction:column;gap:12px;align-self:start;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+@media (max-width:880px){.rail{position:static}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.drop{display:block;border:1.5px dashed var(--line);border-radius:var(--r);padding:18px 14px;text-align:center;color:var(--muted);cursor:pointer;background:var(--panel)}
+.drop:hover,.drop.over,.drop:focus-within{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.drop strong{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+.drop small{display:block;margin-top:6px;font-size:12px}
+.kicker{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.docs{display:flex;flex-direction:column;gap:6px}
+.doc{all:unset;box-sizing:border-box;display:block;width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer}
+.doc:hover{border-color:var(--accent)}
+.doc[aria-current="true"]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.doc .n{font-weight:600;word-break:break-all}
+.doc .m{font-size:12px;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);padding:10px 12px}
+.main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.sec{padding:16px 18px}
+.sec h2{font-size:15px;font-weight:700}
+.dochead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.dochead h2{font-size:18px;word-break:break-all}
+.sub{color:var(--muted);font-size:13px}
+.tag{font-family:var(--font-data);font-size:11.5px;padding:2px 7px;border-radius:5px;background:var(--sunk);color:var(--muted)}
+.tag.sample{background:var(--med-bg);color:var(--med)}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 13px;border-radius:8px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.tally{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+@media (max-width:560px){.tally{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tally>div{padding:12px 16px;border-left:1px solid var(--line)}
+.tally>div:first-child{border-left:0}
+@media (max-width:560px){.tally>div:nth-child(3){border-left:0}.tally>div:nth-child(n+3){border-top:1px solid var(--line)}}
+.tally .k{font-size:12px;color:var(--muted)}
+.tally .v{font-family:var(--font-data);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums}
+.v.high{color:var(--high)}.v.medium{color:var(--med)}.v.low{color:var(--low)}
+.summary p{margin:8px 0 0;max-width:72ch}
+.risks{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.risks li{display:flex;gap:8px;align-items:flex-start;max-width:90ch}
+.risks li::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:2px;background:var(--high)}
+.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:4px 11px;border-radius:999px;cursor:pointer;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+tr.cat td{background:var(--sunk);font-size:12px;font-weight:700;color:var(--muted);padding:5px 10px;letter-spacing:.02em}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--bg)}
+td.lab{white-space:nowrap;font-weight:600}
+td.lab .car{display:inline-block;width:12px;color:var(--muted)}
+td.val{font-family:var(--font-data);font-size:13px;max-width:460px;word-break:break-word}
+td.val .s{font-family:var(--font-body);color:var(--muted);font-size:12px;margin-top:2px}
+.miss{font-family:var(--font-body);color:var(--muted);font-style:italic}
+.risk{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.risk.high{background:var(--high-bg);color:var(--high)}.risk.medium{background:var(--med-bg);color:var(--med)}
+.risk.low{background:var(--low-bg);color:var(--low)}.risk.none,.risk.unknown{background:var(--none-bg);color:var(--none)}
+.src{font-size:11px;color:var(--muted);margin-left:6px}
+.pg{all:unset;cursor:pointer;color:var(--accent);font-family:var(--font-data);font-size:12.5px;text-decoration:underline;text-underline-offset:2px;margin-right:6px;white-space:nowrap}
+.pg:focus-visible{outline:2px solid var(--accent)}
+tr.det td{background:var(--bg);font-size:13px}
+.quote{margin:6px 0;padding:6px 12px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 6px 6px 0;max-width:90ch}
+.meta{font-size:12px;color:var(--muted)}
+.status{display:flex;align-items:center;gap:10px}
+.spin{width:16px;height:16px;flex:none;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+.err{color:var(--high)}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msgs{display:flex;flex-direction:column;gap:10px;max-height:560px;overflow:auto}
+.msg{padding:10px 12px;border-radius:10px;white-space:pre-wrap;word-break:break-word;max-width:100%}
+.msg.u{background:var(--accent-soft);align-self:flex-end;max-width:85%}
+.msg.a{background:var(--bg);border:1px solid var(--line)}
+.trace{font-size:12px;color:var(--muted);margin-top:6px;white-space:normal}
+.psg{margin-top:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);white-space:normal;font-size:13px}
+.ask{display:flex;gap:8px}
+.ask input{flex:1;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}
+.modal{position:fixed;inset:0;background:rgba(8,14,13,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal .card{background:var(--panel);border-radius:var(--r);max-width:880px;width:100%;max-height:86vh;display:flex;flex-direction:column;border:1px solid var(--line)}
+.modal .hd{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.modal pre{margin:0;padding:16px;overflow:auto;white-space:pre-wrap;font-family:var(--font-data);font-size:12.5px;line-height:1.6}
+mark{background:var(--mark);color:var(--mark-ink);border-radius:2px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--panel);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30}
+</style>
+
+<header class="top wrap">
+  <div class="in">
+    <div class="brand"><h1>ITB Reviewer</h1><span>입찰안내서 주요 항목 추출 · 계약 리스크 검토</span></div>
+    <div class="grow"></div>
+    <span id="engine" class="pill"><span class="dot"></span>규칙 엔진</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <aside class="rail">
+      <label class="drop" id="drop">
+        <strong>ITB 파일 올리기</strong>
+        PDF · DOCX · TXT를 끌어다 놓거나 클릭
+        <small>파일은 이 브라우저 안에서만 읽습니다. 서버로 올라가지 않습니다.</small>
+        <input type="file" id="file" accept=".pdf,.docx,.txt,.md" hidden>
+      </label>
+      <div class="kicker">문서</div>
+      <div class="docs" id="docs"></div>
+      <div class="box note" id="railnote"></div>
+    </aside>
+    <main class="main" id="main" aria-live="polite"></main>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="card">
+    <div class="hd"><strong id="mt">페이지</strong><div class="grow"></div>
+      <button class="btn" id="mprev">이전</button><button class="btn" id="mnext">다음</button><button class="btn" id="mclose">닫기</button></div>
+    <pre id="mbody"></pre>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script id="samples" type="application/json">{"en": {"kind": "pdf", "pages": [{"number": 1, "text": "INVITATION TO BID - SAMPLE (FICTIONAL)\nRiverside 600 MW Combined Cycle Power Plant Project - Bid\nDocuments Volume 1\nThis is a fictional document generated for software testing only."}, {"number": 2, "text": "SECTION I - INSTRUCTIONS TO BIDDERS\n1. General\n1.1 The Employer, Northbay Energy Authority (the \"Employer\"), invites sealed bids for the Riverside\n600 MW Combined Cycle Power Plant Project (the \"Project\").\n1.2 The Site is located in the Riverside Industrial Zone, Port Halden, Republic of Nordavia.\n1.3 The scope of work comprises the engineering, procurement, construction, commissioning and\ntesting of a 600 MW combined cycle power plant including two gas turbines, two heat recovery\nsteam generators, one steam turbine, a 400 kV switchyard and all balance of plant.\n1.4 The Contract shall be a lump sum turnkey EPC contract based on the FIDIC Conditions of\nContract for EPC/Turnkey Projects (Silver Book), 2017 Edition, as amended by the Particular\nConditions.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\n2. Bidding Schedule\n2.1 A pre-bid meeting and site visit will be held on 2026-01-20 at 10:00 hrs at the Employer's site\noffice. Attendance is mandatory for all bidders.\n2.2 Bidders may submit requests for clarification in writing no later than 2026-02-10. The Employer\nwill respond to all clarification queries within ten (10) days.\n2.3 Bids must be received at the Employer's address no later than 2026-03-16 at 14:00 hrs local\ntime (the bid submission deadline). Late bids shall be rejected.\n2.4 Bids shall remain valid for a period of 180 days after the bid submission deadline.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 3, "text": "3. Preparation of Bids\n3.1 The Bid shall comprise two separate envelopes: Envelope A (Technical Proposal) and\nEnvelope B (Price Proposal including the completed Price Schedules).\n3.2 The currency of the Bid shall be United States Dollars (USD). Local costs may be quoted up to\n20% in Nordavian Krona (NVK) at the exchange rate published by the Central Bank 28 days prior to\nthe bid submission deadline.\n3.3 Each bid shall be accompanied by a Bid Security in the amount of 2% of the Bid Price, in the\nform of an unconditional bank guarantee valid for 28 days beyond the bid validity period.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\n4. Evaluation and Award\n4.1 Bids will be evaluated on a pass/fail technical evaluation followed by commercial evaluation.\nTechnical compliance carries a weighting of 30% and price a weighting of 70%.\n4.2 The Contract will be awarded to the bidder whose bid is technically compliant and has the\nlowest evaluated price after applying the weighting.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 4, "text": ""}, {"number": 5, "text": "SECTION II - PARTICULAR CONDITIONS OF\nCONTRACT\nClause 4.2 Performance Security\nThe Contractor shall deliver a Performance Security in the amount of 10% of the Contract Price\nwithin 28 days after receiving the Letter of Acceptance. The Performance Security shall remain\nvalid until the issue of the Performance Certificate.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nClause 4.8 Local Content\nThe Contractor shall ensure that not less than 30% of the total value of the Works is sourced from\nNordavian nationals, local subcontractors and local suppliers (in-country value).\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 6, "text": "Clause 8.2 Time for Completion\nThe Time for Completion of the whole of the Works shall be 36 months from the Commencement\nDate.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nClause 8.8 Delay Damages\nIf the Contractor fails to achieve Taking Over by the Time for Completion, the Contractor shall pay\nliquidated damages to the Employer at the rate of 0.15% of the Contract Price per calendar day of\ndelay.\nThe total amount of delay damages shall not exceed a maximum of 20% of the Contract Price.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 7, "text": "Clause 11.3 Defects Notification Period\nThe Defects Notification Period shall be 24 months from the date of Taking Over, and shall be\nextended for any repaired or replaced item by a further 12 months, subject to an overall maximum\nof 36 months.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nClause 13.8 Adjustments for Changes in Cost\nThe Contract Price is fixed and firm and shall not be subject to any adjustment for rise or fall in the\ncost of labour, materials, equipment or other inputs to the Works.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 8, "text": "Clause 14.2 Advance Payment\nThe Employer shall make an advance payment of 10% of the Contract Price, against submission of\nan Advance Payment Guarantee of equal amount. The advance payment shall be recovered by\ndeductions from interim payments.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nClause 14.3 Application for Interim Payments\nThe Contractor shall submit monthly statements. The Employer shall pay the amount certified in\neach Interim Payment Certificate within 56 days after receiving the statement and supporting\ndocuments.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 9, "text": "Clause 14.9 Retention Money\nRetention Money of 10% shall be deducted from each interim payment until the total Retention\nMoney reaches 5% of the Contract Price. Half shall be released at Taking Over.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nClause 17.6 Limitation of Liability\nThe total liability of the Contractor to the Employer under or in connection with the Contract shall not\nexceed 100% of the Accepted Contract Amount. Neither Party shall be liable for loss of profit or any\nindirect or consequential loss, except in cases of fraud or wilful misconduct.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 10, "text": "Clause 19 Insurance\nThe Contractor shall effect and maintain Contractor's All Risks insurance for the full replacement\nvalue of the Works and third party liability insurance with a minimum limit of USD 50,000,000 per\noccurrence.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nClause 21 Disputes and Arbitration\nThe Contract shall be governed by the laws of the Republic of Nordavia. Any dispute not settled\namicably shall be finally settled by arbitration under the Rules of Arbitration of the International\nChamber of Commerce (ICC), with the seat of arbitration in Singapore.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations.\nThe Contractor shall comply with all applicable laws, permits, codes and standards, including the\nEmployer's health, safety and environmental requirements, quality management procedures and\ndocument control procedures. All drawings, specifications, calculations and data sheets shall be\nsubmitted for review in accordance with the Employer's Requirements. Review by the Employer\nshall not relieve the Contractor of any of its obligations."}, {"number": 11, "text": ""}]}, "ko": {"kind": "docx", "pages": [{"number": 1, "text": "입찰안내서 (가상 예시 문서)\n이 문서는 소프트웨어 시험용으로 만든 가상 문서입니다.\n제1장 입찰 개요\n1. 공사명: 한빛시 하수처리장 증설 및 고도처리시설 설치공사 (가상 예시)\n2. 발주기관: 한빛시 상하수도사업소\n3. 공사 위치: 한빛시 동구 강변로 일원\n4. 공사 개요: 하수처리 용량 50,000㎥/일 증설, 고도처리시설 설치 및 기존 시설 개량을 포함한다.\n5. 계약방식: 총액 확정 계약, 설계·시공 일괄입찰(턴키) 방식\n제2장 입찰 일정\n6. 현장설명회는 2026년 2월 5일 14시 한빛시청 대회의실에서 개최하며 참석은 선택사항이다.\n7. 입찰 관련 질의는 2026년 2월 20일까지 서면으로 제출하여야 한다.\n8. 입찰서 제출 마감일시는 2026년 3월 10일 17시이며 마감 이후 도착분은 무효로 한다.\n9. 입찰유효기간은 입찰서 제출 마감일로부터 90일로 한다.\n10. 입찰서류는 기술제안서와 가격제안서를 각각 별도 봉투에 넣어 제출한다.\n11. 낙찰자 결정: 기술평가 60점, 가격평가 40점을 합산하여 최고 득점자를 낙찰자로 결정한다.\n제3장 보증 및 대가 지급\n12. 입찰보증금은 입찰금액의 5%로 하며 보증보험증권으로 납부할 수 있다.\n13. 계약보증금은 계약금액의 15%로 한다.\n14. 선급금은 계약금액의 30%를 지급하며 선급금 보증서를 제출하여야 한다.\n15. 기성 대가는 매월 1회 청구하며 발주기관은 청구를 받은 날부터 5일 이내에 지급한다.\n[표]\n구분 | 비율 | 비고\n입찰보증금 | 5% | 보증보험 가능\n계약보증금 | 15% | 현금 또는 보증서\n제4장 공기 및 지체상금\n16. 공사기간은 착공일로부터 30개월로 한다.\n17. 지체상금률은 계약금액의 1000분의 0.5로 하며 지체일수 1일마다 부과한다.\n18. 지체상금 총액은 계약금액의 30%를 초과할 수 없다.\n제5장 계약 조건\n19. 하자담보책임기간은 준공일로부터 3년으로 한다.\n20. 계약금액은 국가를 당사자로 하는 계약에 관한 법률에 따라 물가변동으로 인한 계약금액 조정을 할 수 있다.\n21. 손해배상 책임은 계약금액을 한도로 하며 간접손해는 배상하지 아니한다.\n22. 계약상대자는 공사보험(건설공사보험)과 제3자 배상책임보험에 가입하여야 한다.\n23. 이 계약과 관련한 분쟁은 발주기관 소재지 관할 법원에서 해결한다."}]}}</script>
+<script>/* ITB Reviewer engine (browser + node). Python itb/ 패키지의 parser·retrieval·checklist·rules 이식본. */
+(function (root) {
+  "use strict";
+
+  // ── checklist ──────────────────────────────────────────
+  const CATEGORIES = ["일반 정보", "입찰 절차", "보증·지급", "공기·지체", "계약 리스크"];
+  const I = (key, label, category, query, anchors, valueType, guide, exclude = "") =>
+    ({ key, label, category, query, anchors, valueType, guide, exclude });
+  const ITEMS = [
+    I("project_name", "프로젝트명", "일반 정보", "project name title works 프로젝트 공사명 사업명 건명", "project|works|공사명|사업명|건명", "text", "공식 프로젝트(공사)명", "분쟁|dispute"),
+    I("employer", "발주처", "일반 정보", "employer owner client purchaser authority 발주처 발주기관 수요기관 계약상대자", "employer|owner|client|purchaser|authority|발주", "text", "발주처(Employer/Owner) 명칭", "분쟁|dispute|shall pay|지급|소재지"),
+    I("location", "현장 위치", "일반 정보", "site location located country region 현장 위치 소재지 공사장소", "site|locat|위치|소재지|장소", "text", "공사 현장 위치·국가", "분쟁|dispute|arbitration|관할"),
+    I("scope", "공사 범위", "일반 정보", "scope of work works comprise engineering procurement construction 공사범위 과업범위 공사개요", "scope|comprise|consist|범위|개요|포함", "text", "설계·조달·시공 등 계약자 업무 범위"),
+    I("contract_type", "계약 방식", "일반 정보", "contract type lump sum unit price EPC turnkey FIDIC conditions of contract 계약방식 총액 단가 턴키 일괄입찰", "lump|unit price|turnkey|epc|fidic|reimburs|총액|단가|턴키|일괄", "text", "총액(Lump Sum)/단가/턴키 여부와 적용 계약조건(FIDIC 등)"),
+    I("bid_due_date", "입찰 마감일", "입찰 절차", "bid submission deadline closing date due date tenders must be received schedule 입찰마감 제출마감 입찰서 제출 마감일시 일정 마감일", "deadline|closing|due|received|submi|마감", "date", "입찰서 제출 마감 일시와 장소"),
+    I("clarification_deadline", "질의 마감일", "입찰 절차", "clarification queries questions requests deadline 질의 질의응답 질의서 회신", "clarif|quer|question|질의", "date", "입찰 질의서 제출 기한"),
+    I("site_visit", "현장설명회", "입찰 절차", "pre-bid meeting site visit conference schedule 현장설명회 현장답사 입찰설명회 일정", "pre-bid|site visit|conference|meeting|현장설명|현장답사|설명회", "date", "현장설명회/Pre-bid meeting 일정과 참석 의무"),
+    I("bid_validity", "입찰 유효기간", "입찰 절차", "bid validity period remain valid days 입찰유효기간 유효기간", "valid|유효", "duration", "입찰서 유효기간(일)", "security|guarantee|bond|보증"),
+    I("bid_currency", "입찰 통화", "입찰 절차", "currency of bid currencies payment exchange rate 입찰통화 통화 환율", "currenc|exchange|통화|환율", "text", "입찰·지급 통화와 환율 적용 기준"),
+    I("evaluation", "평가 기준", "입찰 절차", "evaluation criteria technical commercial weighting lowest evaluated award 평가기준 낙찰자 결정 기술평가 가격평가 배점", "evaluat|award|weight|lowest|평가|낙찰|배점", "text", "기술·가격 평가 방식, 배점, 낙찰자 결정 방법"),
+    I("submission_documents", "제출 서류", "입찰 절차", "bid shall comprise documents submitted envelope technical proposal price schedule 제출서류 입찰서류 구비서류", "comprise|envelope|document|proposal|제출서류|구비서류|입찰서류", "text", "기술·가격 제안서 등 제출 서류 구성과 봉투 방식"),
+    I("bid_bond", "입찰보증금", "보증·지급", "bid security bid bond tender guarantee 입찰보증금 입찰보증서 보증", "bid security|bid bond|tender (?:security|guarantee)|입찰보증", "percent", "입찰보증 금액(비율)과 유효기간", "performance|이행|계약보증"),
+    I("performance_bond", "계약이행보증", "보증·지급", "performance security performance bond guarantee 계약이행보증 이행보증금 계약보증금 보증", "performance (?:security|bond|guarantee)|이행보증|계약보증", "percent", "이행보증 비율·형식·유효기간", "bid security|입찰보증"),
+    I("advance_payment", "선급금", "보증·지급", "advance payment down payment advance payment guarantee 선급금 선금", "advance|down payment|선급|선금", "percent", "선급금 비율과 선급금 보증 조건"),
+    I("payment_terms", "기성 지급조건", "보증·지급", "interim payment monthly progress payment certificate days invoice 기성 대가지급 지급기한", "interim|progress payment|payment certificate|invoice|기성|대가", "duration", "기성 청구 주기와 지급 기한"),
+    I("retention", "유보금", "보증·지급", "retention money retained percent 유보금 하자보수보증금", "retention|retain|유보", "percent", "유보금 비율과 반환 조건"),
+    I("completion_period", "공사 기간", "공기·지체", "time for completion completion period months commencement date 공사기간 준공기한 착공", "time for completion|completion|commencement|공사기간|준공|공기", "duration", "착공일 기준 준공 기한"),
+    I("liquidated_damages", "지체상금률", "공기·지체", "liquidated damages delay damages per day per week rate 지체상금 지체상금률", "liquidated|delay damages|지체상금", "percent", "지체상금률(일/주당 비율)", "exceed|maximum|\\bcap\\b|aggregate|초과|한도|상한"),
+    I("ld_cap", "지체상금 상한", "공기·지체", "maximum amount liquidated damages cap aggregate limit not exceed 지체상금 한도 상한", "(?:maximum|cap|aggregate|not exceed|limit).{0,60}(?:liquidated|delay)|(?:liquidated|delay).{0,80}(?:maximum|cap|exceed|limit)|지체상금.{0,30}(?:한도|상한|초과)", "percent", "지체상금 총액 상한(계약금액 대비 %)"),
+    I("warranty", "하자담보기간", "계약 리스크", "defects notification period warranty period defects liability 하자담보 하자보수기간 하자담보책임기간", "defect|warrant|하자", "duration", "하자담보(DNP/Warranty) 기간"),
+    I("limitation_of_liability", "책임 한도", "계약 리스크", "limitation of liability total liability aggregate liability consequential loss 책임한도 손해배상 한도 간접손해", "liabilit|consequential|책임|손해배상", "percent", "계약자 총 책임 한도와 간접손해 면책"),
+    I("price_adjustment", "물가변동", "계약 리스크", "price adjustment escalation fluctuation changes in cost fixed price not subject to adjustment 물가변동 계약금액 조정", "adjust|escalat|fluctuat|물가|조정", "text", "물가변동 조정 가능 여부(고정가격 리스크)"),
+    I("governing_law", "준거법·분쟁해결", "계약 리스크", "governing law dispute resolution arbitration court ICC jurisdiction 준거법 분쟁 중재 관할법원", "governing law|dispute|arbitrat|court|jurisdiction|준거법|분쟁|중재|관할", "text", "준거법, 중재기관/관할 법원"),
+    I("insurance", "보험", "계약 리스크", "insurance contractor all risks CAR third party liability 보험 공사보험 배상책임", "insurance|all risks|보험", "text", "계약자 부보 의무 보험 종류와 금액"),
+    I("local_content", "현지화 요건", "계약 리스크", "local content local subcontractors nationals localization in-country value 현지화 현지 업체 현지인 고용", "local content|in-country|national|locali|현지", "percent", "현지 조달·고용 의무 비율"),
+  ];
+
+  // ── parser (text → pages → chunks) ─────────────────────
+  const PSEUDO_PAGE_CHARS = 3000, CHUNK_CHARS = 1200, CHUNK_OVERLAP = 200;
+  const HEADING_RE = new RegExp(
+    "^\\s*(?:" +
+      "(?:\\d+(?:\\.\\d+){0,3})\\.?\\s+[A-Z가-힣][^\\n]{2,80}" +
+      "|(?:ARTICLE|Article|SECTION|Section|CLAUSE|Clause|PART|Part)\\s+[\\dIVXLC]+[^\\n]{0,80}" +
+      "|제\\s*\\d+\\s*(?:조|장|절)[^\\n]{0,80}" +
+    ")\\s*$");
+
+  function pseudoPages(blocks) {
+    const pages = []; let buf = "", n = 1;
+    for (const b of blocks) {
+      if (buf && buf.length + b.length > PSEUDO_PAGE_CHARS) { pages.push({ number: n++, text: buf.trim() }); buf = ""; }
+      buf += b + "\n";
+    }
+    if (buf.trim()) pages.push({ number: n, text: buf.trim() });
+    return pages;
+  }
+
+  function chunkPages(pages) {
+    const chunks = []; let section = "", id = 0;
+    for (const p of pages) {
+      let buf = "", startSection = section, firstHeading = "";
+      for (const line of p.text.split("\n")) {
+        if (buf.length + line.length > CHUNK_CHARS && buf) {
+          chunks.push({ id: id++, page: p.number, section: firstHeading || startSection, text: buf.trim() });
+          buf = buf.slice(-CHUNK_OVERLAP) + "\n"; startSection = section; firstHeading = "";
+        }
+        if (HEADING_RE.test(line) && line.trim().length < 100) { section = line.trim(); firstHeading = firstHeading || section; }
+        buf += line + "\n";
+      }
+      if (buf.trim()) chunks.push({ id: id++, page: p.number, section: firstHeading || startSection, text: buf.trim() });
+    }
+    return chunks;
+  }
+
+  function buildDocument(filename, kind, pages) {
+    if (!pages.some(p => p.text.trim())) throw new Error("텍스트를 추출하지 못했습니다. 스캔 이미지 PDF라면 OCR이 먼저 필요합니다.");
+    return { filename, kind, pages, chunks: chunkPages(pages) };
+  }
+
+  // ── retrieval ─────────────────────────────────────────
+  const EN = /[a-z0-9]+(?:\.[0-9]+)?/g, KO = /[가-힣]+/g;
+  const STOP = new Set(["the","of","and","to","in","a","for","be","by","or","shall","is","on","with","as","any","this","that","an","at","are","from"]);
+  function tokenize(text) {
+    text = text.toLowerCase();
+    const toks = (text.match(EN) || []).filter(t => !STOP.has(t));
+    for (const w of text.match(KO) || []) { toks.push(w); for (let i = 0; i < w.length - 1; i++) toks.push(w.slice(i, i + 2)); }
+    return toks;
+  }
+  const words = text => { const t = text.toLowerCase(); return [...(t.match(EN) || []).filter(w => !STOP.has(w)), ...(t.match(KO) || [])]; };
+  const GENERIC = new Set(["입찰","계약","공사","기간","금액","조건","내용","관련","bid","contract","works","period","date"]);
+
+  function expandQuery(query) {
+    const q = words(query);
+    const hit = w => w.length >= 2 && q.some(x => x.startsWith(w));
+    const extra = [];
+    for (const it of ITEMS) {
+      const label = words(it.label);
+      if ((label.length && label.every(hit)) || words(it.query).some(w => !GENERIC.has(w) && hit(w))) extra.push(it.query);
+    }
+    return extra.length ? query + " " + extra.join(" ") : query;
+  }
+
+  class BM25 {
+    constructor(chunks, k1 = 1.5, b = 0.75) {
+      this.chunks = chunks; this.k1 = k1; this.b = b; this.tfs = [];
+      const df = new Map();
+      for (const c of chunks) {
+        const tf = new Map();
+        for (const t of tokenize(c.section + "\n" + c.text)) tf.set(t, (tf.get(t) || 0) + 1);
+        this.tfs.push(tf);
+        for (const t of tf.keys()) df.set(t, (df.get(t) || 0) + 1);
+      }
+      this.lens = this.tfs.map(tf => [...tf.values()].reduce((a, v) => a + v, 0));
+      this.avgdl = this.lens.length ? this.lens.reduce((a, v) => a + v, 0) / this.lens.length : 1;
+      const n = chunks.length; this.idf = new Map();
+      for (const [t, f] of df) this.idf.set(t, Math.log(1 + (n - f + 0.5) / (f + 0.5)));
+    }
+    search(query, topK = 5) {
+      const q = tokenize(query); if (!q.length) return [];
+      const scores = [];
+      this.tfs.forEach((tf, i) => {
+        let s = 0; const dl = this.lens[i] || 1;
+        for (const t of q) { const f = tf.get(t); if (!f) continue; s += (this.idf.get(t) || 0) * f * (this.k1 + 1) / (f + this.k1 * (1 - this.b + this.b * dl / this.avgdl)); }
+        if (s > 0) scores.push([s, i]);
+      });
+      scores.sort((a, b) => b[0] - a[0] || b[1] - a[1]);
+      return scores.slice(0, topK).map(([s, i]) => ({ chunk: this.chunks[i], score: s }));
+    }
+  }
+
+  // ── rules ─────────────────────────────────────────────
+  const MONTHS = "january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec";
+  const DATE_RES = [
+    /\b(20\d{2})[-./](\d{1,2})[-./](\d{1,2})\b/,
+    new RegExp("\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(" + MONTHS + ")\\.?,?\\s+(20\\d{2})\\b", "i"),
+    new RegExp("\\b(" + MONTHS + ")\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?,?\\s+(20\\d{2})\\b", "i"),
+    /(20\d{2})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/,
+  ];
+  const TIME_RE = /\b(\d{1,2}[:.]\d{2})\s*(?:hrs|hours|h|am|pm|a\.m\.|p\.m\.)?|(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?/i;
+  const PCT_RE = /(\d+(?:\.\d+)?)\s*(?:%|percent|per\s?cent|퍼센트)/gi;
+  const PERMIL_RE = /(\d+)\s*분의\s*(\d+(?:\.\d+)?)/g;
+  const DUR_RE = /(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*\)?\s*(?:consecutive\s+|calendar\s+|working\s+)?((?:days?|months?|years?|weeks?)\b|개월|일(?!자|시)|년|주(?!식|요))/i;
+  const SENT_SPLIT = /(?<=[A-Za-z가-힣)\]][.;])\s+(?=[A-Z(가-힣\d])|\n+/;
+  const NEW_ITEM = /^\s*(?:\d{1,2}(?:\.\d+)+\.?\s|\d{1,2}\.\s|제\s*\d+\s*[조장절]|\[표\]|[A-Z][A-Z \-]{6,}$|(?:Clause|Article|Section|SECTION|ARTICLE)\b)/;
+
+  function mergeLines(text) {
+    const out = [];
+    for (const line of text.split("\n")) {
+      const last = out[out.length - 1];
+      if (out.length && last && !/[.;:!?다]\s*$/.test(last) && line.trim() && !NEW_ITEM.test(line) && !line.includes(" | ") && !last.includes(" | "))
+        out[out.length - 1] = last.trimEnd() + " " + line.trim();
+      else out.push(line);
+    }
+    return out.join("\n");
+  }
+  const sentences = text => mergeLines(text).split(SENT_SPLIT).map(s => (s || "").replace(/\s+/g, " ").trim()).filter(s => s.length >= 8);
+  const round4 = x => Math.round(x * 1e4) / 1e4;
+  const g = n => String(+n.toPrecision(12));
+
+  function percents(s) {
+    const vals = [...s.matchAll(PCT_RE)].map(m => parseFloat(m[1]));
+    for (const m of s.matchAll(PERMIL_RE)) { const d = parseFloat(m[1]); if (d) vals.push(round4(parseFloat(m[2]) / d * 100)); }
+    return vals;
+  }
+  function durationMonths(s) {
+    const m = s.match(DUR_RE); if (!m) return null;
+    const n = parseFloat(m[1]), u = m[2].toLowerCase();
+    if (u.startsWith("year") || u === "년") return n * 12;
+    if (u.startsWith("month") || u === "개월") return n;
+    if (u.startsWith("week") || u === "주") return n * 7 / 30.4;
+    return n / 30.4;
+  }
+  const durationDays = s => { const m = durationMonths(s); return m == null ? null : m * 30.4; };
+  const PER_DAY = /per (?:calendar )?day|each day|daily|매일|1일|지체일수/i;
+
+  function valueFor(item, s) {
+    const vt = item.valueType;
+    if (vt === "date") {
+      for (const r of DATE_RES) {
+        const m = s.match(r);
+        if (m) { const t = s.slice(m.index + m[0].length, m.index + m[0].length + 40).match(TIME_RE); return t ? `${m[0]} ${t[0].trim()}` : m[0]; }
+      }
+      return null;
+    }
+    if (vt === "percent") {
+      const p = percents(s); if (!p.length) return null;
+      if (item.key === "ld_cap") return g(p[p.length - 1]) + "%";
+      if (item.key === "liquidated_damages") {
+        const unit = PER_DAY.test(s) ? "/일" : /per week|each week|weekly|1주|매주/i.test(s) ? "/주" : "";
+        return g(p[0]) + "%" + unit;
+      }
+      return g(p[0]) + "%";
+    }
+    if (vt === "duration") { const m = s.match(DUR_RE); return m ? m[0].trim().replace(/^[ )]+|[ )]+$/g, "") : null; }
+    if (item.key === "contract_type") {
+      const hits = s.match(/lump[- ]sum|unit[- ]price|turnkey|EPC|FIDIC[^,.;]{0,40}|cost[- ]reimbursable|총액|단가|턴키|일괄입찰/gi);
+      if (hits) return [...new Set(hits.map(h => h.trim()))].join(", ");
+    }
+    return null;
+  }
+
+  function assessRisk(key, value, evidence, context) {
+    const ev = evidence || "";
+    const low = (context != null ? context : ev).toLowerCase();
+    const p = percents(ev);
+    const R = (r, why = "") => [r, why];
+    switch (key) {
+      case "ld_cap": {
+        if (/unlimited|no (?:cap|limit|maximum)|without limit|무제한|한도 없/.test(low)) return R("high", "지체상금 상한이 없습니다.");
+        if (!value) return R("high", "지체상금 상한 조항을 찾지 못했습니다. 무제한 노출 가능성을 확인해야 합니다.");
+        const v = p.length ? p[p.length - 1] : 0;
+        if (v > 15) return R("high", `상한 ${g(v)}%는 통상 수준(10% 내외)보다 높습니다.`);
+        if (v > 10) return R("medium", `상한 ${g(v)}%로 통상 수준(10%)을 넘습니다.`);
+        return R("low", `상한 ${g(v)}%는 통상 범위입니다.`);
+      }
+      case "liquidated_damages": {
+        if (!value || !p.length) return R("unknown", "지체상금률을 확인하지 못했습니다.");
+        const v = p[0];
+        if (PER_DAY.test(low)) {
+          if (v > 0.1) return R("high", `일 ${g(v)}%는 높은 편입니다(통상 0.05~0.1%/일).`);
+          if (v >= 0.1) return R("medium", `일 ${g(v)}%로 통상 범위 상단입니다.`);
+          return R("low", `일 ${g(v)}%는 통상 범위입니다.`);
+        }
+        if (v > 1) return R("high", `주 ${g(v)}%는 높은 편입니다(통상 0.5~1%/주).`);
+        return R("low", `${g(v)}%는 통상 범위입니다.`);
+      }
+      case "bid_bond": {
+        if (!p.length) return value == null ? R("unknown", "보증 비율이 아닌 정액이거나 확인되지 않았습니다.") : R("low");
+        const v = p[0];
+        if (v > 5) return R("high", `입찰보증 ${g(v)}%는 통상(2~5%)보다 높습니다.`);
+        if (v > 3) return R("medium", `입찰보증 ${g(v)}%로 통상 범위 상단입니다.`);
+        return R("low", `입찰보증 ${g(v)}%는 통상 범위입니다.`);
+      }
+      case "performance_bond": {
+        if (!p.length) return R("unknown", "이행보증 비율을 확인하지 못했습니다.");
+        const v = p[0];
+        if (v > 15) return R("high", `이행보증 ${g(v)}%는 통상(10%)보다 높습니다.`);
+        if (v > 10) return R("medium", `이행보증 ${g(v)}%로 통상(10%)을 넘습니다.`);
+        return R("low", `이행보증 ${g(v)}%는 통상 범위입니다.`);
+      }
+      case "advance_payment": {
+        if (/no advance|not be (?:entitled|paid)|shall not|선급금(?:은|을)? 지급하지|없음/.test(low)) return R("high", "선급금이 없어 초기 자금 부담이 큽니다.");
+        if (!value) return R("medium", "선급금 조항을 찾지 못했습니다. 초기 현금흐름을 확인해야 합니다.");
+        return R("low", `선급금 ${value}이 지급됩니다.`);
+      }
+      case "retention": {
+        if (!p.length) return R("unknown", "유보금 비율을 확인하지 못했습니다.");
+        const v = p[0];
+        if (v > 10) return R("high", `유보금 ${g(v)}%는 높은 편입니다(통상 5~10%).`);
+        if (v > 5) return R("medium", `유보금 ${g(v)}%로 통상 범위 상단입니다.`);
+        return R("low", `유보금 ${g(v)}%는 통상 범위입니다.`);
+      }
+      case "warranty": {
+        const mo = value ? durationMonths(ev) : null;
+        if (mo == null) return R("unknown", "하자담보기간을 확인하지 못했습니다.");
+        if (mo > 24) return R("high", `하자담보 ${g(mo)}개월은 통상(12~24개월)보다 깁니다.`);
+        if (mo > 12) return R("medium", `하자담보 ${g(mo)}개월로 통상(12개월)보다 깁니다.`);
+        return R("low", `하자담보 ${g(mo)}개월은 통상 범위입니다.`);
+      }
+      case "limitation_of_liability": {
+        if (/unlimited|no limit|shall not be limited|without limit|무제한|제한(?:하지| 없)/.test(low)) return R("high", "계약자 책임이 무제한이거나 제한되지 않습니다.");
+        if (!low) return R("high", "책임 한도 조항을 찾지 못했습니다. 무제한 책임 가능성을 확인해야 합니다.");
+        if (p.length && p[0] > 100) return R("high", `책임 한도가 계약금액의 ${g(p[0])}%로 높습니다.`);
+        if (!/consequential|indirect|간접/.test(low)) return R("medium", "간접·결과적 손해 면책 문구를 함께 확인해야 합니다.");
+        return R("low", "책임 한도와 간접손해 면책이 있습니다.");
+      }
+      case "price_adjustment": {
+        if (!low) return R("unknown", "물가변동 조항을 찾지 못했습니다.");
+        if (/not (?:be )?subject to (?:any )?(?:price )?adjust|no (?:price )?(?:adjustment|escalation)|fixed and firm|firm price|shall remain fixed|조정하지 (?:않|아니)|고정/.test(low))
+          return R("high", "물가변동 조정이 없는 고정가격입니다. 자재·인건비 상승 위험을 계약자가 모두 집니다.");
+        return R("low", "물가변동 조정 조항이 있습니다.");
+      }
+      case "bid_validity": {
+        const d = value ? durationDays(ev) : null;
+        if (d == null) return R("unknown");
+        if (d > 180) return R("medium", `입찰 유효기간 ${Math.round(d)}일은 깁니다. 가격 유지 부담이 있습니다.`);
+        return R("low");
+      }
+      case "payment_terms": {
+        const d = value ? durationDays(ev) : null;
+        if (d == null) return R("unknown", "기성 지급 기한을 확인하지 못했습니다.");
+        if (d > 60) return R("high", `지급 기한 ${Math.round(d)}일은 깁니다(통상 28~56일).`);
+        if (d > 45) return R("medium", `지급 기한 ${Math.round(d)}일로 통상보다 깁니다.`);
+        return R("low");
+      }
+      case "governing_law": {
+        if (!ev) return R("unknown");
+        if (/arbitrat|icc|siac|lcia|uncitral|중재/.test(low)) return R("low", "국제중재 조항이 있습니다.");
+        if (/court|법원/.test(low)) return R("medium", "중재 없이 현지 법원 관할입니다.");
+        return R("none");
+      }
+      case "local_content": {
+        if (!p.length) return ev ? R("low") : R("none");
+        const v = p[0];
+        if (v >= 50) return R("high", `현지화 의무 ${g(v)}%는 높습니다.`);
+        if (v >= 30) return R("medium", `현지화 의무 ${g(v)}%입니다.`);
+        return R("low");
+      }
+    }
+    return R("none");
+  }
+
+  function bestSentence(item, index) {
+    const anchor = new RegExp(item.anchors, "i");
+    const exclude = item.exclude ? new RegExp(item.exclude, "i") : null;
+    const qtok = new Set(tokenize(item.query));
+    let best = null;
+    index.search(item.query, 6).forEach(({ chunk, score }, rank) => {
+      const sents = sentences(chunk.text);
+      sents.forEach((s, k) => {
+        if (!anchor.test(s) || (exclude && exclude.test(s))) return;
+        const val = valueFor(item, s);
+        const overlap = new Set(tokenize(s).filter(t => qtok.has(t))).size;
+        const sc = score * (1 - 0.08 * rank) + overlap * 0.6 + (val ? 4 : 0) - s.length / 600 - (/^[a-z]/.test(s) ? 2 : 0);
+        if (!best || sc > best.sc) best = { sc, s, val, chunk, ctx: sents.slice(k, k + 2).join(" ") };
+      });
+    });
+    return best;
+  }
+
+  function extractRules(doc, index) {
+    return ITEMS.map(item => {
+      const best = bestSentence(item, index);
+      let value = null, evidence = "", page = null, section = "", ctx = "";
+      if (best) {
+        ({ s: evidence, val: value, ctx } = best); page = best.chunk.page; section = best.chunk.section;
+        if (value == null && (item.valueType === "text" || item.key === "limitation_of_liability"))
+          value = evidence.length <= 220 ? evidence : evidence.slice(0, 217) + "…";
+      }
+      const [risk, reason] = assessRisk(item.key, value, evidence, ctx);
+      return { key: item.key, label: item.label, category: item.category, found: value != null, value: value || "",
+        summary: "", evidence: evidence.slice(0, 600), pages: page ? [page] : [], section, risk, risk_reason: reason, source: "rule" };
+    });
+  }
+
+  function offlineAnswer(index, question) {
+    const expanded = expandQuery(question);
+    const hits = index.search(expanded, 6);
+    if (!hits.length) return [];
+    const qtok = new Set(tokenize(expanded)), top = hits[0].score, out = [];
+    for (const { chunk, score } of hits) {
+      if (score < top * 0.3) break;
+      const sents = sentences(chunk.text);
+      const ov = s => new Set(tokenize(s).filter(t => qtok.has(t))).size;
+      const pick = sents.map((s, k) => [k, ov(s)]).sort((a, b) => b[1] - a[1]).slice(0, 3).filter(x => x[1] > 0).map(x => x[0]).sort((a, b) => a - b);
+      if (pick.length) out.push({ page: chunk.page, section: chunk.section, text: pick.map(k => sents[k]).join(" … ") });
+    }
+    return out;
+  }
+
+  const api = { CATEGORIES, ITEMS, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
+  if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ITBEngine = api;
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script>
+(() => {
+"use strict";
+const E = window.ITBEngine;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const RISK = { high:"높음", medium:"주의", low:"양호", none:"-", unknown:"확인 필요" };
+const SUGG = ["지체상금 조건과 상한을 정리해줘", "계약자에게 불리한 조항 Top 5는?", "입찰 일정(현장설명회·질의·마감)을 정리해줘", "보증서 종류와 비율, 유효기간은?", "물가변동 조정이 가능한가?"];
+const CDN = "https://cdnjs.cloudflare.com/ajax/libs/";
+
+const st = { docs: [], cur: null, cat: "전체", risk: "all", open: new Set(), modal: { page: 1, total: 1 },
+  sample: null, tools: false, downloads: null, busy: null };
+let seq = 0;
+
+// ── 라이브러리 지연 로딩 ─────────────────────────────
+const loaded = {};
+function loadScript(src) {
+  return loaded[src] ||= new Promise((ok, no) => {
+    const s = document.createElement("script"); s.src = src; s.onload = ok;
+    s.onerror = () => { delete loaded[src]; no(new Error("문서 해석 라이브러리를 불러오지 못했습니다. 네트워크 연결을 확인한 뒤 다시 올려 주세요.")); };
+    document.head.appendChild(s);
+  });
+}
+async function readPdf(buf) {
+  await loadScript(CDN + "pdf.js/3.11.174/pdf.min.js");
+  await loadScript(CDN + "pdf.js/3.11.174/pdf.worker.min.js"); // 메인 스레드 워커(pdfjsWorker 전역)로 동작
+  const pdf = await window.pdfjsLib.getDocument({ data: buf, isEvalSupported: false }).promise;
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const tc = await (await pdf.getPage(i)).getTextContent();
+    let text = "", lastY = null;
+    for (const it of tc.items) {
+      const y = it.transform ? Math.round(it.transform[5]) : null;
+      if (lastY !== null && y !== null && Math.abs(y - lastY) > 2 && !text.endsWith("\n")) text += "\n";
+      text += it.str; if (it.hasEOL) text += "\n";
+      if (y !== null) lastY = y;
+    }
+    pages.push({ number: i, text: text.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim() });
+    if (i % 20 === 0) setStatus(`PDF 읽는 중 · ${i} / ${pdf.numPages}쪽`);
+  }
+  return pages;
+}
+async function readDocx(buf) {
+  await loadScript(CDN + "mammoth/1.6.0/mammoth.browser.min.js");
+  const { value } = await window.mammoth.extractRawText({ arrayBuffer: buf });
+  return E.pseudoPages(value.split(/\n+/).map(s => s.trim()).filter(Boolean));
+}
+async function readTxt(buf) {
+  let text;
+  try { text = new TextDecoder("utf-8", { fatal: true }).decode(buf); } catch { text = new TextDecoder("euc-kr").decode(buf); }
+  return E.pseudoPages(text.split(/\n\s*\n/).filter(b => b.trim()));
+}
+
+// ── 문서 처리 ───────────────────────────────────────
+function analyze(rec) {
+  rec.index = new E.BM25(rec.doc.chunks);
+  rec.rules = E.extractRules(rec.doc, rec.index);
+  rec.ex = { engine: "rule", items: rec.rules, overall: "", top: rec.rules.filter(i => i.risk === "high").map(i => `${i.label}: ${i.risk_reason}`) };
+  rec.status = "done";
+}
+function addSample(key, name) {
+  const s = SAMPLES[key];
+  const rec = { id: "s" + (++seq), name, kind: s.kind, sample: true, status: "parsing", chat: [] };
+  rec.doc = E.buildDocument(name, s.kind, s.pages); analyze(rec);
+  st.docs.push(rec); return rec;
+}
+async function upload(file) {
+  const ext = (file.name.match(/\.[^.]+$/) || [""])[0].toLowerCase();
+  if (![".pdf", ".docx", ".txt", ".md"].includes(ext)) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다.");
+  const rec = { id: "d" + (++seq), name: file.name, kind: ext.slice(1), status: "parsing", msg: "문서를 읽는 중", chat: [] };
+  st.docs.unshift(rec); select(rec.id);
+  try {
+    const buf = await file.arrayBuffer();
+    const pages = ext === ".pdf" ? await readPdf(buf) : ext === ".docx" ? await readDocx(buf) : await readTxt(buf);
+    rec.doc = E.buildDocument(file.name, ext === ".pdf" ? "pdf" : "docx", pages);
+    rec.msg = "주요 항목 추출 중"; render();
+    await new Promise(r => setTimeout(r, 0));
+    analyze(rec);
+  } catch (e) { rec.status = "error"; rec.msg = e.message || String(e); }
+  renderDocs(); if (st.cur === rec.id) render();
+}
+function setStatus(msg) { const r = curRec(); if (r && r.status === "parsing") { r.msg = msg; render(); } }
+const curRec = () => st.docs.find(d => d.id === st.cur);
+function select(id) { st.cur = id; st.cat = "전체"; st.risk = "all"; st.open = new Set(); renderDocs(); render(); }
+
+// ── Claude (sample capability) ──────────────────────
+function evidencePrompt(rec, perItem) {
+  const used = new Map(), lines = [];
+  for (const it of E.ITEMS) {
+    const ids = rec.index.search(it.query, perItem).map(h => { used.set(h.chunk.id, h.chunk); return h.chunk.id; });
+    lines.push(`- ${it.key} (${it.label}; ${it.guide}) → chunk ${ids.join(", ") || "없음"}`);
+  }
+  const chunks = [...used.values()].sort((a, b) => a.id - b.id)
+    .map(c => `<chunk id="${c.id}" page="${c.page}" section="${esc(c.section).slice(0, 80)}">\n${c.text}\n</chunk>`).join("\n");
+  const head = rec.doc.pages.slice(0, 2).map(p => `[p.${p.number}]\n${p.text}`).join("\n").slice(0, 5000);
+  const hints = JSON.stringify(rec.rules.filter(r => r.found).map(r => ({ key: r.key, value: r.value, pages: r.pages })));
+  return `당신은 해외 건설·EPC 입찰을 20년 검토한 입찰안내서(ITB) 검토 전문가입니다.
+아래 근거 발췌(<chunk>)만 사용해 26개 검토 항목의 값을 추출하고 계약자 입장의 리스크를 판정하세요.
+
+규칙:
+- 근거에 없는 내용은 추측하지 말고 found=false, value="" 로 두세요.
+- value: 원문 수치·날짜·명칭을 살린 짧은 값 (예: "5% of Contract Price", "2026-03-15 14:00").
+- summary: 한국어 1~2문장. evidence: 근거 원문 문장 그대로(300자 이내). pages: 근거 chunk 의 page 번호 배열.
+- risk: high(입찰 전 반드시 협의·가격 반영) | medium(주의) | low(통상 수준) | none(판단 대상 아님) | unknown(근거 부족).
+- 상한·한도·선급금처럼 '없음'이 리스크인 항목을 찾지 못했다면 high 또는 medium 으로 두고 이유를 적으세요.
+- risk_reason: 한국어, 업계 통상 수준과 비교한 설명.
+- 규칙 엔진 힌트는 틀릴 수 있습니다. 근거 원문을 우선하세요.
+
+반드시 아래 형태의 JSON 하나만 답하세요:
+{"overall_summary":"한국어 3~5문장","top_risks":["입찰 전 꼭 확인할 리스크 3~6개"],"items":[{"key":"bid_bond","found":true,"value":"2% of Bid Price","summary":"...","evidence":"...","pages":[3],"risk":"low","risk_reason":"..."}]}
+items 에는 다음 26개 key 를 모두 한 번씩 넣으세요.
+
+문서: ${rec.name} (${rec.doc.pages.length}${rec.doc.kind === "pdf" ? "쪽" : "구간"})
+<document_head>
+${head}
+</document_head>
+
+<items>
+${lines.join("\n")}
+</items>
+
+<chunks>
+${chunks}
+</chunks>
+
+<rule_engine_hints>${hints}</rule_engine_hints>`;
+}
+async function claudeExtract(rec) {
+  if (!st.sample || st.busy) return;
+  const ctl = new AbortController(); st.busy = { kind: "extract", ctl, rec: rec.id, msg: "Claude가 근거를 읽는 중…" }; render();
+  try {
+    let prompt = evidencePrompt(rec, 3);
+    if (new Blob([prompt]).size > 220000) prompt = evidencePrompt(rec, 2);
+    const data = await st.sample.json(prompt, { signal: ctl.signal, onText: () => { if (st.busy) { st.busy.msg = "결과를 받는 중…"; render(); } } });
+    if (!data || !Array.isArray(data.items)) throw { code: "invalid_json" };
+    const by = new Map(data.items.filter(x => x && x.key).map(x => [x.key, x]));
+    rec.ex = { engine: "claude", overall: String(data.overall_summary || ""), top: (data.top_risks || []).map(String),
+      items: rec.rules.map(r => { const x = by.get(r.key); if (!x) return r;
+        const pages = Array.isArray(x.pages) ? [...new Set(x.pages.map(Number).filter(n => n > 0))].sort((a, b) => a - b) : [];
+        return { ...r, found: !!x.found, value: String(x.value || ""), summary: String(x.summary || ""), evidence: String(x.evidence || r.evidence),
+          pages: pages.length ? pages : r.pages, risk: RISK[x.risk] ? x.risk : "unknown", risk_reason: String(x.risk_reason || ""), source: "claude", rule_value: r.value }; }) };
+    toast("Claude 분석을 반영했습니다.");
+  } catch (e) {
+    if (e.code !== "cancelled") toast(errCopy(e.code));
+    if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e.code)) disableClaude();
+  }
+  st.busy = null; render();
+}
+function errCopy(code) {
+  return ({ not_granted: "Claude 사용이 허용되지 않아 규칙 엔진 결과만 표시합니다.", rate_limited: "요청이 많습니다. 잠시 뒤 다시 눌러 주세요.",
+    prompt_too_large: "문서 발췌가 너무 깁니다. 질문을 좁혀 주세요.", invalid_json: "Claude 응답을 표로 읽지 못했습니다. 다시 시도해 주세요.",
+    refused: "Claude가 이 요청에 답하지 않았습니다.", session_expired: "다시 로그인한 뒤 시도해 주세요." })[code]
+    || "Claude 호출이 실패했습니다. 잠시 뒤 다시 시도해 주세요.";
+}
+function disableClaude() { st.sample = null; st.tools = false; paintEngine(); }
+
+const CHAT_RULES = `당신은 입찰안내서(ITB) 검토 어시스턴트입니다. 사용자는 건설사 입찰 담당자입니다.
+문서 내용은 반드시 도구(search_document, read_pages, get_extracted_items)로 직접 찾아 읽고 답하세요. 기억이나 일반 지식으로 문서 내용을 지어내지 마세요.
+- 동의어(영문/한글, 예: liquidated damages/지체상금)로 여러 번 검색해도 됩니다. 조항이 다른 조항을 참조하면 read_pages 로 앞뒤를 읽으세요.
+- 답은 한국어로, 결론 먼저. 모든 사실에 [p.12] 처럼 페이지를 붙이세요.
+- 찾지 못한 내용은 "문서에서 확인되지 않음"이라고 쓰세요.
+- 계약자에게 불리한 조항이면 리스크와 대응(질의서·가격 반영·예외 조건 제시)을 짧게 제안하세요.`;
+
+function chatTools(rec) {
+  return [
+    { name: "search_document", description: "입찰안내서 전체를 키워드로 검색해 관련 발췌를 페이지 번호와 함께 돌려줍니다. 한글·영문 키워드 모두 가능.",
+      inputSchema: { type: "object", properties: { query: { type: "string" }, top_k: { type: "integer", description: "1~6" } }, required: ["query"] },
+      execute: inp => { const q = String(inp.query || ""); progress(`🔎 "${q}" 검색`);
+        const hits = rec.index.search(E.expandQuery(q), Math.max(1, Math.min(Number(inp.top_k) || 4, 6)));
+        return hits.length ? hits.map(h => `<result page="${h.chunk.page}" section="${h.chunk.section.slice(0, 80)}">\n${h.chunk.text}\n</result>`).join("\n") : "검색 결과가 없습니다. 동의어로 다시 검색하세요."; } },
+    { name: "read_pages", description: "지정한 페이지 범위의 전문을 읽습니다. 한 번에 최대 3페이지.",
+      inputSchema: { type: "object", properties: { start_page: { type: "integer" }, end_page: { type: "integer" } }, required: ["start_page"] },
+      execute: inp => { const n = rec.doc.pages.length, a = Math.max(1, Number(inp.start_page) || 1), b = Math.min(Number(inp.end_page) || a, a + 2, n);
+        if (a > n) throw new Error(`문서는 ${n}쪽까지 있습니다.`); progress(`📄 p.${a}${b > a ? "–" + b : ""} 열람`);
+        return rec.doc.pages.slice(a - 1, b).map(p => `<page number="${p.number}">\n${p.text.slice(0, 9000)}\n</page>`).join("\n"); } },
+    { name: "get_extracted_items", description: "이 문서에서 이미 추출한 26개 주요 항목(값·페이지·리스크 판정) 표를 돌려줍니다.",
+      execute: () => { progress("📋 추출표 참조"); return rec.ex.items.map(i => ({ label: i.label, value: i.value, pages: i.pages, risk: i.risk, why: i.risk_reason })); } },
+  ];
+}
+function progress(step) { const b = st.busy; if (b && b.kind === "chat") { b.trace.push(step); paintChat(); } }
+
+async function ask(q) {
+  const rec = curRec(); if (!rec || rec.status !== "done" || st.busy) return;
+  rec.chat.push({ role: "user", content: q });
+  if (!st.sample) { rec.chat.push({ role: "assistant", content: "관련 조항의 핵심 문장입니다. (Claude를 쓸 수 없는 환경이라 발췌만 보여 드립니다.)", passages: E.offlineAnswer(rec.index, q) }); paintChat(); return; }
+  const ctl = new AbortController(); const msg = { role: "assistant", content: "", pending: true, trace: [] };
+  rec.chat.push(msg); st.busy = { kind: "chat", ctl, rec: rec.id, trace: msg.trace }; paintChat();
+  const turns = rec.chat.filter(m => !m.pending && m.content && !m.offline).slice(-7, -1).map(m => ({ role: m.role, content: m.content }));
+  let input;
+  if (st.tools) input = [{ role: "user", content: `${CHAT_RULES}\n\n[문서: ${rec.name}, 총 ${rec.doc.pages.length}쪽]` }, ...turns, { role: "user", content: q }];
+  else {
+    const ctx = rec.index.search(E.expandQuery(q), 6).map(h => `<chunk page="${h.chunk.page}">\n${h.chunk.text}\n</chunk>`).join("\n");
+    input = [{ role: "user", content: CHAT_RULES.replace(/문서 내용은 반드시 도구[^\n]+\n/, "아래 발췌만 근거로 답하세요.\n") }, ...turns,
+      { role: "user", content: `[문서: ${rec.name}]\n<excerpts>\n${ctx}\n</excerpts>\n\n질문: ${q}` }];
+  }
+  try {
+    const opts = { signal: ctl.signal, cache: false, onText: ({ text }) => { msg.content = text; paintChat(); } };
+    if (st.tools) { opts.tools = chatTools(rec); delete opts.cache; }
+    const r = await st.sample(input, opts);
+    msg.content = r.text + (r.truncated ? "\n\n(답이 길어 중간에 끊겼습니다. 질문을 좁혀 주세요.)" : "");
+  } catch (e) {
+    msg.content = e.text || ""; if (e.code === "refused") msg.content = "";
+    if (e.code !== "cancelled") { msg.content += (msg.content ? "\n\n" : "") + errCopy(e.code); msg.offline = true; msg.passages = E.offlineAnswer(rec.index, q); }
+    else msg.content += (msg.content ? "\n\n" : "") + "(중지함)";
+    if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e.code)) disableClaude();
+    if (e.code === "tools_unavailable") st.tools = false;
+  }
+  msg.pending = false; st.busy = null; paintChat(); render();
+}
+
+// ── 내보내기 ────────────────────────────────────────
+function rowsFor(rec) {
+  return [["분류", "항목", "값", "요약", "리스크", "리스크 사유", "페이지", "근거 원문", "추출 엔진"],
+    ...rec.ex.items.map(i => [i.category, i.label, i.value, i.summary, RISK[i.risk] || i.risk, i.risk_reason, i.pages.join(", "), i.evidence, i.source === "claude" ? "Claude" : "규칙"])];
+}
+async function saveCsv(rec) {
+  const csv = "﻿" + rowsFor(rec).map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
+  try { await st.downloads.save({ filename: rec.name.replace(/\.[^.]+$/, "") + "_ITB검토.csv", data: csv }); toast("CSV를 저장했습니다."); }
+  catch (e) { if (e.code !== "declined") toast("저장하지 못했습니다. '표 복사'로 엑셀에 붙여 넣어 주세요."); }
+}
+async function copyTable(rec) {
+  const tsv = rowsFor(rec).map(r => r.map(v => String(v ?? "").replace(/[\t\n]+/g, " ")).join("\t")).join("\n");
+  try { await navigator.clipboard.writeText(tsv); toast("표를 복사했습니다. 엑셀에 붙여 넣으세요."); }
+  catch { toast("복사가 막혀 있습니다. 표를 직접 선택해 복사해 주세요."); }
+}
+
+// ── 화면 ────────────────────────────────────────────
+function paintEngine() {
+  const el = $("#engine");
+  el.className = "pill" + (st.sample ? " on" : "");
+  el.lastChild.textContent = st.sample ? "Claude 연결됨" : "규칙 엔진";
+  $("#railnote").innerHTML = st.sample
+    ? "규칙 엔진이 먼저 26개 항목을 뽑습니다. <b>Claude로 정밀 분석</b>을 누르면 Claude가 근거 조항을 읽고 값과 리스크를 다시 판정합니다. 질문에는 Claude가 문서를 직접 검색해 답합니다. Claude 호출은 보는 사람의 Claude 사용량을 씁니다."
+    : "지금은 규칙 엔진으로 동작합니다. claude.ai에서 이 페이지를 열면 Claude 정밀 분석과 문서 질의응답을 쓸 수 있습니다.";
+}
+function renderDocs() {
+  $("#docs").innerHTML = st.docs.map(d => {
+    const rc = d.ex ? d.ex.items.reduce((a, i) => (a[i.risk] = (a[i.risk] || 0) + 1, a), {}) : {};
+    const meta = d.status === "done" ? `${d.doc.pages.length}${d.doc.kind === "pdf" ? "쪽" : "구간"} · 높음 ${rc.high || 0} · 주의 ${rc.medium || 0}` : d.status === "error" ? "읽기 실패" : "읽는 중…";
+    return `<button class="doc" data-id="${d.id}" aria-current="${d.id === st.cur}"><div class="n">${esc(d.name)}</div><div class="m">${d.sample ? "가상 샘플 · " : ""}${meta}</div></button>`;
+  }).join("");
+  $("#docs").querySelectorAll(".doc").forEach(b => b.onclick = () => select(b.dataset.id));
+}
+function render() {
+  const rec = curRec(), main = $("#main");
+  if (!rec) { main.innerHTML = `<div class="box sec">왼쪽에서 입찰안내서를 올려 주세요.</div>`; return; }
+  if (rec.status === "parsing") { main.innerHTML = `<div class="box sec status"><div class="spin"></div><div><b>${esc(rec.name)}</b><div class="sub">${esc(rec.msg || "")}</div></div></div>`; return; }
+  if (rec.status === "error") { main.innerHTML = `<div class="box sec"><b>${esc(rec.name)}</b><p class="err">${esc(rec.msg)}</p></div>`; return; }
+  const ex = rec.ex, items = ex.items, n = l => items.filter(i => i.risk === l).length;
+  const busy = st.busy && st.busy.kind === "extract" && st.busy.rec === rec.id;
+  const vis = items.filter(i => (st.cat === "전체" || i.category === st.cat) && (st.risk === "all" || i.risk === st.risk || (st.risk === "missing" && !i.found)));
+  let rows = "";
+  for (const c of E.CATEGORIES) {
+    const its = vis.filter(i => i.category === c); if (!its.length) continue;
+    rows += `<tr class="cat"><td colspan="4">${esc(c)}</td></tr>`;
+    for (const it of its) {
+      const o = st.open.has(it.key);
+      rows += `<tr class="row" data-k="${it.key}" tabindex="0" aria-expanded="${o}"><td class="lab"><span class="car">${o ? "▾" : "▸"}</span>${esc(it.label)}</td>
+        <td class="val">${it.found ? esc(it.value) : '<span class="miss">문서에서 찾지 못함</span>'}${it.summary ? `<div class="s">${esc(it.summary)}</div>` : ""}</td>
+        <td><span class="risk ${it.risk}">${RISK[it.risk] || it.risk}</span></td>
+        <td>${it.pages.map(p => `<button class="pg" data-p="${p}" data-hl="${esc(it.evidence.slice(0, 60))}">p.${p}</button>`).join("")}</td></tr>`;
+      if (o) rows += `<tr class="det"><td colspan="4">${it.risk_reason ? `<div><b>리스크 판단</b> · ${esc(it.risk_reason)}</div>` : ""}
+        ${it.evidence ? `<div class="quote">${esc(it.evidence)}</div>` : '<div class="meta">근거 문장 없음</div>'}
+        <div class="meta">${it.section ? `조항: ${esc(it.section)} · ` : ""}추출: ${it.source === "claude" ? "Claude" : "규칙 엔진"}${it.rule_value !== undefined && it.rule_value !== it.value ? ` · 규칙 엔진 값: ${esc(it.rule_value || "없음")}` : ""}</div></td></tr>`;
+    }
+  }
+  main.innerHTML = `
+  <section class="box sec dochead">
+    <div style="min-width:0"><h2>${esc(rec.name)}</h2>
+      <div class="sub">${rec.doc.pages.length}${rec.doc.kind === "pdf" ? "쪽" : "구간"} · <span class="tag">${ex.engine === "claude" ? "Claude 분석" : "규칙 엔진 추출"}</span>${rec.sample ? ' <span class="tag sample">가상 샘플 문서</span>' : ""}</div></div>
+    <div class="grow"></div>
+    <div class="btns">
+      ${st.sample ? (busy ? `<span class="status sub"><span class="spin"></span>${esc(st.busy.msg)}</span><button class="btn" id="stop">중지</button>`
+        : `<button class="btn primary" id="deep" ${st.busy ? "disabled" : ""}>${ex.engine === "claude" ? "Claude로 다시 분석" : "Claude로 정밀 분석"}</button>`) : ""}
+      ${st.downloads ? `<button class="btn" id="csv">CSV 저장</button>` : ""}
+      <button class="btn" id="copy">표 복사</button>
+    </div>
+  </section>
+  <div class="tally">
+    <div><div class="k">추출된 항목</div><div class="v">${items.filter(i => i.found).length}/${items.length}</div></div>
+    <div><div class="k">리스크 높음</div><div class="v high">${n("high")}</div></div>
+    <div><div class="k">주의</div><div class="v medium">${n("medium")}</div></div>
+    <div><div class="k">양호</div><div class="v low">${n("low")}</div></div>
+  </div>
+  ${ex.overall || ex.top.length ? `<section class="box sec summary"><h2>입찰 전 확인할 리스크</h2>${ex.overall ? `<p>${esc(ex.overall)}</p>` : ""}
+    ${ex.top.length ? `<ul class="risks">${ex.top.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}</section>` : ""}
+  <section class="box sec">
+    <h2>주요 항목</h2>
+    <div class="bar">${["전체", ...E.CATEGORIES].map(c => `<button class="chip" data-cat="${esc(c)}" aria-pressed="${st.cat === c}">${esc(c)}</button>`).join("")}
+      <div class="grow"></div>${[["all", "전체"], ["high", "높음"], ["medium", "주의"], ["missing", "못 찾음"]].map(([k, l]) => `<button class="chip" data-risk="${k}" aria-pressed="${st.risk === k}">${l}</button>`).join("")}</div>
+    <div class="scroll"><table><thead><tr><th>항목</th><th>추출 값</th><th>리스크</th><th>근거</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="4" class="meta">조건에 맞는 항목이 없습니다.</td></tr>'}</tbody></table></div>
+  </section>
+  <section class="box sec chat">
+    <h2>문서에 질문하기</h2>
+    <div class="sub">${st.sample ? (st.tools ? "Claude가 문서를 직접 검색·열람해 페이지를 붙여 답합니다." : "Claude가 관련 조항 발췌를 읽고 답합니다.") : "관련 조항의 핵심 문장을 찾아 보여 줍니다."}</div>
+    <div class="sugg">${SUGG.map(s => `<button class="chip" data-q="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+    <div class="msgs" id="msgs"></div>
+    <form class="ask" id="ask"><input id="q" placeholder="예: 지체상금 상한은 얼마이고 어느 조항에 있나요?" autocomplete="off" aria-label="질문">
+      <button class="btn primary" id="send">질문</button></form>
+  </section>`;
+  main.querySelectorAll("tr.row").forEach(tr => {
+    const tog = () => { const k = tr.dataset.k; st.open.has(k) ? st.open.delete(k) : st.open.add(k); render(); };
+    tr.onclick = e => { if (!e.target.closest(".pg")) tog(); };
+    tr.onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target === tr) { e.preventDefault(); tog(); } };
+  });
+  main.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { st.cat = b.dataset.cat; render(); });
+  main.querySelectorAll("[data-risk]").forEach(b => b.onclick = () => { st.risk = b.dataset.risk; render(); });
+  main.querySelectorAll("[data-q]").forEach(b => b.onclick = () => ask(b.dataset.q));
+  bindPages(main);
+  const on = (id, fn) => { const el = $("#" + id); if (el) el.onclick = fn; };
+  on("deep", () => claudeExtract(rec)); on("stop", () => st.busy && st.busy.ctl.abort());
+  on("csv", () => saveCsv(rec)); on("copy", () => copyTable(rec));
+  $("#ask").onsubmit = e => { e.preventDefault(); const q = $("#q").value.trim(); if (q) { $("#q").value = ""; ask(q); } };
+  paintChat();
+}
+function paintChat() {
+  const rec = curRec(), box = $("#msgs"); if (!box || !rec) return;
+  const chatBusy = st.busy && st.busy.kind === "chat" && st.busy.rec === rec.id;
+  box.innerHTML = rec.chat.map(m => {
+    if (m.role === "user") return `<div class="msg u">${esc(m.content)}</div>`;
+    const body = m.content ? linkPages(m.content) : m.pending ? `<span class="status sub"><span class="spin"></span>생각하는 중…</span>` : "";
+    const tr = m.trace && m.trace.length ? `<div class="trace">${m.trace.map(esc).join(" → ")}</div>` : "";
+    const ps = (m.passages || []).map(p => `<div class="psg"><button class="pg" data-p="${p.page}" data-hl="${esc(p.text.slice(0, 60))}">p.${p.page}</button><span class="meta">${esc(p.section || "")}</span><div>${esc(p.text)}</div></div>`).join("");
+    return `<div class="msg a">${body}${tr}${ps}${m.passages && !m.passages.length ? '<div class="meta">관련 조항을 찾지 못했습니다.</div>' : ""}</div>`;
+  }).join("");
+  const send = $("#send"); if (send) { send.textContent = chatBusy ? "중지" : "질문"; send.type = chatBusy ? "button" : "submit"; send.onclick = chatBusy ? () => st.busy.ctl.abort() : null; send.disabled = !!st.busy && !chatBusy; }
+  bindPages(box); box.scrollTop = box.scrollHeight;
+}
+const linkPages = t => esc(t).replace(/\[p\.?\s*(\d+)(?:\s*[-~–]\s*\d+)?\]/g, (m, a) => `<button class="pg" data-p="${a}">${m}</button>`);
+function bindPages(root) { root.querySelectorAll(".pg").forEach(b => b.onclick = e => { e.stopPropagation(); openPage(+b.dataset.p, b.dataset.hl || ""); }); }
+
+function openPage(n, hl) {
+  const rec = curRec(); if (!rec || !rec.doc) return;
+  const total = rec.doc.pages.length; n = Math.max(1, Math.min(n, total));
+  st.modal = { page: n, total };
+  $("#mt").textContent = `${rec.doc.kind === "pdf" ? "페이지" : "구간"} ${n} / ${total}`;
+  let html = esc(rec.doc.pages[n - 1].text);
+  const key = (hl || "").replace(/\s+/g, " ").trim().slice(0, 40);
+  if (key.length > 8) {
+    const words = esc(key).split(" ").map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    try { html = html.replace(new RegExp(words.join("\\s+")), m => `<mark>${m}</mark>`); } catch {}
+  }
+  $("#mbody").innerHTML = html; $("#modal").hidden = false; $("#mclose").focus();
+  const m = $("#mbody mark"); if (m) m.scrollIntoView({ block: "center" }); else $("#mbody").scrollTop = 0;
+}
+const closeModal = () => { $("#modal").hidden = true; };
+$("#mclose").onclick = closeModal;
+$("#modal").onclick = e => { if (e.target.id === "modal") closeModal(); };
+$("#mprev").onclick = () => st.modal.page > 1 && openPage(st.modal.page - 1, "");
+$("#mnext").onclick = () => st.modal.page < st.modal.total && openPage(st.modal.page + 1, "");
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#modal").hidden) closeModal(); });
+
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+
+const drop = $("#drop");
+$("#file").onchange = e => { const f = e.target.files[0]; if (f) upload(f); e.target.value = ""; };
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); const f = e.dataTransfer.files[0]; if (f) upload(f); };
+
+// ── 시작: 가상 샘플 2건으로 바로 동작하는 상태 ─────────────
+const SAMPLES = JSON.parse($("#samples").textContent);
+addSample("ko", "샘플_하수처리장_입찰안내서.docx");
+const en = addSample("en", "Sample_Riverside_CCPP_ITB.pdf");
+st.docs.reverse();
+paintEngine(); select(en.id);
+
+(async () => {
+  const c = window.claude; if (!c || !c.use) return;
+  const [sample, downloads] = await Promise.all([c.use("sample").catch(() => null), c.use("downloads").catch(() => null)]);
+  st.downloads = downloads;
+  if (sample) { st.sample = sample; const lim = await sample.limits().catch(() => null); st.tools = !!(lim && lim.tools); }
+  paintEngine(); render();
+})();
+})();
+</script>

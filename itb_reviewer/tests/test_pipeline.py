@@ -58,7 +58,7 @@ def test_rules_korean_docx():
     r = _rules(KO)
     assert "한빛시 하수처리장" in r["project_name"]["value"]
     assert "상하수도사업소" in r["employer"]["value"]
-    assert r["bid_due_date"]["value"].startswith("2026년 3월 10일")
+    assert r["bid_due_date"]["value"].startswith("2027년 3월 10일")
     assert r["bid_validity"]["value"] == "90일"
     assert r["bid_bond"]["value"] == "5%"
     assert r["performance_bond"]["value"] == "15%"

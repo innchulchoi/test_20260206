@@ -1,4 +1,4 @@
-"""단독 HTML(standalone/itb_reviewer.html) 생성: template.html + engine.js + 가상 샘플(문서 묶음 + 국문 단일 문서).
+"""단독 HTML(standalone/itb_reviewer.html) 생성: template.html + engine.js + app.js + 가상 샘플(문서 묶음 + 국문 단일 문서).
 
   python standalone/build.py
 """
@@ -28,7 +28,8 @@ samples = {
 data = json.dumps(samples, ensure_ascii=False).replace("</", "<\\/")
 engine = (HERE / "engine.js").read_text(encoding="utf-8")
 html = (HERE / "template.html").read_text(encoding="utf-8")
-html = html.replace("__SAMPLES__", data, 1).replace("__ENGINE__", engine, 1)
+app = (HERE / "app.js").read_text(encoding="utf-8")
+html = html.replace("__SAMPLES__", data, 1).replace("__ENGINE__", engine, 1).replace("__APP__", "<script>\n" + app + "</script>", 1)
 out = HERE / "itb_reviewer.html"
 out.write_text(html, encoding="utf-8")
 print(f"wrote {out} ({len(html.encode()) // 1024} KB)")

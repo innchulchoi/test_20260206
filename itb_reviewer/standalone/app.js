@@ -12,7 +12,7 @@ const GCLS = { "일정": "g1", "입찰 절차": "g2", "상업 조건": "g3", "�
 const CDN = "https://cdnjs.cloudflare.com/ajax/libs/";
 const TABS = [["summary", "입찰 요약표"], ["issues", "모순·리스크"], ["drafts", "질의·이탈 초안"], ["source", "원문 형광펜"], ["teams", "부서별 전달"], ["ask", "문서에 질문"], ["docs", "문서 묶음"], ["guide", "처음이라면"]];
 const ABBR = { CD: "Contract Data, 계약 데이터", PCC: "Particular Conditions of Contract, 계약 특수조건", GCC: "General Conditions of Contract, 계약 일반조건", ER: "Employer's Requirements, 발주처 요구사항", TS: "Technical Specifications, 기술 시방" };
-const GLOSSARY = [["ITB", "발주처가 주는 입찰 문서 묶음 전체, 또는 그중 입찰 절차를 정한 권(Instructions to Bidders)"], ["BDS", "Bid Data Sheet. 입찰지침의 빈칸(마감·보증 등)을 채운 표"], ["추가 공고", "Addendum. 입찰 중에 발주처가 문서를 고치는 공고. 앞선 판보다 우선"], ["CD", "Contract Data. 계약조건의 빈칸(비율·기간·금액)을 채운 표"], ["PCC", "Particular Conditions. 일반조건을 이 사업에 맞게 고친 특수조건"], ["GCC", "General Conditions. FIDIC 같은 표준 일반조건"], ["ER", "Employer's Requirements. 발주처가 원하는 성능·범위"], ["TS", "Technical Specifications. 기술 시방서"], ["우선순위", "문서끼리 값이 다를 때 어느 문서를 따를지 정한 조항(보통 PCC 1.5)"], ["질의", "Clarification. 질의 마감 전에 모순·누락을 발주처에 묻는 공식 문서"], ["이탈", "Deviation. 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청. 금지된 입찰도 있음"], ["지체상금", "Delay damages(LD). 준공이 늦으면 하루·주마다 내는 돈"], ["DNP", "Defects Notification Period. 인수 뒤 하자를 고칠 책임 기간(하자담보기간)"], ["RUI", "Rely Upon Information. 계약자가 믿고 설계·가격에 써도 되는 조사 자료"], ["EPC", "설계·조달·시공 일괄 계약. 턴키라고도 함"], ["FIDIC", "국제 건설 계약 표준 조건을 만드는 단체. Silver Book은 EPC/턴키용"], ["Lump sum", "총액 고정 계약. 물량 변동 위험을 계약자가 짐"], ["예비비", "Contingency. 위험이 실제로 생길 때를 대비해 가격에 넣는 돈"]];
+const GLOSSARY = [["ITB", "발주처가 주는 입찰 문서 묶음 전체, 또는 그중 입찰 절차를 정한 권(Instructions to Bidders)"], ["BDS", "Bid Data Sheet. 입찰지침의 빈칸(마감·보증 등)을 채운 표"], ["추가 공고", "Addendum. 입찰 중에 발주처가 문서를 고치는 공고. 앞선 판보다 우선"], ["CD", "Contract Data. 계약조건의 빈칸(비율·기간·금액)을 채운 표"], ["PCC", "Particular Conditions. 일반조건을 이 사업에 맞게 고친 특수조건"], ["GCC", "General Conditions. FIDIC 같은 표준 일반조건"], ["ER", "Employer's Requirements. 발주처가 원하는 성능·범위"], ["TS", "Technical Specifications. 기술 시방서"], ["우선순위", "문서끼리 값이 다를 때 어느 문서를 따를지 정한 조항(보통 PCC 1.5)"], ["질의", "Clarification. 질의 마감 전에 모순·누락을 발주처에 묻는 공식 문서"], ["이탈", "Deviation. 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청. 금지된 입찰도 있음"], ["지체상금", "Delay damages(LD). 준공이 늦으면 하루·주마다 내는 돈"], ["DNP", "Defects Notification Period. 인수 뒤 하자를 고칠 책임 기간(하자담보기간)"], ["RUI", "Rely Upon Information. 계약자가 믿고 설계·가격에 써도 되는 조사 자료"], ["EPC", "설계·조달·시공 일괄 계약. 턴키라고도 함"], ["FIDIC", "국제 건설 계약 표준 조건을 만드는 단체. Silver Book은 EPC/턴키용"], ["Lump sum", "총액 고정 계약. 물량 변동 위험을 계약자가 짐"], ["예비비", "Contingency. 위험이 실제로 생길 때를 대비해 가격에 넣는 돈"], ["PQ", "Prequalification/Qualification. 입찰 참가 자격(실적·매출·기술 요건). 못 맞추면 입찰 무효"], ["잠정금액", "Provisional Sum(PS). 입찰 때 금액을 확정하지 않고 나중에 실제 물량·금액으로 정산하는 항목"], ["가격표", "Schedule of Prices / BOQ. 총액을 공종·물량별로 나눠 적는 양식"]];
 const CURRENCIES = ["USD", "EUR", "KRW", "GBP", "JPY", "SAR", "AED"];
 
 const st = { pkgs: [], cur: null, tab: "summary", group: "전체", rf: "all", open: new Set(), src: { doc: null, page: 1, focus: null },
@@ -134,20 +134,30 @@ function currencyOf(p) {
   return p.policy && p.policy.korean ? "KRW" : "USD";
 }
 // 원화는 경영진이 읽는 단위(조·억·만)로
+// 1억 미만은 원 단위까지 정확히, 1억 이상은 만 원 단위로 반올림(노출액을 작게 보이게 버리지 않는다)
 function korUnit(n) { n = Math.round(n); if (n < 1e4) return `${n.toLocaleString("ko-KR")}원`;
-  const jo = Math.floor(n / 1e12), eok = Math.floor(n % 1e12 / 1e8), man = Math.floor(n % 1e8 / 1e4), parts = [];
-  if (jo) parts.push(`${jo.toLocaleString("ko-KR")}조`); if (eok) parts.push(`${eok.toLocaleString("ko-KR")}억`); if (man && !jo) parts.push(`${man.toLocaleString("ko-KR")}만`);
+  if (n >= 1e8) n = Math.round(n / 1e4) * 1e4;
+  const jo = Math.floor(n / 1e12), eok = Math.floor(n % 1e12 / 1e8), man = Math.floor(n % 1e8 / 1e4), won = n % 1e4, parts = [];
+  if (jo) parts.push(`${jo.toLocaleString("ko-KR")}조`); if (eok) parts.push(`${eok.toLocaleString("ko-KR")}억`); if (man) parts.push(`${man.toLocaleString("ko-KR")}만`); if (won) parts.push(won.toLocaleString("ko-KR"));
   return parts.join(" ") + "원"; }
 const money = (n, c) => n == null ? "-" : c === "KRW" ? korUnit(n) : `${c} ${Math.round(n).toLocaleString("en-US")}`;
 const mrange = (r, c) => r.lo == null ? (r.fixed ? esc(r.fixed) : "-") : r.lo === r.hi ? money(r.lo, c) : `${money(r.lo, c)} ~<br>${money(r.hi, c)}`;
 // "5억", "1조 2천억", "500,000,000", "500M", "1.2bn" → 숫자
+// "5억", "5백억", "1조 2천억", "500,000,000", "500k", "1.2bn", "12 million 500 thousand" → 숫자. 못 읽으면 NaN.
 function parseAmount(t) {
-  t = String(t || "").replace(/,/g, "").replace(/(?:USD|EUR|KRW|GBP|JPY|SAR|AED|US\$|[$€₩£¥]|원)/gi, " ").trim(); if (!t) return 0;
-  const en = t.match(/([\d.]+)\s*(million|billion|mn|bn|m|b)\b/i); if (en) return Math.round(parseFloat(en[1]) * (/^b/i.test(en[2]) ? 1e9 : 1e6));
-  if (/[조억만천]/.test(t)) { let total = 0; const U = { 조: 1e12, 억: 1e8, 만: 1e4 };
-    for (const m of t.matchAll(/([\d.]+)\s*(천)?\s*(조|억|만)?/g)) { if (!m[1]) continue; let v = parseFloat(m[1]) * (m[2] ? 1000 : 1); v *= m[3] ? U[m[3]] : 1; total += v; }
-    return Math.round(total); }
-  return Math.max(0, Math.round(Number(t.replace(/[^\d.]/g, "")) || 0));
+  t = String(t || "").replace(/,/g, "").replace(/(?:USD|EUR|KRW|GBP|JPY|SAR|AED|US\$|[$€₩£¥]|원)/gi, " ").trim();
+  if (!t) return 0;
+  if (/-/.test(t)) return NaN;
+  const KO = { 조: 1e12, 억: 1e8, 만: 1e4 }, SUB = { 십: 10, 백: 100, 천: 1000 }, EN = { k: 1e3, thousand: 1e3, m: 1e6, mn: 1e6, mil: 1e6, million: 1e6, b: 1e9, bn: 1e9, billion: 1e9 };
+  if (/\d*\.\d*\.|\.\D|\.$/.test(t)) return NaN; // 1.2.3 같은 숫자는 거부
+  let total = 0, rest = t;
+  if (/[조억만천백십]/.test(t)) {
+    rest = t.replace(/([\d.]+)?\s*(십|백|천)?\s*(조|억|만)?/g, (m, n, sub, big) => { if (!n && !sub) return m; total += (n ? parseFloat(n) : 1) * (sub ? SUB[sub] : 1) * (big ? KO[big] : 1); return " "; });
+  } else {
+    rest = t.replace(/([\d.]+)\s*(thousand|million|billion|mil|mn|bn|k|m|b)?\b/gi, (m, n, u) => { total += parseFloat(n) * (u ? EN[u.toLowerCase()] : 1); return " "; });
+  }
+  if (rest.replace(/\s+/g, "") || !isFinite(total)) return NaN;
+  return Math.round(total);
 }
 const addDays = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 
@@ -242,8 +252,8 @@ function vSummary(p) {
   ${p.mix ? `<div class="banner warn">${esc(p.mix)}</div>` : ""}
   <div class="keys">
     <div><div class="k">질의 마감 · 입찰 마감</div><div class="v">${dtxt(deadline(p, "clarification_deadline"))}</div><div class="n">입찰 마감 ${dtxt(deadline(p, "bid_due_date"))}</div></div>
-    <div><div class="k">리스크 높음</div><div class="v high">${c.high}</div><div class="n">주의 ${c.medium} · 확인 필요 ${c.unknown}</div></div>
-    <div><div class="k">모순(값 미정)</div><div class="v conflict">${c.open}</div><div class="n">추가 공고로 해소 ${c.added}</div></div>
+    <div><div class="k">높음</div><div class="v ${c.high ? "high" : ""}">${c.high}</div><div class="n">주의 ${c.medium} · 확인 필요 ${c.unknown}</div></div>
+    <div><div class="k">모순(값 미정)</div><div class="v ${c.open ? "conflict" : ""}">${c.open}</div><div class="n">추가 공고로 해소 ${c.added}</div></div>
     <div><div class="k">질의 초안</div><div class="v">${c.q}</div><div class="n">빠진 참조 문서 ${c.missRefs}</div></div>
     <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.domestic ? "국내 공공계약: 이탈 없음" : p.policy.forbidden ? `이탈 불가 → 완화 질의 ${drafts(p).Q.filter(q => q.basis === "조건 완화 질의").length}건` : "높음 판정에서"}</div></div>
     <div><div class="k">검토 완료</div><div class="v">${c.reviewed}/${c.total}</div><div class="n">담당자가 근거를 보고 체크</div></div>
@@ -279,8 +289,11 @@ function controlList(p, c) {
   const highs = its.filter(i => i.risk === "high" && !i.undetermined).map(i => i.label);
   if (d.Q.length) out.push(`질의 ${d.Q.length}건${c.open || c.missRefs ? `(모순 ${c.open}·빠진 참조 문서 ${c.missRefs} 포함)` : ""}을 <b>질의 마감${qdl.iso ? `(${esc(qdl.iso)})` : ""}</b> 전에 제출해야 추가 공고로 고칠 수 있습니다.`);
   if (d.Q.length || d.D.length) out.push(`질의·이탈 문안은 초안입니다. <b>계약법무 검토</b> 뒤 제출하세요.`);
-  if (d.D.length) out.push(`이탈 ${d.D.length}건(${esc(d.D.map(x => x.label).join("·"))})을 입찰서에 넣을지는 <b>입찰 심의(경영진) 결재</b> 사항입니다.`);
-  if (highs.length) out.push(`리스크 높음 ${highs.length}건(${esc(highs.join("·"))})을 그대로 받을지, 가격에 얼마를 넣을지는 <b>경영진 결재</b> 사항입니다.`);
+  const pq = its.find(i => i.key === "prequalification");
+  if (pq) out.unshift(pq.found ? `<b>참가 자격(PQ) 충족 여부</b>: ${esc(pq.value.length > 90 ? pq.value.slice(0, 88) + "…" : pq.value)} → 영업이 회사 실적과 대조한 뒤 결재합니다(못 맞추면 입찰 무효).` : `<b>참가 자격(PQ)</b> 조항을 찾지 못했습니다. 질의로 확인한 뒤 영업이 충족 여부를 결재에 올립니다.`);
+  const dl = d.D.map(x => x.label), rest = highs.filter(h => !dl.includes(h));
+  if (d.D.length) out.push(`높음 ${d.D.length}건(${esc(dl.join("·"))})은 이탈 ${esc(d.D[0].id)}${d.D.length > 1 ? "~" + esc(d.D[d.D.length - 1].id) : ""}로 요청합니다. 이탈을 넣을지, 거절될 때 가격에 얼마를 넣을지는 <b>입찰 심의(경영진) 결재</b> 사항입니다.`);
+  if (rest.length) out.push(`높음 ${rest.length}건(${esc(rest.join("·"))})을 그대로 받을지, 가격에 얼마를 넣을지는 <b>경영진 결재</b> 사항입니다.`);
   if (p.policy && p.policy.domestic) out.push("국내 공공계약: 법정 기준 항목은 판정하지 않고 '정보'로 둡니다. 계약법무가 법령·예규와 같은지 확인하세요.");
   out.push("판정은 업계 통상치 기준의 자동 판정입니다(08 탭 기준표). 회사 기준과 다르면 사람이 고칩니다. 스캔 PDF는 읽지 못합니다.");
   return out.map(x => `<li>${x}</li>`).join("");
@@ -294,9 +307,9 @@ bind.summary = (p, el) => {
   $$("[data-rf]", el).forEach(b => b.onclick = () => { st.rf = b.dataset.rf; renderTab(); });
   const pr = $("#price", el);
   if (pr) { let t; const hint = $("#pricehint", el);
-    pr.oninput = () => { const n = parseAmount(pr.value), cc = currencyOf(p);
-      hint.textContent = pr.value.trim() ? (n ? `= ${money(n, cc)}` : "금액으로 읽을 수 없습니다. 예: 5억, 500,000,000, 1.2bn") : "";
-      clearTimeout(t); t = setTimeout(() => { if (n || !pr.value.trim()) { store.set("price:" + p.name, n); renderTab(); } }, 600); }; }
+    pr.oninput = () => { const n = parseAmount(pr.value), cc = currencyOf(p), ok = Number.isFinite(n) && n > 0;
+      hint.textContent = pr.value.trim() ? (ok ? `= ${money(n, cc)}${cc === "KRW" && n >= 1e8 ? ` (${n.toLocaleString("ko-KR")}원)` : ""}` : /-/.test(pr.value) ? "음수는 넣을 수 없습니다." : "금액으로 읽을 수 없습니다. 예: 5억, 500,000,000, 1.2bn") : "";
+      clearTimeout(t); t = setTimeout(() => { if (ok || !pr.value.trim()) { store.set("price:" + p.name, ok ? n : 0); renderTab(); } }, 600); }; }
   const cu = $("#curr", el); if (cu) cu.onchange = () => { store.set("cur:" + p.name, cu.value); renderTab(); };
   const on = (id, f) => { const b = $("#" + id, el); if (b) b.onclick = f; };
   on("deep", () => claudeExtract(p)); on("stop", () => st.busy && st.busy.ctl.abort());
@@ -555,11 +568,11 @@ async function claudeExtract(p) {
       if (r.undetermined) return { ...r, summary: String(x.summary || ""), risk: SEVN[risk] > SEVN[r.risk] ? risk : r.risk, risk_reason: r.risk_reason, source: "claude" }; // 모순은 규칙 대조 결과 유지
       const d = p.docs.find(dd => dd.status === "done" && x.doc && (dd.name === x.doc || dd.name.includes(String(x.doc))));
       const page = Number(x.page) > 0 ? Number(x.page) : r.pages[0], docId = d ? d.id : r.docId;
-      const cand = r.candidates.find(cc => cc.docId === docId && cc.page === page);
+      const cand = r.candidates.find(cc => cc.docId === docId && cc.page === page), bd = p.built.docs.find(x => x.id === docId);
       // Claude가 규칙 엔진보다 낮게 판정하면 높은 쪽을 유지하고 두 판정을 함께 보여 준다(사람 확인)
       const lower = SEVN[risk] < SEVN[r.risk];
       return { ...r, found: !!x.found, value: String(x.value || ""), summary: String(x.summary || ""), evidence: String(x.evidence || r.evidence),
-        docId, docName: d ? d.name : r.docName, docType: d ? d.type : r.docType, pages: page ? [page] : r.pages, clause: cand ? cand.clause : (docId === r.docId && page === r.pages[0] ? r.clause : ""),
+        docId, docName: d ? d.name : r.docName, docType: d ? d.type : r.docType, pages: page ? [page] : r.pages, clause: cand ? cand.clause : (docId === r.docId && page === r.pages[0] ? r.clause : bd && bd.type === "ADD" ? `Addendum No. ${bd.addNo}` : ""),
         risk: lower ? r.risk : risk, risk_reason: lower ? `${r.risk_reason} (Claude는 '${RISK[risk]}'로 판정: ${String(x.risk_reason || "")} · 두 판정이 달라 사람이 확인해야 합니다)` : String(x.risk_reason || ""), source: "claude", rule_value: r.value }; });
     p.claude = { overall: String(data.overall_summary || ""), top: (data.top_risks || []).map(String), items: merged };
     p.drafts = E.drafts(merged, p.refs, p.policy); p.claudeDrafts = null; // 판정이 바뀌었으니 초안도 다시 만든다

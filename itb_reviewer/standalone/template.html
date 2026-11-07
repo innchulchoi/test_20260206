@@ -136,7 +136,7 @@ td.lab .car{display:inline-block;width:12px;color:var(--faint);font-weight:400}
 td.val{font-family:var(--f-mono);font-size:13px;max-width:420px}
 td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top:2px}
 .miss{font-family:var(--f-sans);color:var(--muted);font-style:italic}
-td.flags{min-width:120px}
+td.flags{min-width:150px} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 tr.det td{background:var(--bg);font-size:13px}
@@ -225,7 +225,9 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   table.t tr.row td.lab{grid-column:1;grid-row:1;white-space:normal} table.t tr.row td.ck{grid-column:2;grid-row:1/3;align-self:start}
   table.t tr.row td.flags{grid-column:1;grid-row:2;min-width:0} table.t tr.row td.val{grid-column:1/-1;grid-row:3;max-width:none;font-size:12.5px}
   table.t tr.row td.refc{grid-column:1/-1;grid-row:4;font-size:12.5px} table.t tr.row td.dep{grid-column:1/-1;grid-row:5;font-size:12.5px} table.t tr.row td.dep::before{content:"담당 "}
-  .exp table td{font-size:12.5px} .exp td.num{white-space:normal;word-break:keep-all} .exp td:first-child{min-width:96px}
+  .exp table,.exp tbody{display:block} .exp tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;padding:6px 0;border-bottom:1px solid var(--line-2)}
+  .exp td{border:0;padding:0;font-size:12.5px} .exp td:first-child{grid-column:1/-1} .exp td.num{white-space:nowrap;text-align:left} .exp td.num:last-child{text-align:right;white-space:normal}
+  .pkgbtn{max-width:none} details>summary{min-height:34px;display:flex;align-items:center}
   select.sel{min-height:34px}
   table.t tr.grp,table.t tr.det{display:block} table.t tr.grp td,table.t tr.det td{display:block}
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}

@@ -76,7 +76,7 @@
   // 입찰 절차 항목은 입찰지침(ITB·BDS)이, 계약 항목은 계약 문서 우선순위가 정한다
   const PROCEDURAL = new Set(["bid_due_date", "clarification_deadline", "site_visit", "bid_validity", "bid_currency", "evaluation", "submission_documents", "bid_bond"]);
   // 찾지 못하면 질의로 확인해야 하는 핵심 항목
-  const MUST = ["bid_due_date", "clarification_deadline", "bid_validity", "bid_bond", "performance_bond", "advance_payment", "payment_terms", "retention", "completion_period", "liquidated_damages", "ld_cap", "warranty", "limitation_of_liability", "price_adjustment", "governing_law", "insurance", "site_data_reliance"];
+  const MUST = ["prequalification", "bid_due_date", "clarification_deadline", "bid_validity", "bid_bond", "performance_bond", "advance_payment", "payment_terms", "retention", "completion_period", "liquidated_damages", "ld_cap", "warranty", "limitation_of_liability", "price_adjustment", "governing_law", "insurance", "site_data_reliance"];
   // 판정 기준(화면 설명과 판정이 같은 표를 쓴다)
   const THRESHOLDS = [
     ["지체상금률", "일 0.1% 초과 높음, 0.1% 주의 · 주 1% 초과 높음 · 단위(일/주)를 모르면 확인 필요"],
@@ -93,6 +93,8 @@
     ["입찰 유효기간", "180일 초과 주의"],
     ["분쟁 해결", "중재 없이 법원 관할 주의"],
     ["현지화", "50% 이상 높음, 30% 이상 주의"],
+    ["입찰 참가 자격(PQ)", "늘 확인 필요: 실적·매출 요건을 회사 실적과 대조(못 맞추면 입찰 무효)"],
+    ["가격표·물량 형식", "본체가 총액(lump sum)이면 주의(물량 위험 계약자), 물량 정산(re-measure)이면 양호, 잠정금액(PS)은 그 항목만 정산"],
   ];
   const DEPTS = ["영업", "원가", "설계", "시공", "계약법무", "재무"];
 
@@ -365,9 +367,14 @@
       }
       case "price_schedule": {
         if (!ev) return R("none");
-        if (/provisional sum|re-?measur|quantities (?:are|shall be) (?:approximate|estimated)|잠정|정산/.test(low)) return R("low", "물량 정산·잠정금액 조항이 있습니다. 해당 항목은 실제 물량으로 정산됩니다.");
-        if (/lump sum|총액/.test(low)) return R("medium", "총액 분해표입니다. 물량 증가 위험을 계약자가 집니다(물량 산출 검증 필요).");
+        if (/lump sum|총액/.test(low)) return R("medium", "본체가 총액(lump sum)이라 물량 증가 위험을 계약자가 집니다(물량 산출 검증 필요)." + (/provisional sum|잠정/.test(low) ? " 잠정금액(PS) 항목만 실제 물량으로 정산됩니다." : ""));
+        if (/re-?measur|quantities (?:are|shall be) (?:approximate|estimated)|정산/.test(low)) return R("low", "물량을 실제로 재서 정산하는 조건입니다.");
+        if (/provisional sum|잠정/.test(low)) return R("none", "잠정금액(PS) 조항이 있습니다. 본체 가격 방식은 계약 방식 항목을 보세요.");
         return R("none");
+      }
+      case "prequalification": {
+        if (!ev) return R("unknown", "입찰 참가 자격 조항을 찾지 못했습니다. 질의로 확인해야 합니다.");
+        return R("unknown", "실적·매출 요건을 회사 실적과 대조해야 합니다(영업). 못 맞추면 입찰이 무효입니다.");
       }
       case "site_data_reliance": {
         if (!ev) return R("unknown", "조사 자료를 어디까지 믿을 수 있는지 정한 조항을 찾지 못했습니다.");
@@ -500,17 +507,18 @@
   // 반환: { sec: 조항 제목, sub: 문장 앞 가장 가까운 번호(예 1.2) }
   function sectionFor(chunk, sentence) {
     const key = sentence.slice(0, 24), lines = chunk.text.split("\n");
-    let sec = chunk.start || "", sub = "", pos = 0;
+    let sec = chunk.start || "", sub = "", item = "", pos = 0;
     const flat = chunk.text.replace(/\s+/g, " "), at = flat.indexOf(key.replace(/\s+/g, " "));
-    if (at < 0) return { sec: chunk.section, sub: "" };
+    if (at < 0) return { sec: chunk.section, sub: "", item: "" };
     for (const l of lines) {
       if (pos > at) break;
       if (HEADING_RE.test(l) && l.trim().length < 100) sec = l.trim();
       const m = l.match(/^\s*(\d{1,2}(?:\.\d+)+)\.?\s/); if (m) sub = m[1];
       else if (HEADING_RE.test(l)) sub = "";
+      const mi = l.match(/^\s*(\d{1,2})\.\s/); if (mi) item = mi[1];
       pos += l.replace(/\s+/g, " ").length + 1;
     }
-    return { sec, sub };
+    return { sec, sub, item };
   }
   // 질의서에 쓰는 조항 인용(예: "Clause 14.3", "ITB 2.3")
   function clauseOf(c) {
@@ -536,7 +544,7 @@
       value, raw: b.raw, evidence: b.s.slice(0, 600), ctx: b.ctx, sc: b.sc, norm: norm(item, value, b.s), amount: !!(b.vm && b.vm.amount) };
     c.clause = clauseOf(c);
     if (d.type === "ADD") {
-      const item = (c.sub || (c.section.match(/^(\d+)\./) || [])[1] || ""), tgt = (c.evidence + " " + c.ctx).match(/\b(ITB|BDS|Contract Data|CD|PCC|GCC|Particular Conditions|General Conditions|ER|Employer's Requirements|TS)\s+(?:Sub-)?Clause\s+([\d.]+\d)/i);
+      const item = (sf.item || (c.section.match(/^(\d+)\./) || [])[1] || ""), tgt = (c.evidence + " " + c.ctx).match(/\b(ITB|BDS|Contract Data|CD|PCC|GCC|Particular Conditions|General Conditions|ER|Employer's Requirements|TS)\s+(?:Sub-)?Clause\s+([\d.]+\d)/i);
       c.clause = `Addendum No. ${d.addNo}${item ? `, Item ${item}` : ""}${tgt ? ` (amending ${tgt[1]} Clause ${tgt[2]})` : ""}`;
     }
     return c;
@@ -593,6 +601,10 @@
         pages: [applied.page], docId: applied.docId, docName: applied.docName, docType: applied.type, section: applied.section, clause: applied.clause,
         conflict, risk, risk_reason: reason };
     });
+    const ct = items.find(i => i.key === "contract_type"), ps = items.find(i => i.key === "price_schedule");
+    if (ct && ps && ps.found && /lump|총액/i.test(ct.value) && ps.risk !== "medium" && ps.risk !== "high") {
+      ps.risk = "medium"; ps.risk_reason = "계약 방식이 총액(lump sum)이라 물량 증가 위험을 계약자가 집니다. 잠정금액(PS) 등 정산 조항이 있는 항목만 실제 물량으로 정산됩니다.";
+    }
     return items;
   }
 
@@ -607,7 +619,7 @@
     const forbidden = !!m && !listed;
     let ev = ""; if (m) { const i = all.indexOf(m[0]); const ls = all.lastIndexOf("\n", i) + 1, le = all.indexOf("\n", i + m[0].length); ev = all.slice(ls, le < 0 ? undefined : le).trim().slice(0, 220); }
     return { korean, domestic, forbidden, evidence: forbidden ? ev : "",
-      note: forbidden ? "입찰지침이 이탈을 허용하지 않아 이탈 요청 대신 질의로 바꿨습니다." : domestic ? "국내 공공계약은 계약 조건 이탈을 입찰서에 붙일 수 없어 질의(또는 이의 제기)로 바꿨습니다." : "" };
+      note: forbidden ? "입찰지침이 이탈을 허용하지 않아 이탈 요청 대신 질의로 바꿨습니다." : domestic ? "국내 공공계약은 계약 조건 이탈을 입찰서에 붙일 수 없어 이탈·조건 완화 요청을 만들지 않았습니다. 법정 기준 항목은 '정보'로 둡니다." : "" };
   }
   // 서로 다른 사업의 문서가 섞였는지: 입찰 번호가 다르거나 국문·영문 문서가 섞였을 때
   function mixWarning(pkg) {

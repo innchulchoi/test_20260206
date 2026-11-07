@@ -68,6 +68,7 @@ async function addFiles(files, intoPkg) {
   const all = [...files], ok = all.filter(f => /\.(pdf|docx|txt|md)$/i.test(f.name));
   if (!ok.length) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다.");
   if (ok.length < all.length) toast(`${all.length - ok.length}개 파일은 형식이 맞지 않아 건너뜁니다.`);
+  clearToast();
   const pkg = intoPkg || newPkg(ok.length === 1 ? ok[0].name.replace(/\.[^.]+$/, "") : `새 입찰 건 ${st.pkgs.length + 1}`);
   st.cur = pkg.id;
   const recs = ok.map(f => { const d = { id: pkg.id + "d" + (++seq), name: f.name, file: f, status: "reading", msg: "읽는 중" }; pkg.docs.push(d); return d; });
@@ -112,9 +113,9 @@ const typeLabel = c => (E.TYPE[c] || E.TYPE.ETC).label;
 const docOf = (p, id) => p.docs.find(d => d.id === id);
 const shortDoc = d => d.name.replace(/\.[^.]+$/, "").replace(/_/g, " ");
 // 문서 버튼 이름은 어디서나 같은 형식: "V2 Contract Data p.2". key가 "-"이면 항목 대신 그 문장(줄)을 칠한다.
-function refBtn(p, docId, page, key, hl) {
+function refBtn(p, docId, page, key, hl, target) {
   const d = docOf(p, docId); if (!d || !page) return "";
-  return `<button class="docref" data-doc="${esc(docId)}" data-page="${page}" data-k="${esc(key || "")}" data-hl="${esc((hl || "").slice(0, 80))}" title="${esc(d.name)} ${page}쪽 원문 보기">${esc(shortDoc(d))} p.${page}</button>`;
+  return `<button class="docref" data-doc="${esc(docId)}" data-page="${page}" data-k="${esc(key || "")}" data-hl="${esc((hl || "").slice(0, 80))}"${target ? ` data-target="${esc(target)}"` : ""} title="${esc(d.name)} ${page}쪽 원문 보기">${esc(shortDoc(d))} p.${page}</button>`;
 }
 function flagsOf(it) {
   const f = [`<span class="flag r-${it.risk}" title="${esc(RISK_HELP[it.risk])}">${RISK[it.risk]}</span>`];
@@ -132,12 +133,17 @@ function currencyOf(p) {
   if (m) return /dollar|USD/i.test(m[0]) ? "USD" : /euro|EUR/i.test(m[0]) ? "EUR" : /원화|won|KRW/i.test(m[0]) ? "KRW" : m[1].toUpperCase();
   return p.policy && p.policy.korean ? "KRW" : "USD";
 }
-const money = (n, c) => n == null ? "-" : c === "KRW" ? `${Math.round(n).toLocaleString("ko-KR")}원` : `${c} ${Math.round(n).toLocaleString("en-US")}`;
+// 원화는 경영진이 읽는 단위(조·억·만)로
+function korUnit(n) { n = Math.round(n); if (n < 1e4) return `${n.toLocaleString("ko-KR")}원`;
+  const jo = Math.floor(n / 1e12), eok = Math.floor(n % 1e12 / 1e8), man = Math.floor(n % 1e8 / 1e4), parts = [];
+  if (jo) parts.push(`${jo.toLocaleString("ko-KR")}조`); if (eok) parts.push(`${eok.toLocaleString("ko-KR")}억`); if (man && !jo) parts.push(`${man.toLocaleString("ko-KR")}만`);
+  return parts.join(" ") + "원"; }
+const money = (n, c) => n == null ? "-" : c === "KRW" ? korUnit(n) : `${c} ${Math.round(n).toLocaleString("en-US")}`;
 const mrange = (r, c) => r.lo == null ? (r.fixed ? esc(r.fixed) : "-") : r.lo === r.hi ? money(r.lo, c) : `${money(r.lo, c)} ~<br>${money(r.hi, c)}`;
 // "5억", "1조 2천억", "500,000,000", "500M", "1.2bn" → 숫자
 function parseAmount(t) {
-  t = String(t || "").replace(/,/g, "").trim(); if (!t) return 0;
-  const en = t.match(/^([\d.]+)\s*(m|mn|million|b|bn|billion)$/i); if (en) return Math.round(parseFloat(en[1]) * (/^b/i.test(en[2]) ? 1e9 : 1e6));
+  t = String(t || "").replace(/,/g, "").replace(/(?:USD|EUR|KRW|GBP|JPY|SAR|AED|US\$|[$€₩£¥]|원)/gi, " ").trim(); if (!t) return 0;
+  const en = t.match(/([\d.]+)\s*(million|billion|mn|bn|m|b)\b/i); if (en) return Math.round(parseFloat(en[1]) * (/^b/i.test(en[2]) ? 1e9 : 1e6));
   if (/[조억만천]/.test(t)) { let total = 0; const U = { 조: 1e12, 억: 1e8, 만: 1e4 };
     for (const m of t.matchAll(/([\d.]+)\s*(천)?\s*(조|억|만)?/g)) { if (!m[1]) continue; let v = parseFloat(m[1]) * (m[2] ? 1000 : 1); v *= m[3] ? U[m[3]] : 1; total += v; }
     return Math.round(total); }
@@ -154,9 +160,9 @@ function renderPkgbar() {
     <div class="pkgsel" role="group" aria-label="입찰 건">${st.pkgs.map(x => `<button class="pkgbtn" data-pkg="${x.id}" aria-current="${x.id === st.cur}">${esc(x.name)}<span class="t">${x.sample ? "가상 샘플 · " : ""}문서 ${x.docs.length}권</span></button>`).join("")}</div>
     <span class="grow"></span>
     ${qd.state !== "none" || bd.state !== "none" ? `<span class="dday ${[qd, bd].some(x => x.state === "ok" && x.n <= 14 && x.n >= 0) ? "soon" : ""}" title="질의 마감 ${esc(qd.iso || dtxt(qd))} · 입찰 마감 ${esc(bd.iso || dtxt(bd))}">질의 ${dtxt(qd)} · 입찰 ${dtxt(bd)}</span>` : ""}
-    <button class="btn" id="b-add" ${p ? "" : "disabled"}>이 건에 문서 추가</button>
-    <button class="btn primary" id="b-new">새 입찰 건 올리기</button>`;
-  $$(".pkgbtn").forEach(b => b.onclick = () => { st.cur = b.dataset.pkg; st.open = new Set(); st.src = { doc: null, page: 1, focus: null }; renderAll(); });
+    <button class="btn" id="b-add" ${p ? "" : "disabled"}><span class="lg">이 건에 </span>문서 추가</button>
+    <button class="btn primary" id="b-new">새 입찰 건<span class="lg"> 올리기</span></button>`;
+  $$(".pkgbtn").forEach(b => b.onclick = () => { clearToast(); st.cur = b.dataset.pkg; st.open = new Set(); st.src = { doc: null, page: 1, focus: null }; renderAll(); });
   $("#b-new").onclick = () => { st.pickInto = null; $("#file").click(); };
   $("#b-add").onclick = () => { st.pickInto = cur(); $("#file").click(); };
 }
@@ -194,7 +200,7 @@ function renderTab(keep = true) {
 function bindCommon(el) {
   $$("[data-go]", el).forEach(b => b.onclick = () => go(b.dataset.go));
   $$("[data-goq]", el).forEach(b => b.onclick = () => { go("drafts"); const c = $(`#p-drafts [data-card="${b.dataset.goq}"]`); if (c) { const top = c.getBoundingClientRect().top + window.scrollY - ($(".tabbar").offsetHeight || 0) - 12; window.scrollTo({ top }); c.classList.add("flash"); c.setAttribute("tabindex", "-1"); c.focus({ preventScroll: true }); setTimeout(() => c.classList.remove("flash"), 1600); } });
-  $$(".docref", el).forEach(b => b.onclick = e => { e.stopPropagation(); openSource(b.dataset.doc, +b.dataset.page, b.dataset.k, b.dataset.hl); });
+  $$(".docref[data-doc]", el).forEach(b => b.onclick = e => { e.stopPropagation(); openSource(b.dataset.doc, +b.dataset.page, b.dataset.k, b.dataset.hl, b.dataset.target); });
 }
 const bind = {};
 
@@ -202,6 +208,8 @@ const bind = {};
 function vSummary(p) {
   const c = counts(p), its = items(p), rv = review(p), cc = currencyOf(p), price = store.get("price:" + p.name, 0), docsN = p.built.docs.length;
   const top = its.filter(i => i.risk === "high" || i.undetermined).sort((a, b) => (b.undetermined - a.undetermined));
+  const legal = its.filter(i => i.found && i.risk === "none" && /^국내 공공계약/.test(i.risk_reason || ""));
+  const unk = its.filter(i => i.risk === "unknown"), unkQ = unk.filter(i => drafts(p).Q.some(q => q.item === i.key)).length;
   const ex = E.exposure(its, price);
   const vis = its.filter(i => (st.group === "전체" || i.group === st.group) && (st.rf === "all" || (st.rf === "flag" ? (i.risk === "high" || i.risk === "medium" || i.risk === "unknown" || i.undetermined) : !rv[i.key])));
   let rows = "";
@@ -210,7 +218,7 @@ function vSummary(p) {
     rows += `<tr class="grp"><td colspan="6">${esc(g)} <span class="tiny">· ${gi.length}개</span></td></tr>`;
     for (const it of gi) {
       const o = st.open.has(it.key), done = !!rv[it.key], cand = it.candidates.find(x => x.docId === it.docId);
-      rows += `<tr class="row ${done ? "done" : ""} ${it.risk === "high" || it.undetermined ? "hi" : ""}" data-k="${it.key}" tabindex="0" aria-expanded="${o}">
+      rows += `<tr class="row ${done ? "done" : ""} ${it.undetermined ? "hi-c" : it.risk === "high" ? "hi" : ""}" data-k="${it.key}" tabindex="0" aria-expanded="${o}">
         <td class="lab"><span class="car">${o ? "▾" : "▸"}</span>${esc(it.label)}</td>
         <td class="val">${valOf(it)}${it.summary ? `<div class="s">${esc(it.summary)}</div>` : ""}</td>
         <td class="flags">${flagsOf(it)}</td>
@@ -237,20 +245,22 @@ function vSummary(p) {
     <div><div class="k">리스크 높음</div><div class="v high">${c.high}</div><div class="n">주의 ${c.medium} · 확인 필요 ${c.unknown}</div></div>
     <div><div class="k">모순(값 미정)</div><div class="v conflict">${c.open}</div><div class="n">추가 공고로 해소 ${c.added}</div></div>
     <div><div class="k">질의 초안</div><div class="v">${c.q}</div><div class="n">빠진 참조 문서 ${c.missRefs}</div></div>
-    <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.forbidden || p.policy.domestic ? "이탈 불가 → 질의로" : "리스크 높음에서"}</div></div>
+    <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.domestic ? "국내 공공계약: 이탈 없음" : p.policy.forbidden ? `이탈 불가 → 완화 질의 ${drafts(p).Q.filter(q => q.basis === "조건 완화 질의").length}건` : "높음 판정에서"}</div></div>
     <div><div class="k">검토 완료</div><div class="v">${c.reviewed}/${c.total}</div><div class="n">담당자가 근거를 보고 체크</div></div>
   </div>
   <div class="verdict">
-    <div class="card pad"><div class="h3">입찰 전에 먼저 볼 것 <span class="muted small">${top.length}건</span></div>
+    <div class="card pad"><div class="h3">입찰 전에 먼저 볼 것 ${top.length ? `<span class="muted small">높음·모순 ${top.length}건</span>` : ""}</div>
       ${p.claude && p.claude.overall ? `<p style="margin-bottom:10px">${esc(p.claude.overall)}</p>` : ""}
-      ${top.length ? `<ul class="toplist">${top.map(i => `<li>${i.undetermined ? `<span class="flag f-open">모순</span>` : `<span class="flag r-high">높음</span>`}<span><b>${esc(i.label)}</b> ${esc(i.undetermined ? i.conflict.values.map(v => `${typeLabel(v.type)} ${v.value}`).join(" vs ") : i.risk_reason)}</span></li>`).join("")}</ul>` : '<p class="muted">리스크 높음이나 모순이 없습니다.</p>'}
+      ${top.length ? `<ul class="toplist">${top.map(i => `<li>${i.undetermined ? `<span class="flag f-open">모순</span>` : `<span class="flag r-high">높음</span>`}<span><b>${esc(i.label)}</b> ${esc(i.undetermined ? i.conflict.values.map(v => `${typeLabel(v.type)} ${v.value}`).join(" vs ") : i.risk_reason)}</span></li>`).join("")}</ul>` : `<p class="muted">자동 판정상 높음·모순이 없습니다${legal.length ? "(법정 기준 항목은 판정에서 뺌)" : ""}.</p>`}
+      ${legal.length ? `<p class="small" style="margin-top:8px"><span class="flag r-none">정보</span> <b>법정 기준 항목(판정 안 함)</b>: ${esc(legal.map(i => `${i.label} ${i.value}`).join(", "))}. 금액은 오른쪽 표, 법정 기준과 같은지는 계약법무가 확인합니다.</p>` : ""}
+      ${unk.length ? `<p class="small" style="margin-top:6px"><span class="flag r-unknown">확인 필요</span> <b>${unk.length}건</b>: ${esc(unk.map(i => i.label).join(", "))}. ${unkQ ? `이 중 ${unkQ}건은 질의 초안이 있고, ` : ""}나머지는 담당자가 판단합니다.</p>` : ""}
       <div class="btns" style="margin-top:12px"><button class="btn sm" data-go="issues">02 모순·리스크</button><button class="btn sm" data-go="drafts">03 질의·이탈 초안 ${c.q + c.d}건</button>
       ${st.sample ? (claudeBusy ? `<span class="small muted"><span class="spin"></span> ${esc(st.busy.msg)}</span><button class="btn sm" id="stop">중지</button>` : `<button class="btn sm primary" id="deep" ${st.busy ? "disabled" : ""}>${p.claude ? "Claude로 다시 분석" : "Claude로 정밀 분석"}</button>`) : ""}</div>
       <div class="h3" style="margin-top:16px">제출 전 결재·통제</div>
       <ul class="ctl">${controlList(p, c)}</ul>
     </div>
     <div class="card pad exp"><div class="h3">금액으로 보기</div>
-      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="numeric" placeholder="예: 500,000,000 또는 5억" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액"></div>
+      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="decimal" placeholder="예: 5억, 500M" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액" aria-describedby="pricehint"><span class="tiny muted" id="pricehint" role="status">${price ? `= ${money(price, cc)}` : ""}</span></div>
       ${ex ? sec("최대 손실 노출", ex.loss) + sec("은행 보증 한도(발급 필요)", ex.bank, ex.bankSum) + sec("현금흐름", ex.cash)
         + (ex.unpriced.length ? `<p class="small" style="margin-top:8px"><b>금액으로 못 바꾼 높음 리스크</b>: ${esc(ex.unpriced.map(i => i.label).join(", "))}. 원가팀이 별도로 산정해야 합니다.</p>` : "")
         + `<p class="tiny muted" style="margin-top:6px">비율 × 계약금액 단순 환산입니다. 모순 항목은 문서별 값의 범위로 보여 줍니다. 예비비·기대 손실(EL·P90)은 계산하지 않습니다. 공정·기상·물량 위험을 넣어 원가팀이 정합니다.</p>`
@@ -283,9 +293,10 @@ bind.summary = (p, el) => {
   $$("[data-grp]", el).forEach(b => b.onclick = () => { st.group = b.dataset.grp; renderTab(); });
   $$("[data-rf]", el).forEach(b => b.onclick = () => { st.rf = b.dataset.rf; renderTab(); });
   const pr = $("#price", el);
-  if (pr) { let t; pr.oninput = () => { const raw = pr.value, hasUnit = /[조억만]|[0-9.]\s*(?:m|mn|million|b|bn|billion)\b/i.test(raw), n = parseAmount(raw);
-    if (!hasUnit) { const pos = raw.length - pr.selectionStart; pr.value = n ? n.toLocaleString("en-US") : ""; pr.setSelectionRange(Math.max(0, pr.value.length - pos), Math.max(0, pr.value.length - pos)); }
-    clearTimeout(t); t = setTimeout(() => { store.set("price:" + p.name, n); renderTab(); }, hasUnit ? 900 : 350); }; }
+  if (pr) { let t; const hint = $("#pricehint", el);
+    pr.oninput = () => { const n = parseAmount(pr.value), cc = currencyOf(p);
+      hint.textContent = pr.value.trim() ? (n ? `= ${money(n, cc)}` : "금액으로 읽을 수 없습니다. 예: 5억, 500,000,000, 1.2bn") : "";
+      clearTimeout(t); t = setTimeout(() => { if (n || !pr.value.trim()) { store.set("price:" + p.name, n); renderTab(); } }, 600); }; }
   const cu = $("#curr", el); if (cu) cu.onchange = () => { store.set("cur:" + p.name, cu.value); renderTab(); };
   const on = (id, f) => { const b = $("#" + id, el); if (b) b.onclick = f; };
   on("deep", () => claudeExtract(p)); on("stop", () => st.busy && st.busy.ctl.abort());
@@ -306,7 +317,7 @@ function vIssues(p) {
   <div class="stack">
   <div><div class="h3">모순 ${open.length}건 <span class="muted small">값 미정, 질의 필요</span></div>${open.length ? `<div class="grid">${open.map(i => conflictCard(i, true)).join("")}</div>` : `<p class="empty">${p.built.docs.length > 1 ? "문서끼리 값이 다른 항목이 없습니다." : "문서가 1권이라 문서 간 대조를 하지 않았습니다."}</p>`}</div>
   ${add.length ? `<div><div class="h3">추가 공고 반영 ${add.length}건 <span class="muted small">해소됨</span></div><div class="grid">${add.map(i => conflictCard(i, false)).join("")}</div></div>` : ""}
-  <div><div class="h3">빠진 참조 문서 ${miss.length}건</div>${miss.length ? `<div class="grid">${miss.map(r => `<div class="card icard open"><span class="flag f-miss">빠진 참조 문서</span><h3>${esc(r.target)}</h3>${r.refs.map(f => `<div class="small" style="margin-top:4px">${refBtn(p, f.docId, f.page, "-", f.text)} <span class="muted">${esc(f.text)}</span></div>`).join("")}</div>`).join("")}</div>` : '<p class="empty">다른 문서를 가리키는 참조가 모두 묶음 안에 있습니다.</p>'}</div>
+  <div><div class="h3">빠진 참조 문서 ${miss.length}건</div>${miss.length ? `<div class="grid">${miss.map(r => `<div class="card icard open"><span class="flag f-miss">빠진 참조 문서</span><h3>${esc(r.target)}</h3>${r.refs.map(f => `<div class="small" style="margin-top:4px">${refBtn(p, f.docId, f.page, "-", f.text, r.target)} <span class="muted">${esc(f.text)}</span></div>`).join("")}</div>`).join("")}</div>` : '<p class="empty">다른 문서를 가리키는 참조가 모두 묶음 안에 있습니다.</p>'}</div>
   <div><div class="h3">판정 높음·주의 ${risks.length}건 <span class="muted small">높음 ${risks.filter(r => r.risk === "high").length} · 주의 ${risks.filter(r => r.risk === "medium").length}</span></div>
     ${risks.length ? `<div class="grid">${risks.map(i => `<div class="card icard ${i.risk}">${flagsOf(i)}<h3>${esc(i.label)} <span class="mono small">${esc(i.undetermined ? "값 미정" : i.found ? (i.value.length > 40 ? "" : i.value) : "")}</span></h3><p class="small">${esc(i.risk_reason)}</p>${i.undetermined ? `<div class="small" style="margin-top:6px">${i.conflict.values.map(v => refBtn(p, v.docId, v.page, i.key, (i.candidates.find(x => x.docId === v.docId) || {}).evidence)).join(" ")}</div>` : i.found ? `<div class="small" style="margin-top:6px">${refBtn(p, i.docId, i.pages[0], i.key, i.evidence)}</div>` : ""}</div>`).join("")}</div>` : '<p class="empty">리스크로 판정된 항목이 없습니다.</p>'}</div>
   </div>`;
@@ -316,19 +327,19 @@ function vIssues(p) {
 function vDrafts(p) {
   const d = drafts(p), polishing = st.busy && st.busy.kind === "polish", pol = p.policy || {}, qd = deadline(p, "clarification_deadline");
   const card = (x, kind) => `<div class="card draft" data-card="${x.id}"><div class="hd"><span class="${kind === "Q" ? "k-q" : "k-d"}">${x.id}</span><b>${esc(x.label)}</b></div>
-    <div class="tiny muted" style="margin:-2px 0 6px">${kind === "Q" ? "질의" : "이탈"} · ${esc(x.basis)} · 담당 ${esc(x.owner)}</div>
-    <p class="small">${esc(x.ko)}</p>${x.why ? `<p class="tiny muted" style="margin-top:2px">${esc(x.why)}</p>` : ""}<div class="en" ${pol.korean ? "" : 'lang="en"'}>${esc(x.en)}</div>
-    <div class="btns"><span class="tiny muted">근거</span>${(x.refs || []).length ? x.refs.map(r => refBtn(p, r.docId, r.page, r.line ? "-" : x.item, r.hl)).join(" ") : `<span class="tiny muted">${esc(x.where)}</span>`}<span class="grow"></span><button class="btn sm" data-copy="${kind}:${x.id}">${pol.korean ? "문안 복사" : "영문 복사"}</button></div></div>`;
+    <div class="tiny muted" style="margin:-2px 0 6px">${kind === "Q" ? "질의" : "이탈"} · ${esc(x.basis.replace("리스크 높음", "높음"))} · 담당 ${esc(x.owner)}</div>
+    <p class="small">${esc(x.ko)}</p>${x.why ? `<p class="tiny muted" style="margin-top:2px">${esc(x.why)}</p>` : ""}${x.next ? `<p class="tiny" style="margin-top:4px">순서: 이 질의의 회신이 불리하면 <button class="docref" data-goq="${x.next}">${x.next}</button> 이탈을 넣습니다.</p>` : ""}${x.after ? `<p class="tiny" style="margin-top:4px">순서: <button class="docref" data-goq="${x.after}">${x.after}</button> 질의 회신이 불리할 때 넣는 이탈입니다.</p>` : ""}<div class="en" ${pol.korean ? "" : 'lang="en"'}>${esc(x.en)}</div>
+    <div class="btns"><span class="tiny muted">근거</span>${(x.refs || []).length ? x.refs.map(r => refBtn(p, r.docId, r.page, r.line ? "-" : x.item, r.hl, r.line ? x.label.replace("빠진 참조 문서: ", "") : "")).join(" ") : `<span class="tiny muted">${esc(x.where)}</span>`}<span class="grow"></span><button class="btn sm" data-copy="${kind}:${x.id}">${pol.korean ? "문안 복사" : "영문 복사"}</button></div></div>`;
   return `<div class="sec-h"><h2>질의·이탈 초안</h2><span class="muted small">질의 ${d.Q.length} · 이탈 ${d.D.length}</span></div>
   <p class="lede"><b>질의</b>는 질의 마감 전에 모순·누락을 발주처에 묻는 문서이고, <b>이탈</b>은 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청입니다. 모두 초안이며 계약법무 검토 뒤 제출하세요.${qd.state === "ok" ? ` 질의 마감은 <span class="mono">${esc(qd.item.value)}</span>(${dtxt(qd)})입니다.` : ""}</p>
   ${pol.note ? `<div class="banner" style="margin-bottom:12px">${esc(pol.note)}${pol.evidence ? ` <span class="muted">근거: "${esc(pol.evidence)}"</span>` : ""}</div>` : ""}
   <div class="btns" style="margin-bottom:8px"><button class="btn sm" id="copyall">${pol.korean ? "전체 문안 복사" : "전체 영문 복사"}</button>${st.downloads ? `<button class="btn sm" id="csvq">CSV 저장</button>` : ""}
     ${st.sample ? (polishing ? `<span class="small muted"><span class="spin"></span> Claude가 문장을 다듬는 중</span><button class="btn sm" id="stop2">중지</button>` : `<button class="btn sm primary" id="polish" ${st.busy || !(d.Q.length + d.D.length) ? "disabled" : ""}>Claude로 문장 다듬기</button>`) : ""}
     ${p.claudeDrafts ? `<button class="btn sm" id="undo">규칙 초안으로 되돌리기</button>` : ""}</div>
-  <p class="tiny muted" style="margin-bottom:10px">질의를 만드는 기준: 문서 간 모순, 빠진 참조 문서, 못 찾은 핵심 항목(${E.MUST.map(k => E.ITEMS.find(i => i.key === k).label).filter((l, i, a) => !(pol.domestic && /유보금|입찰 통화/.test(l))).join("·")}), 조사 자료 신뢰 범위.${pol.domestic ? " 국내 공공계약은 유보금·입찰 통화를 묻지 않고, 법정 기준 항목은 '정보'로 둡니다." : ""} 그 밖의 '확인 필요' 항목은 담당자가 판단합니다.</p>
+  <details class="small" style="margin-bottom:10px"><summary class="muted">질의를 만드는 기준</summary><p class="tiny muted" style="margin-top:4px">문서 간 모순, 빠진 참조 문서, 못 찾은 핵심 항목(${E.MUST.filter(k => !(pol.domestic && (k === "retention" || k === "bid_currency"))).map(k => E.ITEMS.find(i => i.key === k).label).join("·")}), 발주처가 보증하지 않는 조사 자료.${pol.forbidden ? " 이탈이 금지된 입찰은 높음 조건의 완화 요청도 질의로 넣습니다." : ""}${pol.domestic ? " 국내 공공계약은 유보금·입찰 통화를 묻지 않고, 법정 기준 항목은 '정보'로 둡니다." : ""} 그 밖의 '확인 필요' 항목은 담당자가 판단합니다.</p></details>
   ${p.claudeDrafts ? `<p class="small" style="margin-bottom:12px"><span class="k-q">Claude 다듬음</span> 조항·수치는 그대로 두고 문체만 다듬었습니다. 제출 전에 원문과 대조하세요.</p>` : ""}
   <div class="stack"><div><div class="h3">질의 ${d.Q.length}건</div>${d.Q.length ? `<div class="grid">${d.Q.map(x => card(x, "Q")).join("")}</div>` : '<p class="empty">질의할 모순·누락이 없습니다.</p>'}</div>
-  <div><div class="h3">이탈 요청 ${d.D.length}건</div>${d.D.length ? `<div class="grid">${d.D.map(x => card(x, "D")).join("")}</div>` : `<p class="empty">${pol.forbidden || pol.domestic ? "이탈을 쓸 수 없는 입찰이라 조건 완화 요청을 질의로 넣었습니다." : "리스크 높음 항목이 없어 이탈 초안이 없습니다."}</p>`}</div></div>`;
+  <div><div class="h3">이탈 요청 ${d.D.length}건</div>${d.D.length ? `<div class="grid">${d.D.map(x => card(x, "D")).join("")}</div>` : `<p class="empty">${pol.domestic ? "국내 공공계약이라 이탈·조건 완화 요청을 만들지 않았습니다(법정 기준 항목은 '정보')." : pol.forbidden ? (d.Q.some(q => q.basis === "조건 완화 질의") ? "이탈을 쓸 수 없는 입찰이라 조건 완화 요청을 질의로 넣었습니다." : "이탈을 쓸 수 없는 입찰이고, 완화를 요청할 높음 조건도 없습니다.") : "높음 판정 항목이 없어 이탈 초안이 없습니다."}</p>`}</div></div>`;
 }
 bind.drafts = (p, el) => {
   const d = drafts(p);
@@ -374,7 +385,7 @@ function vSource(p) {
   <div class="srcbar"><label class="small" for="sdoc">문서</label><select class="sel" id="sdoc">${live.map(d => `<option value="${d.id}" ${d.id === doc.id ? "selected" : ""}>${esc(shortDoc(d))} · ${esc(typeLabel(d.type))} · 칠한 곳 ${cnt[d.id]}</option>`).join("")}</select>
     <button class="btn sm" id="pprev" ${pi <= 0 ? "disabled" : ""}>이전 쪽</button><span class="mono small">${page.number} / ${pages.length}</span><button class="btn sm" id="pnext" ${pi >= pages.length - 1 ? "disabled" : ""}>다음 쪽</button></div>
   <div class="src-grid"><div class="paper"><div class="run"><span>${esc(doc.name)}</span><span>${esc(typeLabel(doc.type))} · ${doc.kind === "pdf" ? "쪽" : "구간"} ${page.number}</span></div><pre id="ptext">${html}</pre></div>
-  <div class="side stack" style="gap:10px"><div class="card pad focuscard">${fit ? `<div class="btns"><b>${esc(fit.label)}</b>${flagsOf(fit)}</div><div class="mono small" style="margin:4px 0">${valOf(fit)}</div><p class="small">${esc(fit.risk_reason || "")}</p>${fit.conflict ? `<p class="small muted" style="margin-top:4px">${esc(fit.conflict.rule)}</p>` : ""}${!onPage ? `<p class="small" style="margin-top:4px">이 쪽에는 이 항목의 근거가 없습니다.</p>` : ""}${fit.found && !fit.undetermined && fit.docId !== doc.id ? `<p class="small" style="margin-top:4px">적용 값 출처: ${refBtn(p, fit.docId, fit.pages[0], fit.key, fit.evidence)}</p>` : ""}` : (st.src.line ? `<span class="small">다른 문서를 가리키는 <b>참조 문장</b>을 칠했습니다. 참조한 문서가 묶음에 없으면 03 탭에 배포 요청 질의가 있습니다.</span>` : `<span class="small muted">이 쪽에서 칠한 곳 ${spans.filter(sp => sp.it).length}개. 칠한 곳이나 아래 목록을 누르세요.</span>`)}</div>
+  <div class="side stack" style="gap:10px"><div class="card pad focuscard">${fit ? `<div class="btns"><b>${esc(fit.label)}</b>${flagsOf(fit)}</div><div class="mono small" style="margin:4px 0">${valOf(fit)}</div><p class="small">${esc(fit.risk_reason || "")}</p>${fit.conflict ? `<p class="small muted" style="margin-top:4px">${esc(fit.conflict.rule)}</p>` : ""}${!onPage ? `<p class="small" style="margin-top:4px">이 쪽에는 이 항목의 근거가 없습니다.</p>` : ""}${fit.found && !fit.undetermined && fit.docId !== doc.id ? `<p class="small" style="margin-top:4px">적용 값 출처: ${refBtn(p, fit.docId, fit.pages[0], fit.key, fit.evidence)}</p>` : ""}` : (st.src.line ? `<span class="small">${st.src.target ? `<b>${esc(st.src.target)}</b> 문서를 가리키는` : "다른 문서를 가리키는"} <b>참조 문장</b>을 칠했습니다.${st.src.target && p.refs.some(r => r.target === st.src.target && !r.present) ? ` 이 문서는 받은 묶음에 없어 03 탭 ${esc((drafts(p).Q.find(q => q.label === "빠진 참조 문서: " + st.src.target) || {}).id || "")} 질의로 배포를 요청합니다.` : ""}</span>` : `<span class="small muted">이 쪽에서 칠한 곳 ${spans.filter(sp => sp.it).length}개. 칠한 곳이나 아래 목록을 누르세요.</span>`)}</div>
     <div class="card mlist">${spans.filter(sp => sp.it).map(sp => `<button class="mrow ${st.src.focus === sp.it.key ? "on" : ""}" data-k="${sp.it.key}"><span>${esc(sp.it.label)}</span><span class="flag r-${sp.it.risk}">${RISK[sp.it.risk]}</span><span class="vv">${esc(text.slice(sp.s, sp.e).slice(0, 70))}</span></button>`).join("") || '<div class="pad small muted">이 쪽에는 추출한 값이 없습니다.</div>'}</div></div></div>`;
 }
 bind.source = (p, el) => {
@@ -385,13 +396,14 @@ bind.source = (p, el) => {
   $("#pnext", el).onclick = () => { st.src.page = doc.pages[Math.min(doc.pages.length - 1, pi + 1)].number; st.src.focus = null; st.src.line = null; renderTab(); };
   $$("mark.hl[data-k],.mrow", el).forEach(m => { const f = () => { st.src.focus = m.dataset.k; st.src.line = null; renderTab(); }; m.onclick = f; m.onkeydown = e => { if (e.key === "Enter") f(); }; });
 };
-function openSource(docId, page, key, hl) {
+function openSource(docId, page, key, hl, target) {
   const p = cur(); let k = key && key !== "-" ? key : null;
   st.src.line = key === "-" ? hl : null;
   if (!k && hl && key !== "-") { const it = items(p).find(i => i.candidates.some(c => c.docId === docId && c.page === page && c.evidence.startsWith(hl.slice(0, 30)))); k = it ? it.key : null; }
-  st.src = { doc: docId, page, focus: k, line: key === "-" ? hl : null }; go("source", false);
-  const fm = $("#p-source mark.focus") || $("#p-source mark.refline");
-  if (fm) { const top = fm.getBoundingClientRect().top + window.scrollY - (($(".tabbar") || {}).offsetHeight || 0) - 120; window.scrollTo({ top: Math.max(0, top) }); }
+  st.src = { doc: docId, page, focus: k, line: key === "-" ? hl : null, target: target || "" }; go("source", false);
+  const bar = ($(".tabbar") || {}).offsetHeight || 0, narrow = window.innerWidth <= 1000;
+  const fm = narrow ? $("#p-source .side") : ($("#p-source mark.focus") || $("#p-source mark.refline"));
+  if (fm) { const top = fm.getBoundingClientRect().top + window.scrollY - bar - (narrow ? 8 : 120); window.scrollTo({ top: Math.max(0, top) }); }
   else window.scrollTo({ top: 0 });
 }
 
@@ -654,6 +666,7 @@ async function saveCsv(p, which) {
 }
 const copyRows = rows => copyText(rows.map(r => r.map(v => String(v ?? "").replace(/[\t\n]+/g, " ")).join("\t")).join("\n"), "표를 복사했습니다. 엑셀에 붙여 넣으세요.");
 async function copyText(t, ok) { try { await navigator.clipboard.writeText(t); toast(ok); } catch { toast("복사가 막혀 있습니다. 내용을 직접 선택해 복사해 주세요."); } }
+function clearToast() { const t = $("#toast"); if (t) t.hidden = true; }
 let tt; function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3600); }
 
 $("#file").onchange = e => { if (e.target.files.length) addFiles(e.target.files, st.pickInto); e.target.value = ""; };

@@ -10,7 +10,7 @@
 :root{
   --bg:#f2f5f5; --panel:#ffffff; --sunk:#e8eeed; --ink:#13201f; --muted:#556664; --faint:#5f706e; --line:#d6dfdd; --line-2:#e6ecea;
   --accent:#0c6a65; --accent-ink:#ffffff; --accent-soft:#ddeeec; --chk:#0b6a80; --chk-bg:#d9eff3;
-  --high:#b42318; --high-bg:#fdeceb; --med:#975a00; --med-bg:#fff1d9; --low:#1d7744; --low-bg:#e3f3e8; --none:#5e6e6c; --none-bg:#e8edec;
+  --high:#b42318; --high-bg:#fdeceb; --med:#7a6300; --med-bg:#fbf3c4; --low:#1d7744; --low-bg:#e3f3e8; --none:#5e6e6c; --none-bg:#e8edec;
   --conflict:#b04a06; --conflict-bg:#fde9d4; --add:#3b5bb5; --add-bg:#e5ebfa;
   --hl-1:#ffe36b; --hl-2:#b5d8ff; --hl-3:#aeeec4; --hl-4:#ffc9a8; --hl-5:#e2d2ff; --hl-ink:#13201f;
   --shadow:0 1px 2px rgb(19 32 31 / .06),0 6px 18px rgb(19 32 31 / .06);
@@ -92,7 +92,7 @@ section[hidden]{display:none}
 .r-high,.r-medium,.r-low,.r-none,.r-unknown{border-color:transparent}
 .r-high{color:var(--high);background:var(--high-bg)} .r-medium{color:var(--med);background:var(--med-bg)} .r-low{color:var(--low);background:var(--low-bg)} .r-none{color:var(--none);background:var(--none-bg)} .r-unknown{color:var(--chk);background:var(--chk-bg)}
 .card.flash{box-shadow:0 0 0 3px var(--accent)}
-tr.row.hi td.lab{box-shadow:inset 3px 0 0 var(--high)}
+tr.row.hi td.lab{box-shadow:inset 3px 0 0 var(--high)} tr.row.hi-c td.lab{box-shadow:inset 3px 0 0 var(--conflict)}
 mark.refline{outline:2px dashed var(--ink);outline-offset:1px}
 .k-q,.k-d{font-family:var(--f-mono);font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:4px;border:1px solid var(--accent);color:var(--accent)} .k-d{background:var(--accent);color:var(--accent-ink)}
 .banner{border-left:3px solid var(--chk);background:var(--chk-bg);padding:9px 12px;border-radius:0 6px 6px 0;font-size:13.5px}
@@ -121,7 +121,7 @@ mark.refline{outline:2px dashed var(--ink);outline-offset:1px}
 .exp table{width:100%;border-collapse:collapse;font-size:13px}
 .exp th,.exp td{padding:5px 6px;border-bottom:1px solid var(--line-2);text-align:left}
 .exp td.num{text-align:right;font-family:var(--f-mono);white-space:nowrap}
-.priceinp{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.priceinp{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px} .priceinp .inp{width:170px}
 .inp{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:6px 9px;min-width:0;width:200px;max-width:100%;font-family:var(--f-mono)}
 /* summary table */
 table.t{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px}
@@ -221,7 +221,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   table.t{min-width:0} table.t thead{display:none} table.t,table.t tbody{display:block}
   table.t tr.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px 4px;border-bottom:1px solid var(--line-2)}
   table.t tr.row td{display:block;border:0;padding:0}
-  table.t tr.row.hi{box-shadow:inset 3px 0 0 var(--high);padding-left:10px} table.t tr.row.hi td.lab{box-shadow:none}
+  table.t tr.row{border-left:3px solid transparent;padding-left:9px} table.t tr.row.hi{border-left-color:var(--high)} table.t tr.row.hi-c{border-left-color:var(--conflict)} table.t tr.row.hi td.lab,table.t tr.row.hi-c td.lab{box-shadow:none}
   table.t tr.row td.lab{grid-column:1;grid-row:1;white-space:normal} table.t tr.row td.ck{grid-column:2;grid-row:1/3;align-self:start}
   table.t tr.row td.flags{grid-column:1;grid-row:2;min-width:0} table.t tr.row td.val{grid-column:1/-1;grid-row:3;max-width:none;font-size:12.5px}
   table.t tr.row td.refc{grid-column:1/-1;grid-row:4;font-size:12.5px} table.t tr.row td.dep{grid-column:1/-1;grid-row:5;font-size:12.5px} table.t tr.row td.dep::before{content:"담당 "}
@@ -231,6 +231,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}
   .pkgbar .wrap{align-items:stretch} .pkgbar .grow{display:none}
 }
+@media (max-width:1180px){.top .sub{display:none} .pkgbar .lg{display:none} .pkgbtn{max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 @media (max-width:600px){body{font-size:14px}.sec-h h2{font-size:18px}.brand h1{font-size:17px}main.wrap{padding-block:14px 40px}}
 </style>
 
@@ -257,7 +258,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
 <input type="file" id="file" accept=".pdf,.docx,.txt,.md" multiple hidden>
 <div class="toast" id="toast" role="status" hidden></div>
 
-<script id="samples" type="application/json">{"bundle": {"name": "Riverside 600 MW 복합화력 EPC (가상)", "note": "소프트웨어 시험용 가상 입찰 문서 묶음. 발주처·프로젝트·문서 번호는 모두 가상이다.", "docs": [{"name": "V1_Instructions_to_Bidders.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "NORTHBAY ENERGY AUTHORITY\nRIVERSIDE 600 MW COMBINED CYCLE POWER PLANT PROJECT\nTender No. NEA-RCC-2027-01\nVOLUME 1 - INSTRUCTIONS TO BIDDERS\nIssue r0, December 2026\nThis is a fictional document generated for software testing only."}, {"number": 2, "text": "1. General\n1.1 The Employer, Northbay Energy Authority (the \"Employer\"), invites sealed bids for the Riverside 600 MW Combined Cycle Power Plant Project (the \"Project\").\n1.2 The Site is located in the Riverside Industrial Zone, Port Halden, Republic of Nordavia.\n1.3 The scope of work comprises the engineering, procurement, construction, commissioning and testing of a 600 MW combined cycle power plant including two gas turbines, two heat recovery steam generators, one steam turbine, a 400 kV switchyard and all balance of plant.\n1.4 The Contract shall be a lump sum turnkey EPC contract based on the FIDIC Conditions of Contract for EPC/Turnkey Projects (Silver Book), 2017 Edition, as amended by the Particular Conditions.\n2. Bidding Schedule\n2.1 A pre-bid meeting and site visit will be held on 2027-01-20 at 10:00 hrs at the Employer's site office. Attendance is mandatory for all bidders.\n2.2 Bidders may submit requests for clarification in writing no later than 2027-02-10. The Employer will respond to all clarification queries by way of Addenda, which shall form part of the Tender Documents.\n2.3 Bids must be received at the Employer's address no later than 2027-03-16 at 14:00 hrs local time (the bid submission deadline). Late bids shall be rejected.\n2.4 Bids shall remain valid for a period of 180 days after the bid submission deadline."}, {"number": 3, "text": "3. Preparation of Bids\n3.1 The Bid shall comprise two separate envelopes: Envelope A (Technical Proposal) and Envelope B (Price Proposal including the completed Price Schedules).\n3.2 The currency of the Bid shall be United States Dollars (USD). Local costs may be quoted up to 20% in Nordavian Krona (NVK) at the exchange rate published by the Central Bank 28 days prior to the bid submission deadline.\n3.3 Each bid shall be accompanied by a Bid Security in the amount of 2% of the Bid Price, in the form of an unconditional bank guarantee valid for 28 days beyond the bid validity period.\n4. Evaluation and Award\n4.1 Bids will be evaluated on a pass/fail technical evaluation followed by commercial evaluation. Technical compliance carries a weighting of 30% and price a weighting of 70%.\n4.2 The Contract will be awarded to the bidder whose bid is technically compliant and has the lowest evaluated price after applying the weighting.\n4.3 Deviations from the Conditions of Contract shall be listed in the Schedule of Deviations. Unlisted deviations will not be considered."}]}, {"name": "V2_Contract_Data.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 2 - CONTRACT DATA\nRiverside 600 MW Combined Cycle Power Plant Project\nThe following data apply to the Conditions of Contract. Clause numbers refer to the General Conditions."}, {"number": 2, "text": "Clause 4.2 Performance Security\nThe Contractor shall deliver a Performance Security in the amount of 10% of the Contract Price within 28 days after receiving the Letter of Acceptance.\nClause 8.2 Time for Completion\nThe Time for Completion of the whole of the Works shall be 36 months from the Commencement Date.\nClause 8.8 Delay Damages\nThe Contractor shall pay liquidated damages to the Employer at the rate of 0.15% of the Contract Price per calendar day of delay.\nThe total amount of delay damages shall not exceed a maximum of 15% of the Contract Price.\nClause 11.3 Defects Notification Period\nThe Defects Notification Period shall be 24 months from the date of Taking Over.\nClause 14.2 Advance Payment\nThe Employer shall make an advance payment of 10% of the Contract Price, against submission of an Advance Payment Guarantee of equal amount.\nClause 14.3 Retention Money\nRetention Money of 5% shall be deducted from each interim payment until the total Retention Money reaches 5% of the Contract Price."}]}, {"name": "V3_Particular_Conditions.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 3 - PARTICULAR CONDITIONS OF CONTRACT\nClause 1.5 Priority of Documents\nThe documents forming the Contract are to be taken as mutually explanatory. In case of ambiguity or discrepancy the priority shall be: the Contract Agreement, the Contract Data, these Particular Conditions, the General Conditions, the Employer's Requirements, the Technical Specifications.\nClause 8.8 Delay Damages\nThe total amount of delay damages under the Contract shall not exceed a maximum of 10% of the Contract Price.\nClause 13.8 Adjustments for Changes in Cost\nThe Contract Price is fixed and firm and shall not be subject to any adjustment for rise or fall in the cost of labour, materials, equipment or other inputs to the Works."}, {"number": 2, "text": "Clause 14.3 Application for Interim Payments\nThe Contractor shall submit monthly statements. The Employer shall pay the amount certified in each Interim Payment Certificate within 56 days after receiving the statement and supporting documents.\nClause 14.9 Retention Money\nRetention Money of 10% shall be deducted from each interim payment until the total Retention Money reaches 10% of the Contract Price. Half shall be released at Taking Over.\nClause 17.6 Limitation of Liability\nThe total liability of the Contractor to the Employer under or in connection with the Contract shall not exceed 150% of the Accepted Contract Amount. Neither Party shall be liable for loss of profit or any indirect or consequential loss, except in cases of fraud or wilful misconduct.\nClause 19 Insurance\nThe Contractor shall effect and maintain Contractor's All Risks insurance for the full replacement value of the Works and third party liability insurance with a minimum limit of USD 50,000,000 per occurrence.\nClause 21 Disputes and Arbitration\nThe Contract shall be governed by the laws of the Republic of Nordavia. Any dispute not settled amicably shall be finally settled by arbitration under the Rules of Arbitration of the International Chamber of Commerce (ICC), with the seat of arbitration in Singapore."}]}, {"name": "V4_Employers_Requirements.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 4 - EMPLOYER'S REQUIREMENTS\n1. Scope\n1.1 The Works shall be designed and constructed in accordance with the Technical Specifications in Volume 5 and the Site Data in Appendix G.\n1.2 The Contractor shall verify the Site Data. The Employer does not warrant the accuracy of the geotechnical information in Appendix G, which is provided for information only.\n2. Local Content\n2.1 The Contractor shall ensure that not less than 30% of the total value of the Works is sourced from Nordavian nationals, local subcontractors and local suppliers (in-country value).\n3. Interfaces\n3.1 The gas supply connection at the plant boundary shall be provided by others as described in Appendix I, Clause 2.6. The Contractor shall coordinate the tie-in schedule with the gas pipeline operator."}]}, {"name": "A1_Addendum_No1.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "ADDENDUM NO. 1\nRiverside 600 MW Combined Cycle Power Plant Project, Tender No. NEA-RCC-2027-01\nIssued 2027-02-20. This Addendum forms part of the Tender Documents and prevails over any earlier issue.\n1. Bid Submission Deadline\nITB Clause 2.3 is amended: Bids must be received no later than 2027-03-30 at 14:00 hrs local time.\n2. Delay Damages\nContract Data Clause 8.8 is amended to read: The total amount of delay damages shall not exceed a maximum of 10% of the Contract Price.\n3. Responses to Clarification Requests\nQuery 07: The Employer confirms that the pre-bid meeting minutes are for information only."}]}]}, "ko": {"name": "한빛시 하수처리장 증설 (가상, 단일 문서)", "docs": [{"name": "샘플_하수처리장_입찰안내서.docx", "kind": "docx", "pages": [{"number": 1, "text": "입찰안내서 (가상 예시 문서)\n이 문서는 소프트웨어 시험용으로 만든 가상 문서입니다.\n제1장 입찰 개요\n1. 공사명: 한빛시 하수처리장 증설 및 고도처리시설 설치공사 (가상 예시)\n2. 발주기관: 한빛시 상하수도사업소\n3. 공사 위치: 한빛시 동구 강변로 일원\n4. 공사 개요: 하수처리 용량 50,000㎥/일 증설, 고도처리시설 설치 및 기존 시설 개량을 포함한다.\n5. 계약방식: 총액 확정 계약, 설계·시공 일괄입찰(턴키) 방식\n제2장 입찰 일정\n6. 현장설명회는 2027년 2월 5일 14시 한빛시청 대회의실에서 개최하며 참석은 선택사항이다.\n7. 입찰 관련 질의는 2027년 2월 20일까지 서면으로 제출하여야 한다.\n8. 입찰서 제출 마감일시는 2027년 3월 10일 17시이며 마감 이후 도착분은 무효로 한다.\n9. 입찰유효기간은 입찰서 제출 마감일로부터 90일로 한다.\n10. 입찰서류는 기술제안서와 가격제안서를 각각 별도 봉투에 넣어 제출한다.\n11. 낙찰자 결정: 기술평가 60점, 가격평가 40점을 합산하여 최고 득점자를 낙찰자로 결정한다.\n제3장 보증 및 대가 지급\n12. 입찰보증금은 입찰금액의 5%로 하며 보증보험증권으로 납부할 수 있다.\n13. 계약보증금은 계약금액의 15%로 한다.\n14. 선급금은 계약금액의 30%를 지급하며 선급금 보증서를 제출하여야 한다.\n15. 기성 대가는 매월 1회 청구하며 발주기관은 청구를 받은 날부터 5일 이내에 지급한다.\n[표]\n구분 | 비율 | 비고\n입찰보증금 | 5% | 보증보험 가능\n계약보증금 | 15% | 현금 또는 보증서\n제4장 공기 및 지체상금\n16. 공사기간은 착공일로부터 30개월로 한다.\n17. 지체상금률은 계약금액의 1000분의 0.5로 하며 지체일수 1일마다 부과한다.\n18. 지체상금 총액은 계약금액의 30%를 초과할 수 없다.\n제5장 계약 조건\n19. 하자담보책임기간은 준공일로부터 3년으로 한다.\n20. 계약금액은 국가를 당사자로 하는 계약에 관한 법률에 따라 물가변동으로 인한 계약금액 조정을 할 수 있다.\n21. 손해배상 책임은 계약금액을 한도로 하며 간접손해는 배상하지 아니한다.\n22. 계약상대자는 공사보험(건설공사보험)과 제3자 배상책임보험에 가입하여야 한다.\n23. 이 계약과 관련한 분쟁은 발주기관 소재지 관할 법원에서 해결한다."}]}]}}</script>
+<script id="samples" type="application/json">{"bundle": {"name": "Riverside 600 MW 복합화력 EPC (가상)", "note": "소프트웨어 시험용 가상 입찰 문서 묶음. 발주처·프로젝트·문서 번호는 모두 가상이다.", "docs": [{"name": "V1_Instructions_to_Bidders.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "NORTHBAY ENERGY AUTHORITY\nRIVERSIDE 600 MW COMBINED CYCLE POWER PLANT PROJECT\nTender No. NEA-RCC-2027-01\nVOLUME 1 - INSTRUCTIONS TO BIDDERS\nIssue r0, December 2026\nThis is a fictional document generated for software testing only."}, {"number": 2, "text": "1. General\n1.1 The Employer, Northbay Energy Authority (the \"Employer\"), invites sealed bids for the Riverside 600 MW Combined Cycle Power Plant Project (the \"Project\").\n1.2 The Site is located in the Riverside Industrial Zone, Port Halden, Republic of Nordavia.\n1.3 The scope of work comprises the engineering, procurement, construction, commissioning and testing of a 600 MW combined cycle power plant including two gas turbines, two heat recovery steam generators, one steam turbine, a 400 kV switchyard and all balance of plant.\n1.4 The Contract shall be a lump sum turnkey EPC contract based on the FIDIC Conditions of Contract for EPC/Turnkey Projects (Silver Book), 2017 Edition, as amended by the Particular Conditions.\n2. Bidding Schedule\n2.1 A pre-bid meeting and site visit will be held on 2027-01-20 at 10:00 hrs at the Employer's site office. Attendance is mandatory for all bidders.\n2.2 Bidders may submit requests for clarification in writing no later than 2027-02-10. The Employer will respond to all clarification queries by way of Addenda, which shall form part of the Tender Documents.\n2.3 Bids must be received at the Employer's address no later than 2027-03-16 at 14:00 hrs local time (the bid submission deadline). Late bids shall be rejected.\n2.4 Bids shall remain valid for a period of 180 days after the bid submission deadline."}, {"number": 3, "text": "3. Preparation of Bids\n3.1 The Bid shall comprise two separate envelopes: Envelope A (Technical Proposal) and Envelope B (Price Proposal including the completed Price Schedules).\n3.2 The currency of the Bid shall be United States Dollars (USD). Local costs may be quoted up to 20% in Nordavian Krona (NVK) at the exchange rate published by the Central Bank 28 days prior to the bid submission deadline.\n3.3 The Price Proposal shall contain the completed Schedule of Prices, in which the lump sum price is broken down by plant area. Provisional Sums shall be included only as stated in the Schedule of Prices and shall be re-measured.\n3.4 Each bid shall be accompanied by a Bid Security in the amount of 2% of the Bid Price, in the form of an unconditional bank guarantee valid for 28 days beyond the bid validity period.\n4. Evaluation and Award\n4.1 Bids will be evaluated on a pass/fail technical evaluation followed by commercial evaluation. Technical compliance carries a weighting of 30% and price a weighting of 70%.\n4.2 The Contract will be awarded to the bidder whose bid is technically compliant and has the lowest evaluated price after applying the weighting.\n4.3 Deviations from the Conditions of Contract shall be listed in the Schedule of Deviations. Unlisted deviations will not be considered.\n5. Qualification of Bidders\n5.1 Bidders shall have completed at least two combined cycle power plants of not less than 400 MW each within the last ten years and shall have an average annual construction turnover of not less than USD 800 million over the last three years."}]}, {"name": "V2_Contract_Data.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 2 - CONTRACT DATA\nRiverside 600 MW Combined Cycle Power Plant Project\nThe following data apply to the Conditions of Contract. Clause numbers refer to the General Conditions."}, {"number": 2, "text": "Clause 4.2 Performance Security\nThe Contractor shall deliver a Performance Security in the amount of 10% of the Contract Price within 28 days after receiving the Letter of Acceptance.\nClause 8.2 Time for Completion\nThe Time for Completion of the whole of the Works shall be 36 months from the Commencement Date.\nClause 8.8 Delay Damages\nThe Contractor shall pay liquidated damages to the Employer at the rate of 0.15% of the Contract Price per calendar day of delay.\nThe total amount of delay damages shall not exceed a maximum of 15% of the Contract Price.\nClause 11.3 Defects Notification Period\nThe Defects Notification Period shall be 24 months from the date of Taking Over.\nClause 14.2 Advance Payment\nThe Employer shall make an advance payment of 10% of the Contract Price, against submission of an Advance Payment Guarantee of equal amount.\nClause 14.3 Retention Money\nRetention Money of 5% shall be deducted from each interim payment until the total Retention Money reaches 5% of the Contract Price."}]}, {"name": "V3_Particular_Conditions.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 3 - PARTICULAR CONDITIONS OF CONTRACT\nClause 1.5 Priority of Documents\nThe documents forming the Contract are to be taken as mutually explanatory. In case of ambiguity or discrepancy the priority shall be: the Contract Agreement, the Contract Data, these Particular Conditions, the General Conditions, the Employer's Requirements, the Technical Specifications.\nClause 8.8 Delay Damages\nThe total amount of delay damages under the Contract shall not exceed a maximum of 10% of the Contract Price.\nClause 13.8 Adjustments for Changes in Cost\nThe Contract Price is fixed and firm and shall not be subject to any adjustment for rise or fall in the cost of labour, materials, equipment or other inputs to the Works."}, {"number": 2, "text": "Clause 14.3 Application for Interim Payments\nThe Contractor shall submit monthly statements. The Employer shall pay the amount certified in each Interim Payment Certificate within 56 days after receiving the statement and supporting documents.\nClause 14.9 Retention Money\nRetention Money of 10% shall be deducted from each interim payment until the total Retention Money reaches 10% of the Contract Price. Half shall be released at Taking Over.\nClause 17.6 Limitation of Liability\nThe total liability of the Contractor to the Employer under or in connection with the Contract shall not exceed 150% of the Accepted Contract Amount. Neither Party shall be liable for loss of profit or any indirect or consequential loss, except in cases of fraud or wilful misconduct.\nClause 19 Insurance\nThe Contractor shall effect and maintain Contractor's All Risks insurance for the full replacement value of the Works and third party liability insurance with a minimum limit of USD 50,000,000 per occurrence.\nClause 21 Disputes and Arbitration\nThe Contract shall be governed by the laws of the Republic of Nordavia. Any dispute not settled amicably shall be finally settled by arbitration under the Rules of Arbitration of the International Chamber of Commerce (ICC), with the seat of arbitration in Singapore."}]}, {"name": "V4_Employers_Requirements.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 4 - EMPLOYER'S REQUIREMENTS\n1. Scope\n1.1 The Works shall be designed and constructed in accordance with the Technical Specifications in Volume 5 and the Site Data in Appendix G.\n1.2 The Contractor shall verify the Site Data. The Employer does not warrant the accuracy of the geotechnical information in Appendix G, which is provided for information only.\n2. Local Content\n2.1 The Contractor shall ensure that not less than 30% of the total value of the Works is sourced from Nordavian nationals, local subcontractors and local suppliers (in-country value).\n3. Interfaces\n3.1 The gas supply connection at the plant boundary shall be provided by others as described in Appendix I, Clause 2.6. The Contractor shall coordinate the tie-in schedule with the gas pipeline operator."}]}, {"name": "A1_Addendum_No1.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "ADDENDUM NO. 1\nRiverside 600 MW Combined Cycle Power Plant Project, Tender No. NEA-RCC-2027-01\nIssued 2027-02-20. This Addendum forms part of the Tender Documents and prevails over any earlier issue.\n1. Bid Submission Deadline\nITB Clause 2.3 is amended: Bids must be received no later than 2027-03-30 at 14:00 hrs local time.\n2. Delay Damages\nContract Data Clause 8.8 is amended to read: The total amount of delay damages shall not exceed a maximum of 10% of the Contract Price.\n3. Responses to Clarification Requests\nQuery 07: The Employer confirms that the pre-bid meeting minutes are for information only."}]}]}, "ko": {"name": "한빛시 하수처리장 증설 (가상, 단일 문서)", "docs": [{"name": "샘플_하수처리장_입찰안내서.docx", "kind": "docx", "pages": [{"number": 1, "text": "입찰안내서 (가상 예시 문서)\n이 문서는 소프트웨어 시험용으로 만든 가상 문서입니다.\n제1장 입찰 개요\n1. 공사명: 한빛시 하수처리장 증설 및 고도처리시설 설치공사 (가상 예시)\n2. 발주기관: 한빛시 상하수도사업소\n3. 공사 위치: 한빛시 동구 강변로 일원\n4. 공사 개요: 하수처리 용량 50,000㎥/일 증설, 고도처리시설 설치 및 기존 시설 개량을 포함한다.\n5. 계약방식: 총액 확정 계약, 설계·시공 일괄입찰(턴키) 방식\n제2장 입찰 일정\n6. 현장설명회는 2027년 2월 5일 14시 한빛시청 대회의실에서 개최하며 참석은 선택사항이다.\n7. 입찰 관련 질의는 2027년 2월 20일까지 서면으로 제출하여야 한다.\n8. 입찰서 제출 마감일시는 2027년 3월 10일 17시이며 마감 이후 도착분은 무효로 한다.\n9. 입찰유효기간은 입찰서 제출 마감일로부터 90일로 한다.\n10. 입찰서류는 기술제안서와 가격제안서를 각각 별도 봉투에 넣어 제출한다.\n11. 낙찰자 결정: 기술평가 60점, 가격평가 40점을 합산하여 최고 득점자를 낙찰자로 결정한다.\n제3장 보증 및 대가 지급\n12. 입찰보증금은 입찰금액의 5%로 하며 보증보험증권으로 납부할 수 있다.\n13. 계약보증금은 계약금액의 15%로 한다.\n14. 선급금은 계약금액의 30%를 지급하며 선급금 보증서를 제출하여야 한다.\n15. 기성 대가는 매월 1회 청구하며 발주기관은 청구를 받은 날부터 5일 이내에 지급한다.\n[표]\n구분 | 비율 | 비고\n입찰보증금 | 5% | 보증보험 가능\n계약보증금 | 15% | 현금 또는 보증서\n제4장 공기 및 지체상금\n16. 공사기간은 착공일로부터 30개월로 한다.\n17. 지체상금률은 계약금액의 1000분의 0.5로 하며 지체일수 1일마다 부과한다.\n18. 지체상금 총액은 계약금액의 30%를 초과할 수 없다.\n제5장 계약 조건\n19. 하자담보책임기간은 준공일로부터 3년으로 한다.\n20. 계약금액은 국가를 당사자로 하는 계약에 관한 법률에 따라 물가변동으로 인한 계약금액 조정을 할 수 있다.\n21. 손해배상 책임은 계약금액을 한도로 하며 간접손해는 배상하지 아니한다.\n22. 계약상대자는 공사보험(건설공사보험)과 제3자 배상책임보험에 가입하여야 한다.\n23. 이 계약과 관련한 분쟁은 발주기관 소재지 관할 법원에서 해결한다."}]}]}}</script>
 <script>/* ITB Reviewer engine (browser + node). Python itb/ 패키지의 parser·retrieval·checklist·rules 이식본. */
 (function (root) {
   "use strict";
@@ -293,6 +294,8 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
     I("governing_law", "준거법·분쟁해결", "계약 리스크", "governing law dispute resolution arbitration court ICC jurisdiction 준거법 분쟁 중재 관할법원", "governing law|dispute|arbitrat|court|jurisdiction|준거법|분쟁|중재|관할", "text", "준거법, 중재기관/관할 법원"),
     I("insurance", "보험", "계약 리스크", "insurance contractor all risks CAR third party liability 보험 공사보험 배상책임", "insurance|all risks|보험", "text", "계약자 부보 의무 보험 종류와 금액"),
     I("local_content", "현지화 요건", "계약 리스크", "local content local subcontractors nationals localization in-country value 현지화 현지 업체 현지인 고용", "local content|in-country|national|locali|현지", "percent", "현지 조달·고용 의무 비율"),
+    I("prequalification", "입찰 참가 자격(PQ)", "입찰 절차", "qualification eligibility experience completed similar projects turnover financial capacity prequalification 입찰참가자격 자격요건 시공실적 실적 매출", "qualif|eligib|experience|turnover|completed at least|자격|실적", "text", "실적·재무 요건(못 맞추면 입찰 무효)"),
+    I("price_schedule", "가격표·물량 형식", "입찰 절차", "price schedules schedule of prices bill of quantities BOQ breakdown provisional sums re-measurement 가격 명세 산출내역서 물량내역 내역서", "price schedule|schedule of prices|bill of quantities|boq|provisional sum|re-?measur|산출내역|물량내역|내역서", "text", "총액 분해 방식, 물량 변동·잠정금액(PS) 처리"),
     I("site_data_reliance", "현장 자료 신뢰 범위", "계약 리스크", "site data geotechnical information accuracy warrant reliance for information only verify 현장 자료 지반 조사 참고용 정확성 보증", "for information only|warrant|relian|rely|verify the site data|참고용|정확성|책임지지", "text", "발주처가 준 조사 자료를 계약자가 믿고 쓸 수 있는지(RUI)"),
     I("interfaces", "인터페이스·타 계약자 범위", "계약 리스크", "interface by others other contractors coordinate tie-in boundary 인터페이스 타 계약자 경계 연계", "by others|interface|tie-in|other contractor|인터페이스|타 계약자|경계", "text", "타 계약자·발주처가 맡는 범위와 경계 조건"),
   ];
@@ -324,6 +327,8 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
     governing_law: ["상업 조건", "계약법무", "Governing law and disputes", "분쟁 비용·집행 가능성"],
     insurance: ["상업 조건", "재무", "Insurance", "보험료 원가, 부보 범위"],
     local_content: ["기술 조건", "원가", "Local content", "현지 조달 단가·하도급 계획"],
+    prequalification: ["입찰 절차", "영업", "Qualification of Bidders", "실적·매출 요건 충족 여부 확인, 컨소시엄 구성 판단"],
+    price_schedule: ["입찰 절차", "원가", "Price schedules", "견적서 형식, 물량 위험과 잠정금액 처리"],
     site_data_reliance: ["기술 조건", "설계", "Reliance on site data", "조사 자료 오류의 비용 주인, 추가 조사 예산"],
     interfaces: ["기술 조건", "시공", "Interfaces with others", "타 계약자 지연 시 대기·범위 다툼"],
   };
@@ -570,7 +575,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
       case "advance_payment": {
         if (/no advance payment|advance payment (?:shall|will) not be (?:made|paid|provided)|not be entitled to (?:an |any )?advance|선급금(?:은|을)? 지급하지|선급금 없음/.test(low)) return R("high", "선급금이 없어 초기 자금 부담이 큽니다.");
         if (!value) return R("medium", "선급금 조항을 찾지 못했습니다. 초기 현금흐름을 확인해야 합니다.");
-        return R("low", `선급금 ${value}이 지급됩니다.`);
+        return R("low", `선급금 ${josa(value, "을", "를")} 받습니다.`);
       }
       case "retention": {
         if (!p.length) return R("unknown", "유보금 비율을 확인하지 못했습니다.");
@@ -617,6 +622,12 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
         if (!ev) return R("unknown");
         if (/arbitrat|icc|siac|lcia|uncitral|중재/.test(low)) return R("low", "국제중재 조항이 있습니다.");
         if (/court|법원/.test(low)) return R("medium", "중재 없이 현지 법원 관할입니다.");
+        return R("none");
+      }
+      case "price_schedule": {
+        if (!ev) return R("none");
+        if (/provisional sum|re-?measur|quantities (?:are|shall be) (?:approximate|estimated)|잠정|정산/.test(low)) return R("low", "물량 정산·잠정금액 조항이 있습니다. 해당 항목은 실제 물량으로 정산됩니다.");
+        if (/lump sum|총액/.test(low)) return R("medium", "총액 분해표입니다. 물량 증가 위험을 계약자가 집니다(물량 산출 검증 필요).");
         return R("none");
       }
       case "site_data_reliance": {
@@ -785,6 +796,10 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
     const c = { docId: d.id, docName: d.name, type: d.type, rank: rankOf(item, d.type), addNo: d.addNo, page: b.chunk.page, section: sf.sec, sub: sf.sub,
       value, raw: b.raw, evidence: b.s.slice(0, 600), ctx: b.ctx, sc: b.sc, norm: norm(item, value, b.s), amount: !!(b.vm && b.vm.amount) };
     c.clause = clauseOf(c);
+    if (d.type === "ADD") {
+      const item = (c.sub || (c.section.match(/^(\d+)\./) || [])[1] || ""), tgt = (c.evidence + " " + c.ctx).match(/\b(ITB|BDS|Contract Data|CD|PCC|GCC|Particular Conditions|General Conditions|ER|Employer's Requirements|TS)\s+(?:Sub-)?Clause\s+([\d.]+\d)/i);
+      c.clause = `Addendum No. ${d.addNo}${item ? `, Item ${item}` : ""}${tgt ? ` (amending ${tgt[1]} Clause ${tgt[2]})` : ""}`;
+    }
     return c;
   }
   // 입찰 절차 항목은 입찰지침이 계약 문서보다 앞선다(추가 공고는 늘 맨 앞)
@@ -899,10 +914,11 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   // 받침에 맞춘 조사: josa("유보금","이","가") → "유보금이"
   function josa(w, a, b) { const t = String(w).trim(), c = t.charCodeAt(t.length - 1);
     if (c >= 0xac00 && c <= 0xd7a3) return t + (((c - 0xac00) % 28) ? a : b);
-    return t + (/[0-9LMNR]$/i.test(t) ? a : b); }
+    if (/%$/.test(t)) return t + b;
+    return t + (/[013678LMNR]$/i.test(t) ? a : b); }
   const enVal = v => String(v).replace(/%\/일/, "% of the Contract Price per day").replace(/%\/주/, "% of the Contract Price per week");
-  const cite = v => `${TYPE[v.type].en}${v.clause ? ", " + v.clause : ""}`;
-  const citeKo = v => `${TYPE[v.type].label}${v.clause ? " " + v.clause : ""}`;
+  const cite = v => v.type === "ADD" ? (v.clause || "Addendum") : `${TYPE[v.type].en}${v.clause ? ", " + v.clause : ""}`;
+  const citeKo = v => v.type === "ADD" ? (v.clause || "추가 공고") : `${TYPE[v.type].label}${v.clause ? " " + v.clause : ""}`;
   function drafts(items, refs, policy) {
     policy = policy || {};
     const by = Object.fromEntries(items.map(i => [i.key, i]));
@@ -971,6 +987,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
     }
     Q.forEach((x, i) => x.id = "Q-" + pad(i + 1));
     D.forEach((x, i) => x.id = "D-" + pad(i + 1));
+    for (const d of D) { const q = Q.find(x => x.item && x.item === d.item); if (q) { q.next = d.id; d.after = q.id; } } // 질의 회신이 불리하면 이탈
     return { Q, D, policy };
   }
 
@@ -1069,6 +1086,7 @@ async function addFiles(files, intoPkg) {
   const all = [...files], ok = all.filter(f => /\.(pdf|docx|txt|md)$/i.test(f.name));
   if (!ok.length) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다.");
   if (ok.length < all.length) toast(`${all.length - ok.length}개 파일은 형식이 맞지 않아 건너뜁니다.`);
+  clearToast();
   const pkg = intoPkg || newPkg(ok.length === 1 ? ok[0].name.replace(/\.[^.]+$/, "") : `새 입찰 건 ${st.pkgs.length + 1}`);
   st.cur = pkg.id;
   const recs = ok.map(f => { const d = { id: pkg.id + "d" + (++seq), name: f.name, file: f, status: "reading", msg: "읽는 중" }; pkg.docs.push(d); return d; });
@@ -1113,9 +1131,9 @@ const typeLabel = c => (E.TYPE[c] || E.TYPE.ETC).label;
 const docOf = (p, id) => p.docs.find(d => d.id === id);
 const shortDoc = d => d.name.replace(/\.[^.]+$/, "").replace(/_/g, " ");
 // 문서 버튼 이름은 어디서나 같은 형식: "V2 Contract Data p.2". key가 "-"이면 항목 대신 그 문장(줄)을 칠한다.
-function refBtn(p, docId, page, key, hl) {
+function refBtn(p, docId, page, key, hl, target) {
   const d = docOf(p, docId); if (!d || !page) return "";
-  return `<button class="docref" data-doc="${esc(docId)}" data-page="${page}" data-k="${esc(key || "")}" data-hl="${esc((hl || "").slice(0, 80))}" title="${esc(d.name)} ${page}쪽 원문 보기">${esc(shortDoc(d))} p.${page}</button>`;
+  return `<button class="docref" data-doc="${esc(docId)}" data-page="${page}" data-k="${esc(key || "")}" data-hl="${esc((hl || "").slice(0, 80))}"${target ? ` data-target="${esc(target)}"` : ""} title="${esc(d.name)} ${page}쪽 원문 보기">${esc(shortDoc(d))} p.${page}</button>`;
 }
 function flagsOf(it) {
   const f = [`<span class="flag r-${it.risk}" title="${esc(RISK_HELP[it.risk])}">${RISK[it.risk]}</span>`];
@@ -1133,12 +1151,17 @@ function currencyOf(p) {
   if (m) return /dollar|USD/i.test(m[0]) ? "USD" : /euro|EUR/i.test(m[0]) ? "EUR" : /원화|won|KRW/i.test(m[0]) ? "KRW" : m[1].toUpperCase();
   return p.policy && p.policy.korean ? "KRW" : "USD";
 }
-const money = (n, c) => n == null ? "-" : c === "KRW" ? `${Math.round(n).toLocaleString("ko-KR")}원` : `${c} ${Math.round(n).toLocaleString("en-US")}`;
+// 원화는 경영진이 읽는 단위(조·억·만)로
+function korUnit(n) { n = Math.round(n); if (n < 1e4) return `${n.toLocaleString("ko-KR")}원`;
+  const jo = Math.floor(n / 1e12), eok = Math.floor(n % 1e12 / 1e8), man = Math.floor(n % 1e8 / 1e4), parts = [];
+  if (jo) parts.push(`${jo.toLocaleString("ko-KR")}조`); if (eok) parts.push(`${eok.toLocaleString("ko-KR")}억`); if (man && !jo) parts.push(`${man.toLocaleString("ko-KR")}만`);
+  return parts.join(" ") + "원"; }
+const money = (n, c) => n == null ? "-" : c === "KRW" ? korUnit(n) : `${c} ${Math.round(n).toLocaleString("en-US")}`;
 const mrange = (r, c) => r.lo == null ? (r.fixed ? esc(r.fixed) : "-") : r.lo === r.hi ? money(r.lo, c) : `${money(r.lo, c)} ~<br>${money(r.hi, c)}`;
 // "5억", "1조 2천억", "500,000,000", "500M", "1.2bn" → 숫자
 function parseAmount(t) {
-  t = String(t || "").replace(/,/g, "").trim(); if (!t) return 0;
-  const en = t.match(/^([\d.]+)\s*(m|mn|million|b|bn|billion)$/i); if (en) return Math.round(parseFloat(en[1]) * (/^b/i.test(en[2]) ? 1e9 : 1e6));
+  t = String(t || "").replace(/,/g, "").replace(/(?:USD|EUR|KRW|GBP|JPY|SAR|AED|US\$|[$€₩£¥]|원)/gi, " ").trim(); if (!t) return 0;
+  const en = t.match(/([\d.]+)\s*(million|billion|mn|bn|m|b)\b/i); if (en) return Math.round(parseFloat(en[1]) * (/^b/i.test(en[2]) ? 1e9 : 1e6));
   if (/[조억만천]/.test(t)) { let total = 0; const U = { 조: 1e12, 억: 1e8, 만: 1e4 };
     for (const m of t.matchAll(/([\d.]+)\s*(천)?\s*(조|억|만)?/g)) { if (!m[1]) continue; let v = parseFloat(m[1]) * (m[2] ? 1000 : 1); v *= m[3] ? U[m[3]] : 1; total += v; }
     return Math.round(total); }
@@ -1155,9 +1178,9 @@ function renderPkgbar() {
     <div class="pkgsel" role="group" aria-label="입찰 건">${st.pkgs.map(x => `<button class="pkgbtn" data-pkg="${x.id}" aria-current="${x.id === st.cur}">${esc(x.name)}<span class="t">${x.sample ? "가상 샘플 · " : ""}문서 ${x.docs.length}권</span></button>`).join("")}</div>
     <span class="grow"></span>
     ${qd.state !== "none" || bd.state !== "none" ? `<span class="dday ${[qd, bd].some(x => x.state === "ok" && x.n <= 14 && x.n >= 0) ? "soon" : ""}" title="질의 마감 ${esc(qd.iso || dtxt(qd))} · 입찰 마감 ${esc(bd.iso || dtxt(bd))}">질의 ${dtxt(qd)} · 입찰 ${dtxt(bd)}</span>` : ""}
-    <button class="btn" id="b-add" ${p ? "" : "disabled"}>이 건에 문서 추가</button>
-    <button class="btn primary" id="b-new">새 입찰 건 올리기</button>`;
-  $$(".pkgbtn").forEach(b => b.onclick = () => { st.cur = b.dataset.pkg; st.open = new Set(); st.src = { doc: null, page: 1, focus: null }; renderAll(); });
+    <button class="btn" id="b-add" ${p ? "" : "disabled"}><span class="lg">이 건에 </span>문서 추가</button>
+    <button class="btn primary" id="b-new">새 입찰 건<span class="lg"> 올리기</span></button>`;
+  $$(".pkgbtn").forEach(b => b.onclick = () => { clearToast(); st.cur = b.dataset.pkg; st.open = new Set(); st.src = { doc: null, page: 1, focus: null }; renderAll(); });
   $("#b-new").onclick = () => { st.pickInto = null; $("#file").click(); };
   $("#b-add").onclick = () => { st.pickInto = cur(); $("#file").click(); };
 }
@@ -1195,7 +1218,7 @@ function renderTab(keep = true) {
 function bindCommon(el) {
   $$("[data-go]", el).forEach(b => b.onclick = () => go(b.dataset.go));
   $$("[data-goq]", el).forEach(b => b.onclick = () => { go("drafts"); const c = $(`#p-drafts [data-card="${b.dataset.goq}"]`); if (c) { const top = c.getBoundingClientRect().top + window.scrollY - ($(".tabbar").offsetHeight || 0) - 12; window.scrollTo({ top }); c.classList.add("flash"); c.setAttribute("tabindex", "-1"); c.focus({ preventScroll: true }); setTimeout(() => c.classList.remove("flash"), 1600); } });
-  $$(".docref", el).forEach(b => b.onclick = e => { e.stopPropagation(); openSource(b.dataset.doc, +b.dataset.page, b.dataset.k, b.dataset.hl); });
+  $$(".docref[data-doc]", el).forEach(b => b.onclick = e => { e.stopPropagation(); openSource(b.dataset.doc, +b.dataset.page, b.dataset.k, b.dataset.hl, b.dataset.target); });
 }
 const bind = {};
 
@@ -1203,6 +1226,8 @@ const bind = {};
 function vSummary(p) {
   const c = counts(p), its = items(p), rv = review(p), cc = currencyOf(p), price = store.get("price:" + p.name, 0), docsN = p.built.docs.length;
   const top = its.filter(i => i.risk === "high" || i.undetermined).sort((a, b) => (b.undetermined - a.undetermined));
+  const legal = its.filter(i => i.found && i.risk === "none" && /^국내 공공계약/.test(i.risk_reason || ""));
+  const unk = its.filter(i => i.risk === "unknown"), unkQ = unk.filter(i => drafts(p).Q.some(q => q.item === i.key)).length;
   const ex = E.exposure(its, price);
   const vis = its.filter(i => (st.group === "전체" || i.group === st.group) && (st.rf === "all" || (st.rf === "flag" ? (i.risk === "high" || i.risk === "medium" || i.risk === "unknown" || i.undetermined) : !rv[i.key])));
   let rows = "";
@@ -1211,7 +1236,7 @@ function vSummary(p) {
     rows += `<tr class="grp"><td colspan="6">${esc(g)} <span class="tiny">· ${gi.length}개</span></td></tr>`;
     for (const it of gi) {
       const o = st.open.has(it.key), done = !!rv[it.key], cand = it.candidates.find(x => x.docId === it.docId);
-      rows += `<tr class="row ${done ? "done" : ""} ${it.risk === "high" || it.undetermined ? "hi" : ""}" data-k="${it.key}" tabindex="0" aria-expanded="${o}">
+      rows += `<tr class="row ${done ? "done" : ""} ${it.undetermined ? "hi-c" : it.risk === "high" ? "hi" : ""}" data-k="${it.key}" tabindex="0" aria-expanded="${o}">
         <td class="lab"><span class="car">${o ? "▾" : "▸"}</span>${esc(it.label)}</td>
         <td class="val">${valOf(it)}${it.summary ? `<div class="s">${esc(it.summary)}</div>` : ""}</td>
         <td class="flags">${flagsOf(it)}</td>
@@ -1238,20 +1263,22 @@ function vSummary(p) {
     <div><div class="k">리스크 높음</div><div class="v high">${c.high}</div><div class="n">주의 ${c.medium} · 확인 필요 ${c.unknown}</div></div>
     <div><div class="k">모순(값 미정)</div><div class="v conflict">${c.open}</div><div class="n">추가 공고로 해소 ${c.added}</div></div>
     <div><div class="k">질의 초안</div><div class="v">${c.q}</div><div class="n">빠진 참조 문서 ${c.missRefs}</div></div>
-    <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.forbidden || p.policy.domestic ? "이탈 불가 → 질의로" : "리스크 높음에서"}</div></div>
+    <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.domestic ? "국내 공공계약: 이탈 없음" : p.policy.forbidden ? `이탈 불가 → 완화 질의 ${drafts(p).Q.filter(q => q.basis === "조건 완화 질의").length}건` : "높음 판정에서"}</div></div>
     <div><div class="k">검토 완료</div><div class="v">${c.reviewed}/${c.total}</div><div class="n">담당자가 근거를 보고 체크</div></div>
   </div>
   <div class="verdict">
-    <div class="card pad"><div class="h3">입찰 전에 먼저 볼 것 <span class="muted small">${top.length}건</span></div>
+    <div class="card pad"><div class="h3">입찰 전에 먼저 볼 것 ${top.length ? `<span class="muted small">높음·모순 ${top.length}건</span>` : ""}</div>
       ${p.claude && p.claude.overall ? `<p style="margin-bottom:10px">${esc(p.claude.overall)}</p>` : ""}
-      ${top.length ? `<ul class="toplist">${top.map(i => `<li>${i.undetermined ? `<span class="flag f-open">모순</span>` : `<span class="flag r-high">높음</span>`}<span><b>${esc(i.label)}</b> ${esc(i.undetermined ? i.conflict.values.map(v => `${typeLabel(v.type)} ${v.value}`).join(" vs ") : i.risk_reason)}</span></li>`).join("")}</ul>` : '<p class="muted">리스크 높음이나 모순이 없습니다.</p>'}
+      ${top.length ? `<ul class="toplist">${top.map(i => `<li>${i.undetermined ? `<span class="flag f-open">모순</span>` : `<span class="flag r-high">높음</span>`}<span><b>${esc(i.label)}</b> ${esc(i.undetermined ? i.conflict.values.map(v => `${typeLabel(v.type)} ${v.value}`).join(" vs ") : i.risk_reason)}</span></li>`).join("")}</ul>` : `<p class="muted">자동 판정상 높음·모순이 없습니다${legal.length ? "(법정 기준 항목은 판정에서 뺌)" : ""}.</p>`}
+      ${legal.length ? `<p class="small" style="margin-top:8px"><span class="flag r-none">정보</span> <b>법정 기준 항목(판정 안 함)</b>: ${esc(legal.map(i => `${i.label} ${i.value}`).join(", "))}. 금액은 오른쪽 표, 법정 기준과 같은지는 계약법무가 확인합니다.</p>` : ""}
+      ${unk.length ? `<p class="small" style="margin-top:6px"><span class="flag r-unknown">확인 필요</span> <b>${unk.length}건</b>: ${esc(unk.map(i => i.label).join(", "))}. ${unkQ ? `이 중 ${unkQ}건은 질의 초안이 있고, ` : ""}나머지는 담당자가 판단합니다.</p>` : ""}
       <div class="btns" style="margin-top:12px"><button class="btn sm" data-go="issues">02 모순·리스크</button><button class="btn sm" data-go="drafts">03 질의·이탈 초안 ${c.q + c.d}건</button>
       ${st.sample ? (claudeBusy ? `<span class="small muted"><span class="spin"></span> ${esc(st.busy.msg)}</span><button class="btn sm" id="stop">중지</button>` : `<button class="btn sm primary" id="deep" ${st.busy ? "disabled" : ""}>${p.claude ? "Claude로 다시 분석" : "Claude로 정밀 분석"}</button>`) : ""}</div>
       <div class="h3" style="margin-top:16px">제출 전 결재·통제</div>
       <ul class="ctl">${controlList(p, c)}</ul>
     </div>
     <div class="card pad exp"><div class="h3">금액으로 보기</div>
-      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="numeric" placeholder="예: 500,000,000 또는 5억" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액"></div>
+      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="decimal" placeholder="예: 5억, 500M" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액" aria-describedby="pricehint"><span class="tiny muted" id="pricehint" role="status">${price ? `= ${money(price, cc)}` : ""}</span></div>
       ${ex ? sec("최대 손실 노출", ex.loss) + sec("은행 보증 한도(발급 필요)", ex.bank, ex.bankSum) + sec("현금흐름", ex.cash)
         + (ex.unpriced.length ? `<p class="small" style="margin-top:8px"><b>금액으로 못 바꾼 높음 리스크</b>: ${esc(ex.unpriced.map(i => i.label).join(", "))}. 원가팀이 별도로 산정해야 합니다.</p>` : "")
         + `<p class="tiny muted" style="margin-top:6px">비율 × 계약금액 단순 환산입니다. 모순 항목은 문서별 값의 범위로 보여 줍니다. 예비비·기대 손실(EL·P90)은 계산하지 않습니다. 공정·기상·물량 위험을 넣어 원가팀이 정합니다.</p>`
@@ -1284,9 +1311,10 @@ bind.summary = (p, el) => {
   $$("[data-grp]", el).forEach(b => b.onclick = () => { st.group = b.dataset.grp; renderTab(); });
   $$("[data-rf]", el).forEach(b => b.onclick = () => { st.rf = b.dataset.rf; renderTab(); });
   const pr = $("#price", el);
-  if (pr) { let t; pr.oninput = () => { const raw = pr.value, hasUnit = /[조억만]|[0-9.]\s*(?:m|mn|million|b|bn|billion)\b/i.test(raw), n = parseAmount(raw);
-    if (!hasUnit) { const pos = raw.length - pr.selectionStart; pr.value = n ? n.toLocaleString("en-US") : ""; pr.setSelectionRange(Math.max(0, pr.value.length - pos), Math.max(0, pr.value.length - pos)); }
-    clearTimeout(t); t = setTimeout(() => { store.set("price:" + p.name, n); renderTab(); }, hasUnit ? 900 : 350); }; }
+  if (pr) { let t; const hint = $("#pricehint", el);
+    pr.oninput = () => { const n = parseAmount(pr.value), cc = currencyOf(p);
+      hint.textContent = pr.value.trim() ? (n ? `= ${money(n, cc)}` : "금액으로 읽을 수 없습니다. 예: 5억, 500,000,000, 1.2bn") : "";
+      clearTimeout(t); t = setTimeout(() => { if (n || !pr.value.trim()) { store.set("price:" + p.name, n); renderTab(); } }, 600); }; }
   const cu = $("#curr", el); if (cu) cu.onchange = () => { store.set("cur:" + p.name, cu.value); renderTab(); };
   const on = (id, f) => { const b = $("#" + id, el); if (b) b.onclick = f; };
   on("deep", () => claudeExtract(p)); on("stop", () => st.busy && st.busy.ctl.abort());
@@ -1307,7 +1335,7 @@ function vIssues(p) {
   <div class="stack">
   <div><div class="h3">모순 ${open.length}건 <span class="muted small">값 미정, 질의 필요</span></div>${open.length ? `<div class="grid">${open.map(i => conflictCard(i, true)).join("")}</div>` : `<p class="empty">${p.built.docs.length > 1 ? "문서끼리 값이 다른 항목이 없습니다." : "문서가 1권이라 문서 간 대조를 하지 않았습니다."}</p>`}</div>
   ${add.length ? `<div><div class="h3">추가 공고 반영 ${add.length}건 <span class="muted small">해소됨</span></div><div class="grid">${add.map(i => conflictCard(i, false)).join("")}</div></div>` : ""}
-  <div><div class="h3">빠진 참조 문서 ${miss.length}건</div>${miss.length ? `<div class="grid">${miss.map(r => `<div class="card icard open"><span class="flag f-miss">빠진 참조 문서</span><h3>${esc(r.target)}</h3>${r.refs.map(f => `<div class="small" style="margin-top:4px">${refBtn(p, f.docId, f.page, "-", f.text)} <span class="muted">${esc(f.text)}</span></div>`).join("")}</div>`).join("")}</div>` : '<p class="empty">다른 문서를 가리키는 참조가 모두 묶음 안에 있습니다.</p>'}</div>
+  <div><div class="h3">빠진 참조 문서 ${miss.length}건</div>${miss.length ? `<div class="grid">${miss.map(r => `<div class="card icard open"><span class="flag f-miss">빠진 참조 문서</span><h3>${esc(r.target)}</h3>${r.refs.map(f => `<div class="small" style="margin-top:4px">${refBtn(p, f.docId, f.page, "-", f.text, r.target)} <span class="muted">${esc(f.text)}</span></div>`).join("")}</div>`).join("")}</div>` : '<p class="empty">다른 문서를 가리키는 참조가 모두 묶음 안에 있습니다.</p>'}</div>
   <div><div class="h3">판정 높음·주의 ${risks.length}건 <span class="muted small">높음 ${risks.filter(r => r.risk === "high").length} · 주의 ${risks.filter(r => r.risk === "medium").length}</span></div>
     ${risks.length ? `<div class="grid">${risks.map(i => `<div class="card icard ${i.risk}">${flagsOf(i)}<h3>${esc(i.label)} <span class="mono small">${esc(i.undetermined ? "값 미정" : i.found ? (i.value.length > 40 ? "" : i.value) : "")}</span></h3><p class="small">${esc(i.risk_reason)}</p>${i.undetermined ? `<div class="small" style="margin-top:6px">${i.conflict.values.map(v => refBtn(p, v.docId, v.page, i.key, (i.candidates.find(x => x.docId === v.docId) || {}).evidence)).join(" ")}</div>` : i.found ? `<div class="small" style="margin-top:6px">${refBtn(p, i.docId, i.pages[0], i.key, i.evidence)}</div>` : ""}</div>`).join("")}</div>` : '<p class="empty">리스크로 판정된 항목이 없습니다.</p>'}</div>
   </div>`;
@@ -1317,19 +1345,19 @@ function vIssues(p) {
 function vDrafts(p) {
   const d = drafts(p), polishing = st.busy && st.busy.kind === "polish", pol = p.policy || {}, qd = deadline(p, "clarification_deadline");
   const card = (x, kind) => `<div class="card draft" data-card="${x.id}"><div class="hd"><span class="${kind === "Q" ? "k-q" : "k-d"}">${x.id}</span><b>${esc(x.label)}</b></div>
-    <div class="tiny muted" style="margin:-2px 0 6px">${kind === "Q" ? "질의" : "이탈"} · ${esc(x.basis)} · 담당 ${esc(x.owner)}</div>
-    <p class="small">${esc(x.ko)}</p>${x.why ? `<p class="tiny muted" style="margin-top:2px">${esc(x.why)}</p>` : ""}<div class="en" ${pol.korean ? "" : 'lang="en"'}>${esc(x.en)}</div>
-    <div class="btns"><span class="tiny muted">근거</span>${(x.refs || []).length ? x.refs.map(r => refBtn(p, r.docId, r.page, r.line ? "-" : x.item, r.hl)).join(" ") : `<span class="tiny muted">${esc(x.where)}</span>`}<span class="grow"></span><button class="btn sm" data-copy="${kind}:${x.id}">${pol.korean ? "문안 복사" : "영문 복사"}</button></div></div>`;
+    <div class="tiny muted" style="margin:-2px 0 6px">${kind === "Q" ? "질의" : "이탈"} · ${esc(x.basis.replace("리스크 높음", "높음"))} · 담당 ${esc(x.owner)}</div>
+    <p class="small">${esc(x.ko)}</p>${x.why ? `<p class="tiny muted" style="margin-top:2px">${esc(x.why)}</p>` : ""}${x.next ? `<p class="tiny" style="margin-top:4px">순서: 이 질의의 회신이 불리하면 <button class="docref" data-goq="${x.next}">${x.next}</button> 이탈을 넣습니다.</p>` : ""}${x.after ? `<p class="tiny" style="margin-top:4px">순서: <button class="docref" data-goq="${x.after}">${x.after}</button> 질의 회신이 불리할 때 넣는 이탈입니다.</p>` : ""}<div class="en" ${pol.korean ? "" : 'lang="en"'}>${esc(x.en)}</div>
+    <div class="btns"><span class="tiny muted">근거</span>${(x.refs || []).length ? x.refs.map(r => refBtn(p, r.docId, r.page, r.line ? "-" : x.item, r.hl, r.line ? x.label.replace("빠진 참조 문서: ", "") : "")).join(" ") : `<span class="tiny muted">${esc(x.where)}</span>`}<span class="grow"></span><button class="btn sm" data-copy="${kind}:${x.id}">${pol.korean ? "문안 복사" : "영문 복사"}</button></div></div>`;
   return `<div class="sec-h"><h2>질의·이탈 초안</h2><span class="muted small">질의 ${d.Q.length} · 이탈 ${d.D.length}</span></div>
   <p class="lede"><b>질의</b>는 질의 마감 전에 모순·누락을 발주처에 묻는 문서이고, <b>이탈</b>은 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청입니다. 모두 초안이며 계약법무 검토 뒤 제출하세요.${qd.state === "ok" ? ` 질의 마감은 <span class="mono">${esc(qd.item.value)}</span>(${dtxt(qd)})입니다.` : ""}</p>
   ${pol.note ? `<div class="banner" style="margin-bottom:12px">${esc(pol.note)}${pol.evidence ? ` <span class="muted">근거: "${esc(pol.evidence)}"</span>` : ""}</div>` : ""}
   <div class="btns" style="margin-bottom:8px"><button class="btn sm" id="copyall">${pol.korean ? "전체 문안 복사" : "전체 영문 복사"}</button>${st.downloads ? `<button class="btn sm" id="csvq">CSV 저장</button>` : ""}
     ${st.sample ? (polishing ? `<span class="small muted"><span class="spin"></span> Claude가 문장을 다듬는 중</span><button class="btn sm" id="stop2">중지</button>` : `<button class="btn sm primary" id="polish" ${st.busy || !(d.Q.length + d.D.length) ? "disabled" : ""}>Claude로 문장 다듬기</button>`) : ""}
     ${p.claudeDrafts ? `<button class="btn sm" id="undo">규칙 초안으로 되돌리기</button>` : ""}</div>
-  <p class="tiny muted" style="margin-bottom:10px">질의를 만드는 기준: 문서 간 모순, 빠진 참조 문서, 못 찾은 핵심 항목(${E.MUST.map(k => E.ITEMS.find(i => i.key === k).label).filter((l, i, a) => !(pol.domestic && /유보금|입찰 통화/.test(l))).join("·")}), 조사 자료 신뢰 범위.${pol.domestic ? " 국내 공공계약은 유보금·입찰 통화를 묻지 않고, 법정 기준 항목은 '정보'로 둡니다." : ""} 그 밖의 '확인 필요' 항목은 담당자가 판단합니다.</p>
+  <details class="small" style="margin-bottom:10px"><summary class="muted">질의를 만드는 기준</summary><p class="tiny muted" style="margin-top:4px">문서 간 모순, 빠진 참조 문서, 못 찾은 핵심 항목(${E.MUST.filter(k => !(pol.domestic && (k === "retention" || k === "bid_currency"))).map(k => E.ITEMS.find(i => i.key === k).label).join("·")}), 발주처가 보증하지 않는 조사 자료.${pol.forbidden ? " 이탈이 금지된 입찰은 높음 조건의 완화 요청도 질의로 넣습니다." : ""}${pol.domestic ? " 국내 공공계약은 유보금·입찰 통화를 묻지 않고, 법정 기준 항목은 '정보'로 둡니다." : ""} 그 밖의 '확인 필요' 항목은 담당자가 판단합니다.</p></details>
   ${p.claudeDrafts ? `<p class="small" style="margin-bottom:12px"><span class="k-q">Claude 다듬음</span> 조항·수치는 그대로 두고 문체만 다듬었습니다. 제출 전에 원문과 대조하세요.</p>` : ""}
   <div class="stack"><div><div class="h3">질의 ${d.Q.length}건</div>${d.Q.length ? `<div class="grid">${d.Q.map(x => card(x, "Q")).join("")}</div>` : '<p class="empty">질의할 모순·누락이 없습니다.</p>'}</div>
-  <div><div class="h3">이탈 요청 ${d.D.length}건</div>${d.D.length ? `<div class="grid">${d.D.map(x => card(x, "D")).join("")}</div>` : `<p class="empty">${pol.forbidden || pol.domestic ? "이탈을 쓸 수 없는 입찰이라 조건 완화 요청을 질의로 넣었습니다." : "리스크 높음 항목이 없어 이탈 초안이 없습니다."}</p>`}</div></div>`;
+  <div><div class="h3">이탈 요청 ${d.D.length}건</div>${d.D.length ? `<div class="grid">${d.D.map(x => card(x, "D")).join("")}</div>` : `<p class="empty">${pol.domestic ? "국내 공공계약이라 이탈·조건 완화 요청을 만들지 않았습니다(법정 기준 항목은 '정보')." : pol.forbidden ? (d.Q.some(q => q.basis === "조건 완화 질의") ? "이탈을 쓸 수 없는 입찰이라 조건 완화 요청을 질의로 넣었습니다." : "이탈을 쓸 수 없는 입찰이고, 완화를 요청할 높음 조건도 없습니다.") : "높음 판정 항목이 없어 이탈 초안이 없습니다."}</p>`}</div></div>`;
 }
 bind.drafts = (p, el) => {
   const d = drafts(p);
@@ -1375,7 +1403,7 @@ function vSource(p) {
   <div class="srcbar"><label class="small" for="sdoc">문서</label><select class="sel" id="sdoc">${live.map(d => `<option value="${d.id}" ${d.id === doc.id ? "selected" : ""}>${esc(shortDoc(d))} · ${esc(typeLabel(d.type))} · 칠한 곳 ${cnt[d.id]}</option>`).join("")}</select>
     <button class="btn sm" id="pprev" ${pi <= 0 ? "disabled" : ""}>이전 쪽</button><span class="mono small">${page.number} / ${pages.length}</span><button class="btn sm" id="pnext" ${pi >= pages.length - 1 ? "disabled" : ""}>다음 쪽</button></div>
   <div class="src-grid"><div class="paper"><div class="run"><span>${esc(doc.name)}</span><span>${esc(typeLabel(doc.type))} · ${doc.kind === "pdf" ? "쪽" : "구간"} ${page.number}</span></div><pre id="ptext">${html}</pre></div>
-  <div class="side stack" style="gap:10px"><div class="card pad focuscard">${fit ? `<div class="btns"><b>${esc(fit.label)}</b>${flagsOf(fit)}</div><div class="mono small" style="margin:4px 0">${valOf(fit)}</div><p class="small">${esc(fit.risk_reason || "")}</p>${fit.conflict ? `<p class="small muted" style="margin-top:4px">${esc(fit.conflict.rule)}</p>` : ""}${!onPage ? `<p class="small" style="margin-top:4px">이 쪽에는 이 항목의 근거가 없습니다.</p>` : ""}${fit.found && !fit.undetermined && fit.docId !== doc.id ? `<p class="small" style="margin-top:4px">적용 값 출처: ${refBtn(p, fit.docId, fit.pages[0], fit.key, fit.evidence)}</p>` : ""}` : (st.src.line ? `<span class="small">다른 문서를 가리키는 <b>참조 문장</b>을 칠했습니다. 참조한 문서가 묶음에 없으면 03 탭에 배포 요청 질의가 있습니다.</span>` : `<span class="small muted">이 쪽에서 칠한 곳 ${spans.filter(sp => sp.it).length}개. 칠한 곳이나 아래 목록을 누르세요.</span>`)}</div>
+  <div class="side stack" style="gap:10px"><div class="card pad focuscard">${fit ? `<div class="btns"><b>${esc(fit.label)}</b>${flagsOf(fit)}</div><div class="mono small" style="margin:4px 0">${valOf(fit)}</div><p class="small">${esc(fit.risk_reason || "")}</p>${fit.conflict ? `<p class="small muted" style="margin-top:4px">${esc(fit.conflict.rule)}</p>` : ""}${!onPage ? `<p class="small" style="margin-top:4px">이 쪽에는 이 항목의 근거가 없습니다.</p>` : ""}${fit.found && !fit.undetermined && fit.docId !== doc.id ? `<p class="small" style="margin-top:4px">적용 값 출처: ${refBtn(p, fit.docId, fit.pages[0], fit.key, fit.evidence)}</p>` : ""}` : (st.src.line ? `<span class="small">${st.src.target ? `<b>${esc(st.src.target)}</b> 문서를 가리키는` : "다른 문서를 가리키는"} <b>참조 문장</b>을 칠했습니다.${st.src.target && p.refs.some(r => r.target === st.src.target && !r.present) ? ` 이 문서는 받은 묶음에 없어 03 탭 ${esc((drafts(p).Q.find(q => q.label === "빠진 참조 문서: " + st.src.target) || {}).id || "")} 질의로 배포를 요청합니다.` : ""}</span>` : `<span class="small muted">이 쪽에서 칠한 곳 ${spans.filter(sp => sp.it).length}개. 칠한 곳이나 아래 목록을 누르세요.</span>`)}</div>
     <div class="card mlist">${spans.filter(sp => sp.it).map(sp => `<button class="mrow ${st.src.focus === sp.it.key ? "on" : ""}" data-k="${sp.it.key}"><span>${esc(sp.it.label)}</span><span class="flag r-${sp.it.risk}">${RISK[sp.it.risk]}</span><span class="vv">${esc(text.slice(sp.s, sp.e).slice(0, 70))}</span></button>`).join("") || '<div class="pad small muted">이 쪽에는 추출한 값이 없습니다.</div>'}</div></div></div>`;
 }
 bind.source = (p, el) => {
@@ -1386,13 +1414,14 @@ bind.source = (p, el) => {
   $("#pnext", el).onclick = () => { st.src.page = doc.pages[Math.min(doc.pages.length - 1, pi + 1)].number; st.src.focus = null; st.src.line = null; renderTab(); };
   $$("mark.hl[data-k],.mrow", el).forEach(m => { const f = () => { st.src.focus = m.dataset.k; st.src.line = null; renderTab(); }; m.onclick = f; m.onkeydown = e => { if (e.key === "Enter") f(); }; });
 };
-function openSource(docId, page, key, hl) {
+function openSource(docId, page, key, hl, target) {
   const p = cur(); let k = key && key !== "-" ? key : null;
   st.src.line = key === "-" ? hl : null;
   if (!k && hl && key !== "-") { const it = items(p).find(i => i.candidates.some(c => c.docId === docId && c.page === page && c.evidence.startsWith(hl.slice(0, 30)))); k = it ? it.key : null; }
-  st.src = { doc: docId, page, focus: k, line: key === "-" ? hl : null }; go("source", false);
-  const fm = $("#p-source mark.focus") || $("#p-source mark.refline");
-  if (fm) { const top = fm.getBoundingClientRect().top + window.scrollY - (($(".tabbar") || {}).offsetHeight || 0) - 120; window.scrollTo({ top: Math.max(0, top) }); }
+  st.src = { doc: docId, page, focus: k, line: key === "-" ? hl : null, target: target || "" }; go("source", false);
+  const bar = ($(".tabbar") || {}).offsetHeight || 0, narrow = window.innerWidth <= 1000;
+  const fm = narrow ? $("#p-source .side") : ($("#p-source mark.focus") || $("#p-source mark.refline"));
+  if (fm) { const top = fm.getBoundingClientRect().top + window.scrollY - bar - (narrow ? 8 : 120); window.scrollTo({ top: Math.max(0, top) }); }
   else window.scrollTo({ top: 0 });
 }
 
@@ -1655,6 +1684,7 @@ async function saveCsv(p, which) {
 }
 const copyRows = rows => copyText(rows.map(r => r.map(v => String(v ?? "").replace(/[\t\n]+/g, " ")).join("\t")).join("\n"), "표를 복사했습니다. 엑셀에 붙여 넣으세요.");
 async function copyText(t, ok) { try { await navigator.clipboard.writeText(t); toast(ok); } catch { toast("복사가 막혀 있습니다. 내용을 직접 선택해 복사해 주세요."); } }
+function clearToast() { const t = $("#toast"); if (t) t.hidden = true; }
 let tt; function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3600); }
 
 $("#file").onchange = e => { if (e.target.files.length) addFiles(e.target.files, st.pickInto); e.target.value = ""; };

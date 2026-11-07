@@ -33,6 +33,8 @@
     I("governing_law", "준거법·분쟁해결", "계약 리스크", "governing law dispute resolution arbitration court ICC jurisdiction 준거법 분쟁 중재 관할법원", "governing law|dispute|arbitrat|court|jurisdiction|준거법|분쟁|중재|관할", "text", "준거법, 중재기관/관할 법원"),
     I("insurance", "보험", "계약 리스크", "insurance contractor all risks CAR third party liability 보험 공사보험 배상책임", "insurance|all risks|보험", "text", "계약자 부보 의무 보험 종류와 금액"),
     I("local_content", "현지화 요건", "계약 리스크", "local content local subcontractors nationals localization in-country value 현지화 현지 업체 현지인 고용", "local content|in-country|national|locali|현지", "percent", "현지 조달·고용 의무 비율"),
+    I("prequalification", "입찰 참가 자격(PQ)", "입찰 절차", "qualification eligibility experience completed similar projects turnover financial capacity prequalification 입찰참가자격 자격요건 시공실적 실적 매출", "qualif|eligib|experience|turnover|completed at least|자격|실적", "text", "실적·재무 요건(못 맞추면 입찰 무효)"),
+    I("price_schedule", "가격표·물량 형식", "입찰 절차", "price schedules schedule of prices bill of quantities BOQ breakdown provisional sums re-measurement 가격 명세 산출내역서 물량내역 내역서", "price schedule|schedule of prices|bill of quantities|boq|provisional sum|re-?measur|산출내역|물량내역|내역서", "text", "총액 분해 방식, 물량 변동·잠정금액(PS) 처리"),
     I("site_data_reliance", "현장 자료 신뢰 범위", "계약 리스크", "site data geotechnical information accuracy warrant reliance for information only verify 현장 자료 지반 조사 참고용 정확성 보증", "for information only|warrant|relian|rely|verify the site data|참고용|정확성|책임지지", "text", "발주처가 준 조사 자료를 계약자가 믿고 쓸 수 있는지(RUI)"),
     I("interfaces", "인터페이스·타 계약자 범위", "계약 리스크", "interface by others other contractors coordinate tie-in boundary 인터페이스 타 계약자 경계 연계", "by others|interface|tie-in|other contractor|인터페이스|타 계약자|경계", "text", "타 계약자·발주처가 맡는 범위와 경계 조건"),
   ];
@@ -64,6 +66,8 @@
     governing_law: ["상업 조건", "계약법무", "Governing law and disputes", "분쟁 비용·집행 가능성"],
     insurance: ["상업 조건", "재무", "Insurance", "보험료 원가, 부보 범위"],
     local_content: ["기술 조건", "원가", "Local content", "현지 조달 단가·하도급 계획"],
+    prequalification: ["입찰 절차", "영업", "Qualification of Bidders", "실적·매출 요건 충족 여부 확인, 컨소시엄 구성 판단"],
+    price_schedule: ["입찰 절차", "원가", "Price schedules", "견적서 형식, 물량 위험과 잠정금액 처리"],
     site_data_reliance: ["기술 조건", "설계", "Reliance on site data", "조사 자료 오류의 비용 주인, 추가 조사 예산"],
     interfaces: ["기술 조건", "시공", "Interfaces with others", "타 계약자 지연 시 대기·범위 다툼"],
   };
@@ -310,7 +314,7 @@
       case "advance_payment": {
         if (/no advance payment|advance payment (?:shall|will) not be (?:made|paid|provided)|not be entitled to (?:an |any )?advance|선급금(?:은|을)? 지급하지|선급금 없음/.test(low)) return R("high", "선급금이 없어 초기 자금 부담이 큽니다.");
         if (!value) return R("medium", "선급금 조항을 찾지 못했습니다. 초기 현금흐름을 확인해야 합니다.");
-        return R("low", `선급금 ${value}이 지급됩니다.`);
+        return R("low", `선급금 ${josa(value, "을", "를")} 받습니다.`);
       }
       case "retention": {
         if (!p.length) return R("unknown", "유보금 비율을 확인하지 못했습니다.");
@@ -357,6 +361,12 @@
         if (!ev) return R("unknown");
         if (/arbitrat|icc|siac|lcia|uncitral|중재/.test(low)) return R("low", "국제중재 조항이 있습니다.");
         if (/court|법원/.test(low)) return R("medium", "중재 없이 현지 법원 관할입니다.");
+        return R("none");
+      }
+      case "price_schedule": {
+        if (!ev) return R("none");
+        if (/provisional sum|re-?measur|quantities (?:are|shall be) (?:approximate|estimated)|잠정|정산/.test(low)) return R("low", "물량 정산·잠정금액 조항이 있습니다. 해당 항목은 실제 물량으로 정산됩니다.");
+        if (/lump sum|총액/.test(low)) return R("medium", "총액 분해표입니다. 물량 증가 위험을 계약자가 집니다(물량 산출 검증 필요).");
         return R("none");
       }
       case "site_data_reliance": {
@@ -525,6 +535,10 @@
     const c = { docId: d.id, docName: d.name, type: d.type, rank: rankOf(item, d.type), addNo: d.addNo, page: b.chunk.page, section: sf.sec, sub: sf.sub,
       value, raw: b.raw, evidence: b.s.slice(0, 600), ctx: b.ctx, sc: b.sc, norm: norm(item, value, b.s), amount: !!(b.vm && b.vm.amount) };
     c.clause = clauseOf(c);
+    if (d.type === "ADD") {
+      const item = (c.sub || (c.section.match(/^(\d+)\./) || [])[1] || ""), tgt = (c.evidence + " " + c.ctx).match(/\b(ITB|BDS|Contract Data|CD|PCC|GCC|Particular Conditions|General Conditions|ER|Employer's Requirements|TS)\s+(?:Sub-)?Clause\s+([\d.]+\d)/i);
+      c.clause = `Addendum No. ${d.addNo}${item ? `, Item ${item}` : ""}${tgt ? ` (amending ${tgt[1]} Clause ${tgt[2]})` : ""}`;
+    }
     return c;
   }
   // 입찰 절차 항목은 입찰지침이 계약 문서보다 앞선다(추가 공고는 늘 맨 앞)
@@ -639,10 +653,11 @@
   // 받침에 맞춘 조사: josa("유보금","이","가") → "유보금이"
   function josa(w, a, b) { const t = String(w).trim(), c = t.charCodeAt(t.length - 1);
     if (c >= 0xac00 && c <= 0xd7a3) return t + (((c - 0xac00) % 28) ? a : b);
-    return t + (/[0-9LMNR]$/i.test(t) ? a : b); }
+    if (/%$/.test(t)) return t + b;
+    return t + (/[013678LMNR]$/i.test(t) ? a : b); }
   const enVal = v => String(v).replace(/%\/일/, "% of the Contract Price per day").replace(/%\/주/, "% of the Contract Price per week");
-  const cite = v => `${TYPE[v.type].en}${v.clause ? ", " + v.clause : ""}`;
-  const citeKo = v => `${TYPE[v.type].label}${v.clause ? " " + v.clause : ""}`;
+  const cite = v => v.type === "ADD" ? (v.clause || "Addendum") : `${TYPE[v.type].en}${v.clause ? ", " + v.clause : ""}`;
+  const citeKo = v => v.type === "ADD" ? (v.clause || "추가 공고") : `${TYPE[v.type].label}${v.clause ? " " + v.clause : ""}`;
   function drafts(items, refs, policy) {
     policy = policy || {};
     const by = Object.fromEntries(items.map(i => [i.key, i]));
@@ -711,6 +726,7 @@
     }
     Q.forEach((x, i) => x.id = "Q-" + pad(i + 1));
     D.forEach((x, i) => x.id = "D-" + pad(i + 1));
+    for (const d of D) { const q = Q.find(x => x.item && x.item === d.item); if (q) { q.next = d.id; d.after = q.id; } } // 질의 회신이 불리하면 이탈
     return { Q, D, policy };
   }
 

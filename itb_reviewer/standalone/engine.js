@@ -767,14 +767,18 @@
     const pref = pkg.docs.filter(d => d.type === "ER" || d.type === "TS");
     const fallback = !pref.length;
     const docs = fallback ? pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS") : pref;
-    // 계약 문서로 넘어갈 때는 요약표가 다루는 상업 조항과 발주처가 주어인 문장을 뺀다
-    const commercial = new RegExp(ITEMS.filter(i => ["상업 조건", "입찰 절차", "일정"].includes(i.group)).map(i => `(?:${i.anchors})`).join("|"), "i");
+    // 계약 문서로 넘어갈 때는 요약표가 다루는 상업 조항(앞 문장 문맥 포함), 우선순위 조항, 발주처가 주어인 문장을 뺀다
+    const commercial = new RegExp(ITEMS.filter(i => ["상업 조건", "입찰 절차", "일정"].includes(i.group)).map(i => `(?:${i.anchors})`).join("|") + "|priority|precedence|ambiguit|discrepanc|우선순위", "i");
     const list = [], seen = new Set(); let total = 0;
-    for (const d of docs) for (const p of d.pages) for (const s of sentences(p.text)) {
-      if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) continue;
-      if (fallback && (commercial.test(s) || /^(?:\S+\s){0,3}(?:the\s+)?employer\s+(?:shall|must|will)\b|발주(?:처|기관)(?:은|는|이)/i.test(s.replace(/^[\d.]+\s+/, "")))) continue;
-      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k); total++;
-      if (list.length < max) list.push({ key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
+    for (const d of docs) for (const p of d.pages) {
+      const ss = sentences(p.text); let clause = "";
+      ss.forEach((s, i) => {
+        const m = s.match(/^(\d{1,2}(?:\.\d+)+)\s/) || s.match(/^(?:Sub-)?Clause\s+([\d.]+\d)/i); if (m) clause = m[1];
+        if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) return;
+        if (fallback && (commercial.test(s) || (i > 0 && commercial.test(ss[i - 1]) && !/^(\d{1,2}(?:\.\d+)+)\s/.test(s)) || /^(?:\S+\s){0,3}(?:the\s+)?employer\s+(?:shall|must|will)\b|발주(?:처|기관)(?:은|는|이)/i.test(s.replace(/^[\d.]+\s+/, "")))) return;
+        const k = s.slice(0, 60); if (seen.has(k)) return; seen.add(k); total++;
+        if (list.length < max) list.push({ key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, clause, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
+      });
     }
     return { list, total, fallback, max };
   }
@@ -784,6 +788,20 @@
     return [...new Set((String(text).match(re) || []).map(x => x.trim()))].slice(0, 6);
   }
 
-  const api = { ITEMS, MUST, josa, requirements, pqFacts, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
+  // PQ 요건을 이름 붙은 한국어 요약으로(못 읽으면 빈 문자열)
+  const WORDN = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+  const num = w => WORDN[String(w).toLowerCase()] || w;
+  function pqSummary(text) {
+    const t = String(text), out = [];
+    const exp = t.match(/(?:at least|not less than|minimum of)\s+(\w+)\s+([\w\s-]{2,50}?)(plants?|projects?|contracts?)/i);
+    const cap = t.match(/not less than\s+([\d,.]+\s*(?:MW|kV|km|m3|t))/i) || t.match(/([\d,.]+\s*MW)/i);
+    const within = t.match(/within the last\s+(\w+)\s+years?/i);
+    if (exp) out.push(`실적 ${num(exp[1])}건(${[exp[2].trim() + " " + exp[3], cap ? `${cap[1]} 이상` : "", within ? `최근 ${num(within[1])}년` : ""].filter(Boolean).join(", ")})`);
+    const to = t.match(/turnover[^.]*?((?:USD|EUR|KRW|US\$)\s?[\d,.]+\s*(?:million|billion)?)/i), toy = t.match(/turnover[^.]*?over the last\s+(\w+)\s+years?/i);
+    if (to) out.push(`${/average/i.test(t) ? "연평균 " : ""}매출 ${to[1]} 이상${toy ? `(최근 ${num(toy[1])}년)` : ""}`);
+    return out.join(" · ");
+  }
+
+  const api = { ITEMS, MUST, josa, requirements, pqFacts, pqSummary, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ITBEngine = api;
 })(typeof window !== "undefined" ? window : globalThis);

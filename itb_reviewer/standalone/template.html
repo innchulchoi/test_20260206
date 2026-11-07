@@ -140,7 +140,7 @@ td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top
 td.flags{min-width:172px} .exp table.stale{opacity:.45} #pricehint.err,.elmsg.err{color:var(--conflict);font-weight:600}
 .elx .elrow{display:grid;grid-template-columns:minmax(140px,1.4fr) 110px 170px minmax(120px,1fr);gap:4px 12px;align-items:end;padding:8px 0;border-bottom:1px solid var(--line-2)}
 .elx .elname{align-self:center;font-weight:600} .elx .elf{display:flex;flex-direction:column;gap:2px} .elx .elf .inp{width:100%} .elx .elv{text-align:right;align-self:center} .elx .elmsg{grid-column:1/-1} .elx .elmsg:empty{display:none}
-.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)}
+.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)} .elx .elv.stale b{opacity:.5}
 #reqbox table{width:100%} #reqbox td:last-child{width:120px} #reqbox td:first-child{min-width:0;overflow-wrap:anywhere} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
@@ -235,6 +235,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   .pkgbar .pkgbtn{max-width:none;white-space:normal} details>summary{min-height:34px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px} .exp td.num br{display:none}
   .elx .elrow{grid-template-columns:1fr 1fr} .elx .elname{grid-column:1/-1} .elx .elv{grid-column:1/-1;text-align:left}
   #reqbox .tscroll{overflow-x:visible} #reqbox td:last-child{width:96px}
+  .elx .elsum .mono,.elx .elv .mono{white-space:nowrap}
   select.sel{min-height:34px}
   table.t tr.grp,table.t tr.det{display:block} table.t tr.grp td,table.t tr.det td{display:block}
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}

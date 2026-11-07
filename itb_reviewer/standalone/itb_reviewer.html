@@ -140,7 +140,7 @@ td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top
 td.flags{min-width:172px} .exp table.stale{opacity:.45} #pricehint.err,.elmsg.err{color:var(--conflict);font-weight:600}
 .elx .elrow{display:grid;grid-template-columns:minmax(140px,1.4fr) 110px 170px minmax(120px,1fr);gap:4px 12px;align-items:end;padding:8px 0;border-bottom:1px solid var(--line-2)}
 .elx .elname{align-self:center;font-weight:600} .elx .elf{display:flex;flex-direction:column;gap:2px} .elx .elf .inp{width:100%} .elx .elv{text-align:right;align-self:center} .elx .elmsg{grid-column:1/-1} .elx .elmsg:empty{display:none}
-.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)}
+.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)} .elx .elv.stale b{opacity:.5}
 #reqbox table{width:100%} #reqbox td:last-child{width:120px} #reqbox td:first-child{min-width:0;overflow-wrap:anywhere} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
@@ -235,6 +235,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   .pkgbar .pkgbtn{max-width:none;white-space:normal} details>summary{min-height:34px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px} .exp td.num br{display:none}
   .elx .elrow{grid-template-columns:1fr 1fr} .elx .elname{grid-column:1/-1} .elx .elv{grid-column:1/-1;text-align:left}
   #reqbox .tscroll{overflow-x:visible} #reqbox td:last-child{width:96px}
+  .elx .elsum .mono,.elx .elv .mono{white-space:nowrap}
   select.sel{min-height:34px}
   table.t tr.grp,table.t tr.det{display:block} table.t tr.grp td,table.t tr.det td{display:block}
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}
@@ -1037,14 +1038,18 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
     const pref = pkg.docs.filter(d => d.type === "ER" || d.type === "TS");
     const fallback = !pref.length;
     const docs = fallback ? pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS") : pref;
-    // 계약 문서로 넘어갈 때는 요약표가 다루는 상업 조항과 발주처가 주어인 문장을 뺀다
-    const commercial = new RegExp(ITEMS.filter(i => ["상업 조건", "입찰 절차", "일정"].includes(i.group)).map(i => `(?:${i.anchors})`).join("|"), "i");
+    // 계약 문서로 넘어갈 때는 요약표가 다루는 상업 조항(앞 문장 문맥 포함), 우선순위 조항, 발주처가 주어인 문장을 뺀다
+    const commercial = new RegExp(ITEMS.filter(i => ["상업 조건", "입찰 절차", "일정"].includes(i.group)).map(i => `(?:${i.anchors})`).join("|") + "|priority|precedence|ambiguit|discrepanc|우선순위", "i");
     const list = [], seen = new Set(); let total = 0;
-    for (const d of docs) for (const p of d.pages) for (const s of sentences(p.text)) {
-      if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) continue;
-      if (fallback && (commercial.test(s) || /^(?:\S+\s){0,3}(?:the\s+)?employer\s+(?:shall|must|will)\b|발주(?:처|기관)(?:은|는|이)/i.test(s.replace(/^[\d.]+\s+/, "")))) continue;
-      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k); total++;
-      if (list.length < max) list.push({ key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
+    for (const d of docs) for (const p of d.pages) {
+      const ss = sentences(p.text); let clause = "";
+      ss.forEach((s, i) => {
+        const m = s.match(/^(\d{1,2}(?:\.\d+)+)\s/) || s.match(/^(?:Sub-)?Clause\s+([\d.]+\d)/i); if (m) clause = m[1];
+        if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) return;
+        if (fallback && (commercial.test(s) || (i > 0 && commercial.test(ss[i - 1]) && !/^(\d{1,2}(?:\.\d+)+)\s/.test(s)) || /^(?:\S+\s){0,3}(?:the\s+)?employer\s+(?:shall|must|will)\b|발주(?:처|기관)(?:은|는|이)/i.test(s.replace(/^[\d.]+\s+/, "")))) return;
+        const k = s.slice(0, 60); if (seen.has(k)) return; seen.add(k); total++;
+        if (list.length < max) list.push({ key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, clause, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
+      });
     }
     return { list, total, fallback, max };
   }
@@ -1054,7 +1059,21 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
     return [...new Set((String(text).match(re) || []).map(x => x.trim()))].slice(0, 6);
   }
 
-  const api = { ITEMS, MUST, josa, requirements, pqFacts, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
+  // PQ 요건을 이름 붙은 한국어 요약으로(못 읽으면 빈 문자열)
+  const WORDN = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+  const num = w => WORDN[String(w).toLowerCase()] || w;
+  function pqSummary(text) {
+    const t = String(text), out = [];
+    const exp = t.match(/(?:at least|not less than|minimum of)\s+(\w+)\s+([\w\s-]{2,50}?)(plants?|projects?|contracts?)/i);
+    const cap = t.match(/not less than\s+([\d,.]+\s*(?:MW|kV|km|m3|t))/i) || t.match(/([\d,.]+\s*MW)/i);
+    const within = t.match(/within the last\s+(\w+)\s+years?/i);
+    if (exp) out.push(`실적 ${num(exp[1])}건(${[exp[2].trim() + " " + exp[3], cap ? `${cap[1]} 이상` : "", within ? `최근 ${num(within[1])}년` : ""].filter(Boolean).join(", ")})`);
+    const to = t.match(/turnover[^.]*?((?:USD|EUR|KRW|US\$)\s?[\d,.]+\s*(?:million|billion)?)/i), toy = t.match(/turnover[^.]*?over the last\s+(\w+)\s+years?/i);
+    if (to) out.push(`${/average/i.test(t) ? "연평균 " : ""}매출 ${to[1]} 이상${toy ? `(최근 ${num(toy[1])}년)` : ""}`);
+    return out.join(" · ");
+  }
+
+  const api = { ITEMS, MUST, josa, requirements, pqFacts, pqSummary, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ITBEngine = api;
 })(typeof window !== "undefined" ? window : globalThis);
 </script>
@@ -1270,7 +1289,7 @@ function renderTab(keep = true) {
   const wait = busy.length ? `<div class="card pad small" style="margin-bottom:12px"><span class="spin"></span> 문서 ${busy.length}권을 읽는 중입니다. ${esc(busy[0].name)} ${esc(busy[0].msg || "")}</div>` : "";
   const fn = { summary: vSummary, issues: vIssues, drafts: vDrafts, source: vSource, teams: vTeams, ask: vAsk, docs: vDocs, guide: vGuide }[st.tab];
   if (!p.items.length && !["docs", "guide"].includes(st.tab)) { el.innerHTML = wait + `<div class="card pad">아직 분석한 문서가 없습니다. <button class="btn sm" data-go="docs">07 문서 묶음으로</button></div>`; bindCommon(el); return; }
-  el.innerHTML = wait + fn(p);
+  st.rendering = true; const html = wait + fn(p); el.innerHTML = html; st.rendering = false; // 교체 중 사라지는 입력칸이 change를 내도 무시
   bindCommon(el); (bind[st.tab] || (() => {}))(p, el);
   if (keep) { window.scrollTo({ top: y }); if (fs) { const f = $(fs, el); if (f) { f.focus({ preventScroll: true }); if (typing && f.tagName === "INPUT") { f.value = typing.v; try { f.setSelectionRange(typing.a, typing.b); } catch {} f.dispatchEvent(new Event("validate")); } } } }
 }
@@ -1322,7 +1341,7 @@ function vSummary(p) {
     <div><div class="k">질의 마감 · 입찰 마감</div><div class="v">${dtxt(deadline(p, "clarification_deadline"))}</div><div class="n">입찰 마감 ${dtxt(deadline(p, "bid_due_date"))}</div></div>
     <div><div class="k">높음</div><div class="v ${c.high ? "high" : ""}">${c.high}</div><div class="n">주의 ${c.medium} · 확인 필요 ${c.unknown}</div></div>
     <div><div class="k">모순(값 미정)</div><div class="v ${c.open ? "conflict" : ""}">${c.open}</div><div class="n">추가 공고로 해소 ${c.added}</div></div>
-    <div><div class="k">질의 초안</div><div class="v">${c.q}</div><div class="n">빠진 참조 문서 ${c.missRefs}</div></div>
+    <div><div class="k">질의 초안</div><div class="v">${c.q}</div><div class="n">빠진 참조 문서 ${c.missRefs}${c.tech ? ` · 기술 후보 ${c.tech}` : ""}</div></div>
     <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.domestic ? "국내 공공계약: 이탈 없음" : p.policy.forbidden ? `이탈 불가 → 완화 질의 ${drafts(p).Q.filter(q => q.basis === "조건 완화 질의").length}건` : "높음 판정에서"}</div></div>
     <div><div class="k">검토 완료</div><div class="v">${c.reviewed}/${c.total}</div><div class="n">담당자가 근거를 보고 체크</div></div>
   </div>
@@ -1332,7 +1351,7 @@ function vSummary(p) {
       ${top.length ? `<ul class="toplist">${top.map(i => `<li>${i.undetermined ? `<span class="flag f-open">모순</span>` : `<span class="flag r-high">높음</span>`}<span><b>${esc(i.label)}</b> ${esc(i.undetermined ? i.conflict.values.map(v => `${typeLabel(v.type)} ${v.value}`).join(" vs ") : i.risk_reason)}</span></li>`).join("")}</ul>` : `<p class="muted">자동 판정상 높음·모순이 없습니다${legal.length ? "(법정 기준 항목은 판정에서 뺌)" : ""}.</p>`}
       ${legal.length ? `<p class="small" style="margin-top:8px"><span class="flag r-none">정보</span> <b>법정 기준 항목(판정 안 함)</b>: ${esc(legal.map(i => `${i.label} ${i.value}`).join(", "))}. 금액은 오른쪽 표, 법정 기준과 같은지는 계약법무가 확인합니다.</p>` : ""}
       ${unk.length ? `<p class="small" style="margin-top:6px"><span class="flag r-unknown">확인 필요</span> <b>${unk.length}건</b>: ${esc(unk.map(i => i.label).join(", "))}. ${[unkQ ? `${unkQ}건은 질의 초안이 있습니다.` : "", unk.some(i => i.key === "prequalification" && i.found) ? "PQ는 아래 결재·통제 첫 줄에서 다룹니다." : "", unkRest ? `${unkRest}건은 담당자가 판단합니다.` : ""].filter(Boolean).join(" ")}</p>` : ""}
-      <div class="btns" style="margin-top:12px"><button class="btn sm" data-go="issues">02 모순·리스크</button><button class="btn sm" data-go="drafts">03 질의·이탈 초안 ${c.q + c.d}건</button>
+      <div class="btns" style="margin-top:12px"><button class="btn sm" data-go="issues">02 모순·리스크</button><button class="btn sm" data-go="drafts">03 질의·이탈 초안 ${c.q + c.d + c.tech}건</button>
       ${st.sample ? (claudeBusy ? `<span class="small muted"><span class="spin"></span> ${esc(st.busy.msg)}</span><button class="btn sm" id="stop">중지</button>` : `<button class="btn sm primary" id="deep" ${st.busy ? "disabled" : ""}>${p.claude ? "Claude로 다시 분석" : "Claude로 정밀 분석"}</button>`) : ""}</div>
       <div class="h3" style="margin-top:16px">제출 전 결재·통제</div>
       <ul class="ctl">${controlList(p, c)}</ul>
@@ -1363,15 +1382,26 @@ function elRows(p, its, price) {
     if (i.key === "liquidated_damages" && cap != null && a > cap) { a = cap; capped = true; }
     return { i, x, pr, a, el: pr / 100 * a, capped, cap }; });
 }
+// 아직 저장하지 않은(잘못된 값 포함) 입력 원문: 다른 칸이 다시 그려져도 사용자가 친 글자를 지킨다
+const ELT = {};
+function parseEl(f, raw) {
+  raw = String(raw || "").trim(); if (!raw) return { n: "", err: "" };
+  if (/-/.test(raw)) return { err: "음수는 넣을 수 없습니다." };
+  if (f === "p") { const n = /^\d+(?:\.\d+)?\s*%?$/.test(raw) ? parseFloat(raw) : NaN;
+    return !Number.isFinite(n) ? { err: "확률은 숫자로 넣어 주세요(0~100)." } : n > 100 ? { err: "확률은 0~100% 사이로 넣어 주세요." } : { n, err: "" }; }
+  const n = parseAmount(raw); return Number.isFinite(n) ? { n, err: "" } : { err: "금액으로 읽을 수 없습니다(예: 2억, 20M)." };
+}
+const rawOf = (p, k, f) => { const r = (st.elRaw || {})[p.id + ":" + k + "|" + f]; return r ? r.v : undefined; };
+const rawBad = (p, k) => ["p", "a"].some(f => { const r = (st.elRaw || {})[p.id + ":" + k + "|" + f]; return r && r.bad; });
 function elTable(p, its, cc, price) {
   const rows = elRows(p, its, price), cash = its.filter(i => (i.risk === "high" || i.undetermined) && CASH_KEYS.has(i.key));
   const sum = rows.reduce((s, r) => s + r.el, 0), full = rows.reduce((s, r) => s + r.a, 0);
   const body = rows.length ? rows.map(({ i, x, el, capped, cap }) => `<div class="elrow">
       <div class="elname">${esc(i.label)}${i.undetermined ? ' <span class="flag f-open">모순</span>' : ""}</div>
-      <label class="elf"><span class="tiny muted">발생 확률(%)</span><input class="inp eli" data-el="${i.key}|p" inputmode="decimal" value="${x.p ?? ""}" placeholder="0~100" aria-label="${esc(i.label)} 발생 확률(%)"></label>
-      <label class="elf"><span class="tiny muted">발생 시 손실</span><input class="inp eli" data-el="${i.key}|a" inputmode="decimal" value="${x.a ? Number(x.a).toLocaleString("en-US") : ""}" placeholder="예: 2억, 20M" aria-label="${esc(i.label)} 발생 시 손실"></label>
-      <div class="elv"><span class="tiny muted">EL</span> <b class="mono">${el ? money(el, cc) : "-"}</b></div>
-      <div class="elmsg tiny" data-msg="${i.key}" role="status">${capped ? `지체상금 상한(${money(cap, cc)})을 넘어 상한으로 계산했습니다.` : ""}</div></div>`).join("")
+      <label class="elf"><span class="tiny muted">발생 확률(%)</span><input class="inp eli" data-el="${i.key}|p" inputmode="decimal" value="${esc(rawOf(p, i.key, "p") ?? (x.p ?? ""))}" placeholder="0~100" aria-label="${esc(i.label)} 발생 확률(%)"></label>
+      <label class="elf"><span class="tiny muted">발생 시 손실(${cc})</span><input class="inp eli" data-el="${i.key}|a" inputmode="decimal" value="${esc(rawOf(p, i.key, "a") ?? (x.a ? Number(x.a).toLocaleString("en-US") : ""))}" placeholder="${cc === "KRW" ? "예: 2억, 5천만" : "예: 20M, 1.5bn"}" aria-label="${esc(i.label)} 발생 시 손실"></label>
+      <div class="elv ${rawBad(p, i.key) ? "stale" : ""}"><span class="tiny muted">EL</span> <b class="mono">${el ? money(el, cc) : "-"}</b>${rawBad(p, i.key) && el ? '<div class="tiny muted">마지막으로 읽은 값 기준</div>' : ""}</div>
+      <div class="elmsg tiny" data-msg="${i.key}|p" role="status"></div><div class="elmsg tiny" data-msg="${i.key}|a" role="status"></div>${capped ? `<div class="elmsg tiny">지체상금 상한(${money(cap, cc)})을 넘어 상한으로 계산했습니다.</div>` : ""}</div>`).join("")
     : `<p class="small muted">높음·모순 항목이 없어 기대손실 표가 없습니다${p.policy && p.policy.domestic ? "(법정 기준 항목은 판정에서 뺌)" : ""}.</p>`;
   return `<details class="card pad elx" ${st.elOpen !== false ? "open" : ""} id="elbox"><summary class="h3" style="margin:0">기대손실(EL)·예비비 <span class="muted small">담당자 입력${rows.length ? ` · ${rows.length}개 위험` : ""}</span></summary>
     <p class="tiny muted" style="margin:6px 0 4px">EL = 발생 확률 × 발생 시 손실. 확률과 손실액은 원가팀이 넣습니다(도구가 확률을 정하지 않음, 이 브라우저에 저장). P90 같은 분포 기반 예비비는 원가팀이 따로 정합니다.${cash.length ? ` ${esc(cash.map(i => i.label).join("·"))}은 손실이 아니라 자금 묶임이라 뺐습니다(금액 표의 현금흐름 참고).` : ""}</p>
@@ -1388,7 +1418,7 @@ function controlList(p, c) {
   if (d.Q.length) out.push(`질의 ${d.Q.length}건${c.open || c.missRefs ? `(모순 ${c.open}·빠진 참조 문서 ${c.missRefs} 포함)` : ""}을 <b>질의 마감${qdl.iso ? `(${esc(qdl.iso)})` : ""}</b> 전에 제출해야 추가 공고로 고칠 수 있습니다.`);
   if (d.Q.length || d.D.length) out.push(`질의·이탈 문안은 초안입니다. <b>계약법무 검토</b> 뒤 제출하세요.`);
   const pq = its.find(i => i.key === "prequalification");
-  if (pq) out.unshift(pq.found ? `<b>참가 자격(PQ) 충족 여부</b>: 요건 핵심 ${esc(E.pqFacts(pq.evidence).join(" · ") || "원문 참조")} ${refBtn(p, pq.docId, pq.pages[0], pq.key, pq.evidence)} → 영업이 회사 실적과 대조한 뒤 결재합니다(못 맞추면 입찰 무효).` : `<b>참가 자격(PQ)</b> 조항을 찾지 못했습니다. 질의로 확인한 뒤 영업이 충족 여부를 결재에 올립니다.`);
+  if (pq) out.unshift(pq.found ? `<b>참가 자격(PQ) 충족 여부</b>: ${esc(E.pqSummary(pq.evidence) || "요건 핵심 " + (E.pqFacts(pq.evidence).join(" · ") || "원문 참조"))} ${refBtn(p, pq.docId, pq.pages[0], pq.key, pq.evidence)} → 영업이 회사 실적과 대조한 뒤 결재합니다(못 맞추면 입찰 무효).` : `<b>참가 자격(PQ)</b> 조항을 찾지 못했습니다. 질의로 확인한 뒤 영업이 충족 여부를 결재에 올립니다.`);
   const dl = d.D.map(x => x.label), rest = highs.filter(h => !dl.includes(h));
   if (d.D.length) out.push(`높음 ${d.D.length}건(${esc(dl.join("·"))})은 이탈 ${esc(d.D[0].id)}${d.D.length > 1 ? "~" + esc(d.D[d.D.length - 1].id) : ""}로 요청합니다. 이탈을 넣을지, 거절될 때 가격에 얼마를 넣을지는 <b>입찰 심의(경영진) 결재</b> 사항입니다.`);
   if (rest.length) out.push(`높음 ${rest.length}건(${esc(rest.join("·"))})을 그대로 받을지, 가격에 얼마를 넣을지는 <b>경영진 결재</b> 사항입니다.`);
@@ -1417,15 +1447,19 @@ bind.summary = (p, el) => {
     pr.oninput = () => { const { n, ok } = check(); clearTimeout(t); t = setTimeout(() => { if (ok || !pr.value.trim()) { store.set("price:" + p.name, ok ? n : 0); renderTab(); } }, 600); }; }
   const cu = $("#curr", el); if (cu) cu.onchange = () => { store.set("cur:" + p.name, cu.value); renderTab(); };
   const elb = $("#elbox", el); if (elb) elb.ontoggle = () => { st.elOpen = elb.open; };
-  $$(".eli", el).forEach(inp => { let t; const [k, f] = inp.dataset.el.split("|"), msg = $(`[data-msg="${k}"]`, el);
-    const check = () => { const raw = inp.value.trim(); let n = NaN, err = "";
-      if (!raw) n = ""; else if (/-/.test(raw)) err = "음수는 넣을 수 없습니다.";
-      else if (f === "p") { n = /^\d+(?:\.\d+)?\s*%?$/.test(raw) ? parseFloat(raw) : NaN; if (!Number.isFinite(n)) err = "확률은 숫자로 넣어 주세요(0~100)."; else if (n > 100) err = "확률은 0~100% 사이로 넣어 주세요."; }
-      else { n = parseAmount(raw); if (!Number.isFinite(n)) err = "금액으로 읽을 수 없습니다(예: 2억, 20M)."; }
+  st.elRaw = st.elRaw || {};
+  $$(".eli", el).forEach(inp => { const [k, f] = inp.dataset.el.split("|"), msg = $(`[data-msg="${k}|${f}"]`, el), rk = p.id + ":" + k + "|" + f;
+    const check = () => { const { n, err } = parseEl(f, inp.value);
       if (err) inp.setAttribute("aria-invalid", "true"); else inp.removeAttribute("aria-invalid"); if (msg && (err || msg.dataset.err)) { msg.textContent = err; msg.classList.toggle("err", !!err); msg.dataset.err = err ? "1" : ""; }
       return err ? null : n; };
     inp.addEventListener("validate", check);
-    inp.oninput = () => { const n = check(); clearTimeout(t); if (n === null) return; t = setTimeout(() => { const v = store.get("el:" + p.name, {}); v[k] = v[k] || {}; v[k][f] = n; store.set("el:" + p.name, v); renderTab(); }, 600); }; });
+    // 저장은 칸별 타이머 하나로, 실행할 때 그 칸의 최신 입력 원문을 다시 읽는다(다시 그리기 전 타이머가 입력 도중 값을 저장하지 않게)
+    const flush = () => { const r = st.elRaw[rk]; if (!r) return; const { n, err } = parseEl(f, r.v); if (err) return;
+      delete st.elRaw[rk]; const v = store.get("el:" + p.name, {}); v[k] = v[k] || {}; v[k][f] = n; store.set("el:" + p.name, v); renderTab(); };
+    if (st.elRaw[rk]) check(); // 저장 안 된 잘못된 입력은 다시 그린 뒤에도 오류 표시를 유지
+    inp.oninput = () => { const n = check(); st.elRaw[rk] = { v: inp.value, bad: n === null }; clearTimeout(ELT[rk]); if (n !== null) ELT[rk] = setTimeout(flush, 600); };
+    // 칸을 떠나면 바로 저장하되, 다음 칸으로 포커스가 옮겨진 뒤에 다시 그린다
+    inp.onchange = () => { if (st.rendering || !inp.isConnected || !st.elRaw[rk]) return; clearTimeout(ELT[rk]); ELT[rk] = setTimeout(flush, 0); }; });
   const on = (id, f) => { const b = $("#" + id, el); if (b) b.onclick = f; };
   on("deep", () => claudeExtract(p)); on("stop", () => st.busy && st.busy.ctl.abort());
   on("csv", () => saveCsv(p, "summary")); on("copy", () => copyRows(summaryRows(p)));
@@ -1477,12 +1511,25 @@ function techCands(p) {
   const v = store.get("req:" + p.name, {});
   return p.reqs.list.filter(x => v[x.key] === "cond" || v[x.key] === "no").map(x => ({ ...x, st: v[x.key] }));
 }
+function wordCut(s, n) { if (s.length <= n) return s; const c = s.slice(0, n); return c.slice(0, Math.max(c.lastIndexOf(" "), n - 20)).replace(/[,;:]$/, "") + " …"; }
+function techDrafts(p) {
+  const qs = drafts(p).Q;
+  return techCands(p).map((x, n) => {
+    const doc = shortDoc({ name: x.docName }), at = `${doc}${x.clause ? `, Clause ${x.clause}` : ""}, p.${x.page}`, quote = wordCut(x.text.replace(/^\d{1,2}(?:\.\d+)+\s+/, ""), 170);
+    const rel = qs.filter(q => q.basis === "빠진 참조 문서" && x.text.includes(q.label.replace("빠진 참조 문서: ", ""))).map(q => q.id);
+    return { id: "T-" + String(n + 1).padStart(2, "0"), st: x.st, label: `기술 요구사항${x.clause ? " " + x.clause : ""}`, basis: x.st === "no" ? "기술 부적합" : "기술 조건부", owner: "설계",
+      where: `${x.docName} p.${x.page}`, ko: `${x.st === "no" ? "부적합" : "조건부"}: ${x.text}`, rel, refs: [{ docId: x.docId, page: x.page, hl: x.text }], text: x.text, docId: x.docId, page: x.page,
+      en: x.st === "no" ? `Technical deviation (${at}): the Bidder cannot comply with the requirement "${quote}" and proposes the following alternative: [TBD by Engineering].`
+        : `Clarification (${at}): regarding the requirement "${quote}", please confirm whether the following is acceptable: [TBD by Engineering].` };
+  });
+}
 function techSection(p) {
-  const tc = techCands(p); if (!tc.length) return "";
-  return `<div><div class="h3">기술 질의·이탈 후보 ${tc.length}건 <span class="muted small">02 탭 적합성 표에서 조건부·부적합으로 고른 요구사항</span></div><div class="grid">${tc.map((x, n) => `<div class="card draft" data-tc="${n}"><div class="hd"><span class="k-q">T-${String(n + 1).padStart(2, "0")}</span><b>${x.st === "no" ? "부적합" : "조건부"}</b></div>
-    <div class="tiny muted" style="margin:-2px 0 6px">기술 · 담당 설계·시공</div><p class="small">${esc(x.text)}</p>
-    <div class="en" lang="en">${esc(x.st === "no" ? `Technical deviation: the Bidder cannot comply with the requirement "${x.text.slice(0, 160)}" (${x.docName.replace(/\.[^.]+$/, "")}, p.${x.page}) and proposes the following alternative: [설계·시공이 대안 작성].` : `Clarification: regarding "${x.text.slice(0, 160)}" (${x.docName.replace(/\.[^.]+$/, "")}, p.${x.page}), please confirm whether the following is acceptable: [설계·시공이 조건 작성].`)}</div>
-    <div class="btns"><span class="tiny muted">근거</span>${refBtn(p, x.docId, x.page, "~", x.text)}</div></div>`).join("")}</div></div>`;
+  const td = techDrafts(p); if (!td.length) return "";
+  return `<div><div class="h3">기술 질의·이탈 후보 ${td.length}건 <span class="muted small">02 탭 적합성 표에서 조건부·부적합으로 고른 요구사항</span></div><div class="grid">${td.map((x, n) => `<div class="card draft" data-card="${x.id}" data-tc="${n}"><div class="hd"><span class="${x.st === "no" ? "k-d" : "k-q"}">${x.id}</span><b>${esc(x.label)}</b></div>
+    <div class="tiny muted" style="margin:-2px 0 6px">기술 후보 · ${x.st === "no" ? "부적합(기술 이탈)" : "조건부(질의)"} · 담당 설계(시공 협의)</div><p class="small">${esc(x.text)}</p>
+    ${x.rel.length ? `<p class="tiny" style="margin-top:4px">관련 질의: ${x.rel.map(id => `<button class="docref" data-goq="${id}">${id}</button>`).join(" ")} (같은 원인이면 질의 회신 뒤 판단)</p>` : ""}
+    <div class="en" lang="en">${esc(x.en)}</div>
+    <div class="btns"><span class="tiny muted">근거</span>${refBtn(p, x.docId, x.page, "~", x.text)}<span class="grow"></span><button class="btn sm" data-copy="T:${x.id}">영문 복사</button></div></div>`).join("")}</div></div>`;
 }
 function reqNote(p) {
   const r = p.reqs && p.reqs.list.find(x => x.docId === st.src.doc && x.page === st.src.page && x.text.startsWith((st.src.line || "").slice(0, 30)));
@@ -1495,7 +1542,8 @@ function vDrafts(p) {
     <div class="tiny muted" style="margin:-2px 0 6px">${kind === "Q" ? "질의" : "이탈"} · ${esc(x.basis.replace("리스크 높음", "높음"))} · 담당 ${esc(x.owner)}</div>
     <p class="small">${esc(x.ko)}</p>${x.why ? `<p class="tiny muted" style="margin-top:2px">${esc(x.why)}</p>` : ""}${x.next ? `<p class="tiny" style="margin-top:4px">순서: 이 질의의 회신이 불리하면 <button class="docref" data-goq="${x.next}">${x.next}</button> 이탈을 넣습니다.</p>` : ""}${x.after ? `<p class="tiny" style="margin-top:4px">순서: <button class="docref" data-goq="${x.after}">${x.after}</button> 질의 회신이 불리할 때 넣는 이탈입니다.</p>` : ""}<div class="en" ${pol.korean ? "" : 'lang="en"'}>${esc(x.en)}</div>
     <div class="btns"><span class="tiny muted">근거</span>${(x.refs || []).length ? x.refs.map(r => refBtn(p, r.docId, r.page, r.line ? "-" : x.item, r.hl, r.line ? x.label.replace("빠진 참조 문서: ", "") : "")).join(" ") : `<span class="tiny muted">${esc(x.where)}</span>`}<span class="grow"></span><button class="btn sm" data-copy="${kind}:${x.id}">${pol.korean ? "문안 복사" : "영문 복사"}</button></div></div>`;
-  return `<div class="sec-h"><h2>질의·이탈 초안</h2><span class="muted small">질의 ${d.Q.length} · 이탈 ${d.D.length}</span></div>
+  const tcN = techCands(p).length;
+  return `<div class="sec-h"><h2>질의·이탈 초안</h2><span class="muted small">질의 ${d.Q.length} · 이탈 ${d.D.length}${tcN ? ` · 기술 후보 ${tcN}` : ""}</span></div>
   <p class="lede"><b>질의</b>는 질의 마감 전에 모순·누락을 발주처에 묻는 문서이고, <b>이탈</b>은 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청입니다. 모두 초안이며 계약법무 검토 뒤 제출하세요.${qd.state === "ok" ? ` 질의 마감은 <span class="mono">${esc(qd.item.value)}</span>(${dtxt(qd)})입니다.` : ""}</p>
   ${pol.note ? `<div class="banner" style="margin-bottom:12px">${esc(pol.note)}${pol.evidence ? ` <span class="muted">근거: "${esc(pol.evidence)}"</span>` : ""}</div>` : ""}
   <div class="btns" style="margin-bottom:8px"><button class="btn sm" id="copyall">${pol.korean ? "전체 문안 복사" : "전체 영문 복사"}</button>${st.downloads ? `<button class="btn sm" id="csvq">CSV 저장</button>` : ""}
@@ -1509,9 +1557,9 @@ function vDrafts(p) {
 }
 bind.drafts = (p, el) => {
   const d = drafts(p);
-  $$("[data-copy]", el).forEach(b => b.onclick = () => { const [k, id] = b.dataset.copy.split(":"); const x = d[k].find(y => y.id === id); copyText(x.en, `${id} 문안을 복사했습니다.`); });
+  $$("[data-copy]", el).forEach(b => b.onclick = () => { const id = b.dataset.copy.split(":")[1], x = allDrafts(p).find(y => y.id === id); copyText(x.en, /\[TBD/.test(x.en) ? `${id} 문안을 복사했습니다. [TBD …] 자리를 채운 뒤 제출하세요.` : `${id} 문안을 복사했습니다.`); });
   const on = (id, f) => { const b = $("#" + id, el); if (b) b.onclick = f; };
-  on("copyall", () => copyText([...d.Q, ...d.D].map(x => `${x.id} ${x.en}`).join("\n\n"), "질의·이탈 문안을 모두 복사했습니다."));
+  on("copyall", () => { const all = allDrafts(p); copyText(all.map(x => `${x.id} ${x.en}`).join("\n\n"), hasTBD(all) ? "복사했습니다. 기술 후보에 [TBD …] 작성 자리가 남아 있으니 채운 뒤 제출하세요." : "질의·이탈 문안을 모두 복사했습니다."); });
   on("csvq", () => saveCsv(p, "drafts")); on("polish", () => claudePolish(p)); on("stop2", () => st.busy && st.busy.ctl.abort());
   on("undo", () => { p.claudeDrafts = null; renderTab(); });
 };
@@ -1577,18 +1625,19 @@ function vTeams(p) {
   const its = items(p), d = drafts(p), qd = deadline(p, "clarification_deadline"), bd = deadline(p, "bid_due_date");
   const reply = qd.state === "ok" ? `질의 회신 요청 ${addDays(qd.iso, -7)}(질의 마감 7일 전)` : "";
   const reply2 = bd.state === "ok" ? `견적 회신 요청 ${addDays(bd.iso, -14)}(입찰 마감 14일 전)` : "";
+  const all = allDrafts(p);
   return `<div class="sec-h"><h2>부서별 전달</h2></div>
   <p class="lede">요약표 항목과 질의·이탈 초안을 담당 부서별로 나눴습니다. 회신 요청일은 질의 마감 7일 전, 입찰 마감 14일 전을 기본으로 잡은 제안입니다.</p>
-  <div class="grid">${E.DEPTS.map(dep => { const mine = its.filter(i => i.dept === dep), qx = [...d.Q, ...d.D].filter(x => x.owner === dep), hot = mine.filter(i => i.risk === "high" || i.undetermined).length;
+  <div class="grid">${E.DEPTS.map(dep => { const mine = its.filter(i => i.dept === dep), qx = all.filter(x => x.owner === dep), hot = mine.filter(i => i.risk === "high" || i.undetermined).length;
     return `<div class="card pad team"><h3>${dep}<span class="muted small">항목 ${mine.length} · 질의·이탈 ${qx.length}${hot ? ` · <span style="color:var(--high)">먼저 볼 것 ${hot}</span>` : ""}</span></h3>
       ${reply || reply2 ? `<p class="tiny muted">${[qx.length ? reply : "", reply2].filter(Boolean).join(" · ")}</p>` : ""}
       <ul>${mine.map(i => `<li><span>${esc(i.label)}</span>${flagsOf(i)}<span class="vv">${esc(valTxt(i).length > 60 ? valTxt(i).slice(0, 58) + "…" : valTxt(i))} · ${esc(i.use)}</span></li>`).join("")}
-      ${qx.map(x => `<li><span><span class="${x.id[0] === "Q" ? "k-q" : "k-d"}">${x.id}</span> ${esc(x.label)}</span><span class="tiny muted">${x.id[0] === "Q" ? "질의" : "이탈"}</span><span class="vv">${esc(x.ko.slice(0, 90))}</span></li>`).join("")}</ul>
+      ${qx.map(x => `<li><span><span class="${x.id[0] === "D" ? "k-d" : "k-q"}">${x.id}</span> ${esc(x.label)}</span><span class="tiny muted">${KIND(x)}</span><span class="vv">${esc(x.ko.slice(0, 90))}</span></li>`).join("")}</ul>
       <div class="btns" style="margin-top:8px"><button class="btn sm" data-team="${dep}">${dep} 목록 복사</button></div></div>`; }).join("")}</div>`;
 }
 bind.teams = (p, el) => {
   $$("[data-team]", el).forEach(b => b.onclick = () => { const dep = b.dataset.team, its = items(p).filter(i => i.dept === dep), d = drafts(p);
-    const lines = [`[${p.name}] ${dep} 확인 요청`, ...its.map(i => `- ${i.label}: ${valTxt(i)} (${RISK[i.risk]}${i.undetermined ? ", 모순" : ""})${i.found && !i.undetermined ? ` ${i.docName} p.${i.pages[0]}` : ""}`), ...[...d.Q, ...d.D].filter(x => x.owner === dep).map(x => `- ${x.id} ${x.label}: ${x.ko}`)];
+    const lines = [`[${p.name}] ${dep} 확인 요청`, ...its.map(i => `- ${i.label}: ${valTxt(i)} (${RISK[i.risk]}${i.undetermined ? ", 모순" : ""})${i.found && !i.undetermined ? ` ${i.docName} p.${i.pages[0]}` : ""}`), ...allDrafts(p).filter(x => x.owner === dep).map(x => `- ${x.id} ${x.label}: ${x.ko}`)];
     copyText(lines.join("\n"), `${dep} 목록을 복사했습니다.`); });
 };
 
@@ -1822,7 +1871,10 @@ function summaryRows(p) {
     ...items(p).map(i => [i.group, i.label, valTxt(i), RISK[i.risk], i.risk_reason, i.undetermined ? "모순(값 미정)" : i.conflict ? "추가 공고 반영" : "", i.undetermined ? "" : i.docName, i.undetermined ? "" : i.pages.join(","), i.clause || "", i.dept, i.undetermined ? "" : i.evidence,
       i.candidates.map(c => `${c.value} @ ${c.docName} p.${c.page}`).join(" / "), review(p)[i.key] ? "예" : ""])];
 }
-function draftRows(p) { const d = drafts(p); return [["번호", "구분", "항목", "근거", "출처", "담당", "한국어 요약", "제출 문안"], ...[...d.Q, ...d.D].map(x => [x.id, x.id[0] === "Q" ? "질의" : "이탈", x.label, x.basis, x.where, x.owner, x.ko, x.en])]; }
+function allDrafts(p) { const d = drafts(p); return [...d.Q, ...d.D, ...techDrafts(p)]; }
+const KIND = x => x.id[0] === "Q" ? "질의" : x.id[0] === "D" ? "이탈" : "기술 후보";
+function draftRows(p) { return [["번호", "구분", "항목", "근거", "출처", "담당", "한국어 요약", "제출 문안"], ...allDrafts(p).map(x => [x.id, KIND(x), x.label, x.basis, x.where, x.owner, x.ko, x.en])]; }
+const hasTBD = arr => arr.some(x => /\[TBD/.test(x.en));
 async function saveCsv(p, which) {
   const rows = which === "drafts" ? draftRows(p) : summaryRows(p);
   const csv = "﻿" + rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");

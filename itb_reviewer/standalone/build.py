@@ -29,7 +29,13 @@ data = json.dumps(samples, ensure_ascii=False).replace("</", "<\\/")
 engine = (HERE / "engine.js").read_text(encoding="utf-8")
 html = (HERE / "template.html").read_text(encoding="utf-8")
 app = (HERE / "app.js").read_text(encoding="utf-8")
-html = html.replace("__SAMPLES__", data, 1).replace("__ENGINE__", engine, 1).replace("__APP__", "<script>\n" + app + "</script>", 1)
+# 문서 해석 라이브러리를 페이지에 같이 싣는다: cdnjs가 막힌 망·호스트에서도 PDF·DOCX를 읽도록
+def lib(name, fn):
+    t = (HERE / "vendor" / fn).read_text(encoding="utf-8").replace("</script", "<\\/script").replace("<!--", "<\\!--")
+    return f'<script type="text/plain" id="lib-{name}">{t}</script>\n'
+libs = lib("pdf", "pdf.min.js") + lib("pdfworker", "pdf.worker.min.js") + lib("mammoth", "mammoth.browser.min.js")
+app = libs + "<script>\n" + app
+html = html.replace("__SAMPLES__", data, 1).replace("__ENGINE__", engine, 1).replace("__APP__", app + "</script>", 1)
 out = HERE / "itb_reviewer.html"
 out.write_text(html, encoding="utf-8")
 print(f"wrote {out} ({len(html.encode()) // 1024} KB)")

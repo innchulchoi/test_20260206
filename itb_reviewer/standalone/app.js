@@ -28,9 +28,16 @@ function loadScript(src) {
   return loaded[src] ||= new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok;
     s.onerror = () => { delete loaded[src]; no(new Error("문서 해석 라이브러리를 불러오지 못했습니다. 네트워크를 확인한 뒤 다시 올려 주세요.")); }; document.head.appendChild(s); });
 }
+// 페이지에 실린 사본을 먼저 쓰고, 안 되면 cdnjs에서 받는다
+function loadLib(name, path, ok) {
+  if (ok()) return Promise.resolve();
+  const el = document.getElementById("lib-" + name);
+  if (el) { try { const s = document.createElement("script"); s.textContent = el.textContent; document.head.appendChild(s); } catch {} if (ok()) return Promise.resolve(); }
+  return loadScript(CDN + path);
+}
 async function readPdf(buf, onp) {
-  await loadScript(CDN + "pdf.js/3.11.174/pdf.min.js");
-  await loadScript(CDN + "pdf.js/3.11.174/pdf.worker.min.js");
+  await loadLib("pdf", "pdf.js/3.11.174/pdf.min.js", () => !!window.pdfjsLib);
+  await loadLib("pdfworker", "pdf.js/3.11.174/pdf.worker.min.js", () => !!window.pdfjsWorker);
   const pdf = await window.pdfjsLib.getDocument({ data: buf, isEvalSupported: false }).promise, pages = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     const tc = await (await pdf.getPage(i)).getTextContent(); let text = "", lastY = null;
@@ -42,7 +49,7 @@ async function readPdf(buf, onp) {
   }
   return pages;
 }
-async function readDocx(buf) { await loadScript(CDN + "mammoth/1.6.0/mammoth.browser.min.js");
+async function readDocx(buf) { await loadLib("mammoth", "mammoth/1.6.0/mammoth.browser.min.js", () => !!window.mammoth);
   const { value } = await window.mammoth.extractRawText({ arrayBuffer: buf }); return E.pseudoPages(value.split(/\n+/).map(s => s.trim()).filter(Boolean)); }
 async function readTxt(buf) { let t; try { t = new TextDecoder("utf-8", { fatal: true }).decode(buf); } catch { t = new TextDecoder("euc-kr").decode(buf); }
   return E.pseudoPages(t.split(/\n\s*\n/).filter(b => b.trim())); }
@@ -224,12 +231,13 @@ function focusSel(el) {
 function renderTab(keep = true) {
   const p = cur(), el = $("#p-" + st.tab), y = window.scrollY, ae = document.activeElement, fs = keep ? focusSel(ae) : null;
   const typing = keep && ae && ae.tagName === "INPUT" && ae.type !== "checkbox" ? { v: ae.value, a: ae.selectionStart, b: ae.selectionEnd } : null;
-  if (!p) { el.innerHTML = `<div class="card pad">입찰 문서를 올려 주세요.</div>`; return; }
+  if (!p) { el._h = null; el.innerHTML = `<div class="card pad">입찰 문서를 올려 주세요.</div>`; return; }
   const busy = p.docs.filter(d => d.status === "reading");
   const wait = busy.length ? `<div class="card pad small" style="margin-bottom:12px"><span class="spin"></span> 문서 ${busy.length}권을 읽는 중입니다. ${esc(busy[0].name)} ${esc(busy[0].msg || "")}</div>` : "";
   const fn = { summary: vSummary, issues: vIssues, drafts: vDrafts, source: vSource, teams: vTeams, ask: vAsk, docs: vDocs, guide: vGuide }[st.tab];
-  if (!p.items.length && !["docs", "guide"].includes(st.tab)) { el.innerHTML = wait + `<div class="card pad">아직 분석한 문서가 없습니다. <button class="btn sm" data-go="docs">07 문서 묶음으로</button></div>`; bindCommon(el); return; }
-  st.rendering = true; const html = wait + fn(p); el.innerHTML = html; st.rendering = false; // 교체 중 사라지는 입력칸이 change를 내도 무시
+  if (!p.items.length && !["docs", "guide"].includes(st.tab)) { el._h = null; el.innerHTML = wait + `<div class="card pad">아직 분석한 문서가 없습니다. <button class="btn sm" data-go="docs">07 문서 묶음으로</button></div>`; bindCommon(el); return; }
+  const html = wait + fn(p); if (el._h === html && el._p === p.id) return; el._h = html; el._p = p.id;
+  st.rendering = true; el.innerHTML = html; st.rendering = false; // 교체 중 사라지는 입력칸이 change를 내도 무시
   bindCommon(el); (bind[st.tab] || (() => {}))(p, el);
   if (keep) { window.scrollTo({ top: y }); if (fs) { const f = $(fs, el); if (f) { f.focus({ preventScroll: true }); if (typing && f.tagName === "INPUT") { f.value = typing.v; try { f.setSelectionRange(typing.a, typing.b); } catch {} f.dispatchEvent(new Event("validate")); } } } }
 }

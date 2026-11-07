@@ -137,7 +137,11 @@ td.lab .car{display:inline-block;width:12px;color:var(--faint);font-weight:400}
 td.val{font-family:var(--f-mono);font-size:13px;max-width:420px}
 td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top:2px}
 .miss{font-family:var(--f-sans);color:var(--muted);font-style:italic}
-td.flags{min-width:172px} .exp table.stale,.exp .elx.stale{opacity:.45} td.dep{white-space:nowrap;min-width:64px}
+td.flags{min-width:172px} .exp table.stale{opacity:.45} #pricehint.err,.elmsg.err{color:var(--conflict);font-weight:600}
+.elx .elrow{display:grid;grid-template-columns:minmax(140px,1.4fr) 110px 170px minmax(120px,1fr);gap:4px 12px;align-items:end;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.elx .elname{align-self:center;font-weight:600} .elx .elf{display:flex;flex-direction:column;gap:2px} .elx .elf .inp{width:100%} .elx .elv{text-align:right;align-self:center} .elx .elmsg{grid-column:1/-1} .elx .elmsg:empty{display:none}
+.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)}
+#reqbox table{width:100%} #reqbox td:last-child{width:120px} #reqbox td:first-child{min-width:0;overflow-wrap:anywhere} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 tr.det td{background:var(--bg);font-size:13px}
@@ -229,7 +233,8 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   .exp table,.exp tbody{display:block} .exp tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;padding:6px 0;border-bottom:1px solid var(--line-2)}
   .exp td{border:0;padding:0;font-size:12.5px} .exp td:first-child{grid-column:1/-1} .exp td.num{white-space:nowrap;text-align:left} .exp td.num:last-child{text-align:right;white-space:normal}
   .pkgbar .pkgbtn{max-width:none;white-space:normal} details>summary{min-height:34px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px} .exp td.num br{display:none}
-  .elx input.inp{width:100%!important}
+  .elx .elrow{grid-template-columns:1fr 1fr} .elx .elname{grid-column:1/-1} .elx .elv{grid-column:1/-1;text-align:left}
+  #reqbox .tscroll{overflow-x:visible} #reqbox td:last-child{width:96px}
   select.sel{min-height:34px}
   table.t tr.grp,table.t tr.det{display:block} table.t tr.grp td,table.t tr.det td{display:block}
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}

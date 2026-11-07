@@ -765,16 +765,18 @@
   // 기술 요구사항 적합성 표: 요구사항·시방 문서의 'shall/must/하여야' 문장
   function requirements(pkg, max = 60) {
     const pref = pkg.docs.filter(d => d.type === "ER" || d.type === "TS");
-    const docs = pref.length ? pref : pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS");
-    const out = [], seen = new Set();
+    const fallback = !pref.length;
+    const docs = fallback ? pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS") : pref;
+    // 계약 문서로 넘어갈 때는 요약표가 다루는 상업 조항과 발주처가 주어인 문장을 뺀다
+    const commercial = new RegExp(ITEMS.filter(i => ["상업 조건", "입찰 절차", "일정"].includes(i.group)).map(i => `(?:${i.anchors})`).join("|"), "i");
+    const list = [], seen = new Set(); let total = 0;
     for (const d of docs) for (const p of d.pages) for (const s of sentences(p.text)) {
       if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) continue;
-      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k);
-      const id = `${d.id}:${p.number}:${out.length}`;
-      out.push({ id, key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
-      if (out.length >= max) return out;
+      if (fallback && (commercial.test(s) || /^(?:\S+\s){0,3}(?:the\s+)?employer\s+(?:shall|must|will)\b|발주(?:처|기관)(?:은|는|이)/i.test(s.replace(/^[\d.]+\s+/, "")))) continue;
+      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k); total++;
+      if (list.length < max) list.push({ key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
     }
-    return out;
+    return { list, total, fallback, max };
   }
   // 입찰 참가 자격 요건의 핵심 수치만 추린다(예: two · 400 MW · ten years · USD 800 million)
   function pqFacts(text) {

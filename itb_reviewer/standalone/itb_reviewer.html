@@ -137,7 +137,11 @@ td.lab .car{display:inline-block;width:12px;color:var(--faint);font-weight:400}
 td.val{font-family:var(--f-mono);font-size:13px;max-width:420px}
 td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top:2px}
 .miss{font-family:var(--f-sans);color:var(--muted);font-style:italic}
-td.flags{min-width:172px} .exp table.stale,.exp .elx.stale{opacity:.45} td.dep{white-space:nowrap;min-width:64px}
+td.flags{min-width:172px} .exp table.stale{opacity:.45} #pricehint.err,.elmsg.err{color:var(--conflict);font-weight:600}
+.elx .elrow{display:grid;grid-template-columns:minmax(140px,1.4fr) 110px 170px minmax(120px,1fr);gap:4px 12px;align-items:end;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.elx .elname{align-self:center;font-weight:600} .elx .elf{display:flex;flex-direction:column;gap:2px} .elx .elf .inp{width:100%} .elx .elv{text-align:right;align-self:center} .elx .elmsg{grid-column:1/-1} .elx .elmsg:empty{display:none}
+.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)}
+#reqbox table{width:100%} #reqbox td:last-child{width:120px} #reqbox td:first-child{min-width:0;overflow-wrap:anywhere} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 tr.det td{background:var(--bg);font-size:13px}
@@ -229,7 +233,8 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   .exp table,.exp tbody{display:block} .exp tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;padding:6px 0;border-bottom:1px solid var(--line-2)}
   .exp td{border:0;padding:0;font-size:12.5px} .exp td:first-child{grid-column:1/-1} .exp td.num{white-space:nowrap;text-align:left} .exp td.num:last-child{text-align:right;white-space:normal}
   .pkgbar .pkgbtn{max-width:none;white-space:normal} details>summary{min-height:34px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px} .exp td.num br{display:none}
-  .elx input.inp{width:100%!important}
+  .elx .elrow{grid-template-columns:1fr 1fr} .elx .elname{grid-column:1/-1} .elx .elv{grid-column:1/-1;text-align:left}
+  #reqbox .tscroll{overflow-x:visible} #reqbox td:last-child{width:96px}
   select.sel{min-height:34px}
   table.t tr.grp,table.t tr.det{display:block} table.t tr.grp td,table.t tr.det td{display:block}
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}
@@ -1030,16 +1035,18 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   // 기술 요구사항 적합성 표: 요구사항·시방 문서의 'shall/must/하여야' 문장
   function requirements(pkg, max = 60) {
     const pref = pkg.docs.filter(d => d.type === "ER" || d.type === "TS");
-    const docs = pref.length ? pref : pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS");
-    const out = [], seen = new Set();
+    const fallback = !pref.length;
+    const docs = fallback ? pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS") : pref;
+    // 계약 문서로 넘어갈 때는 요약표가 다루는 상업 조항과 발주처가 주어인 문장을 뺀다
+    const commercial = new RegExp(ITEMS.filter(i => ["상업 조건", "입찰 절차", "일정"].includes(i.group)).map(i => `(?:${i.anchors})`).join("|"), "i");
+    const list = [], seen = new Set(); let total = 0;
     for (const d of docs) for (const p of d.pages) for (const s of sentences(p.text)) {
       if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) continue;
-      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k);
-      const id = `${d.id}:${p.number}:${out.length}`;
-      out.push({ id, key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
-      if (out.length >= max) return out;
+      if (fallback && (commercial.test(s) || /^(?:\S+\s){0,3}(?:the\s+)?employer\s+(?:shall|must|will)\b|발주(?:처|기관)(?:은|는|이)/i.test(s.replace(/^[\d.]+\s+/, "")))) continue;
+      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k); total++;
+      if (list.length < max) list.push({ key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
     }
-    return out;
+    return { list, total, fallback, max };
   }
   // 입찰 참가 자격 요건의 핵심 수치만 추린다(예: two · 400 MW · ten years · USD 800 million)
   function pqFacts(text) {
@@ -1066,7 +1073,7 @@ const GCLS = { "일정": "g1", "입찰 절차": "g2", "상업 조건": "g3", "�
 const CDN = "https://cdnjs.cloudflare.com/ajax/libs/";
 const TABS = [["summary", "입찰 요약표"], ["issues", "모순·리스크"], ["drafts", "질의·이탈 초안"], ["source", "원문 형광펜"], ["teams", "부서별 전달"], ["ask", "문서에 질문"], ["docs", "문서 묶음"], ["guide", "처음이라면"]];
 const ABBR = { CD: "Contract Data, 계약 데이터", PCC: "Particular Conditions of Contract, 계약 특수조건", GCC: "General Conditions of Contract, 계약 일반조건", ER: "Employer's Requirements, 발주처 요구사항", TS: "Technical Specifications, 기술 시방" };
-const GLOSSARY = [["ITB", "발주처가 주는 입찰 문서 묶음 전체, 또는 그중 입찰 절차를 정한 권(Instructions to Bidders)"], ["BDS", "Bid Data Sheet. 입찰지침의 빈칸(마감·보증 등)을 채운 표"], ["추가 공고", "Addendum. 입찰 중에 발주처가 문서를 고치는 공고. 앞선 판보다 우선"], ["CD", "Contract Data. 계약조건의 빈칸(비율·기간·금액)을 채운 표"], ["PCC", "Particular Conditions. 일반조건을 이 사업에 맞게 고친 특수조건"], ["GCC", "General Conditions. FIDIC 같은 표준 일반조건"], ["ER", "Employer's Requirements. 발주처가 원하는 성능·범위"], ["TS", "Technical Specifications. 기술 시방서"], ["우선순위", "문서끼리 값이 다를 때 어느 문서를 따를지 정한 조항(보통 PCC 1.5)"], ["질의", "Clarification. 질의 마감 전에 모순·누락을 발주처에 묻는 공식 문서"], ["이탈", "Deviation. 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청. 금지된 입찰도 있음"], ["지체상금", "Delay damages(LD). 준공이 늦으면 하루·주마다 내는 돈"], ["DNP", "Defects Notification Period. 인수 뒤 하자를 고칠 책임 기간(하자담보기간)"], ["RUI", "Rely Upon Information. 계약자가 믿고 설계·가격에 써도 되는 조사 자료"], ["EPC", "설계·조달·시공 일괄 계약. 턴키라고도 함"], ["FIDIC", "국제 건설 계약 표준 조건을 만드는 단체. Silver Book은 EPC/턴키용"], ["Lump sum", "총액 고정 계약. 물량 변동 위험을 계약자가 짐"], ["예비비", "Contingency. 위험이 실제로 생길 때를 대비해 가격에 넣는 돈"], ["PQ", "Prequalification/Qualification. 입찰 참가 자격(실적·매출·기술 요건). 못 맞추면 입찰 무효"], ["잠정금액", "Provisional Sum(PS). 입찰 때 금액을 확정하지 않고 나중에 실제 물량·금액으로 정산하는 항목"], ["가격표", "Schedule of Prices / BOQ. 총액을 공종·물량별로 나눠 적는 양식"]];
+const GLOSSARY = [["ITB", "발주처가 주는 입찰 문서 묶음 전체, 또는 그중 입찰 절차를 정한 권(Instructions to Bidders)"], ["BDS", "Bid Data Sheet. 입찰지침의 빈칸(마감·보증 등)을 채운 표"], ["추가 공고", "Addendum. 입찰 중에 발주처가 문서를 고치는 공고. 앞선 판보다 우선"], ["CD", "Contract Data. 계약조건의 빈칸(비율·기간·금액)을 채운 표"], ["PCC", "Particular Conditions. 일반조건을 이 사업에 맞게 고친 특수조건"], ["GCC", "General Conditions. FIDIC 같은 표준 일반조건"], ["ER", "Employer's Requirements. 발주처가 원하는 성능·범위"], ["TS", "Technical Specifications. 기술 시방서"], ["우선순위", "문서끼리 값이 다를 때 어느 문서를 따를지 정한 조항(보통 PCC 1.5)"], ["질의", "Clarification. 질의 마감 전에 모순·누락을 발주처에 묻는 공식 문서"], ["이탈", "Deviation. 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청. 금지된 입찰도 있음"], ["지체상금", "Delay damages(LD). 준공이 늦으면 하루·주마다 내는 돈"], ["DNP", "Defects Notification Period. 인수 뒤 하자를 고칠 책임 기간(하자담보기간)"], ["RUI", "Rely Upon Information. 계약자가 믿고 설계·가격에 써도 되는 조사 자료"], ["EPC", "설계·조달·시공 일괄 계약. 턴키라고도 함"], ["FIDIC", "국제 건설 계약 표준 조건을 만드는 단체. Silver Book은 EPC/턴키용"], ["Lump sum", "총액 고정 계약. 물량 변동 위험을 계약자가 짐"], ["예비비", "Contingency. 위험이 실제로 생길 때를 대비해 가격에 넣는 돈"], ["PQ", "Prequalification/Qualification. 입찰 참가 자격(실적·매출·기술 요건). 못 맞추면 입찰 무효"], ["잠정금액", "Provisional Sum(PS). 입찰 때 금액을 확정하지 않고 나중에 실제 물량·금액으로 정산하는 항목"], ["가격표", "Schedule of Prices / BOQ. 총액을 공종·물량별로 나눠 적는 양식"], ["EL", "Expected Loss, 기대손실. 발생 확률 × 발생 시 손실. 여러 위험의 EL 합계가 예비비의 하한"], ["P90", "열 번 중 아홉 번은 넘지 않을 손실 금액. 분포를 가정해 구하므로 원가팀이 정함"], ["기술 이탈", "기술 요구사항을 그대로 맞추지 못할 때 대안을 제시하는 이탈(Technical deviation)"]];
 const CURRENCIES = ["USD", "EUR", "KRW", "GBP", "JPY", "SAR", "AED"];
 
 const st = { pkgs: [], cur: null, tab: "summary", group: "전체", rf: "all", open: new Set(), src: { doc: null, page: 1, focus: null },
@@ -1161,7 +1168,7 @@ function counts(p) {
   return { high: its.filter(i => i.risk === "high").length, medium: its.filter(i => i.risk === "medium").length, unknown: its.filter(i => i.risk === "unknown").length,
     open: its.filter(i => i.undetermined).length, added: its.filter(i => i.conflict && i.conflict.status === "addendum").length,
     missRefs: p.refs.filter(r => !r.present).length, q: d.Q.length, d: d.D.length, found: its.filter(i => i.found).length, total: its.length,
-    reviewed: its.filter(i => rv[i.key]).length };
+    reviewed: its.filter(i => rv[i.key]).length, tech: techCands(p).length };
 }
 const typeLabel = c => (E.TYPE[c] || E.TYPE.ETC).label;
 const docOf = (p, id) => p.docs.find(d => d.id === id);
@@ -1235,11 +1242,11 @@ function renderPkgbar() {
   $("#b-new").onclick = () => { st.pickInto = null; $("#file").click(); };
   $("#b-add").onclick = () => { st.pickInto = cur(); $("#file").click(); };
 }
-function issueCount(c) { return c.open + c.missRefs + c.high; }
+function issueCount(c) { return c.open + c.missRefs + c.high + (c.tech || 0); }
 function renderTabs() {
   const p = cur(), c = p && p.items.length ? counts(p) : null;
-  const badge = { issues: c ? issueCount(c) : 0, drafts: c ? c.q + c.d : 0 };
-  const tip = { issues: c ? `확인할 것 ${issueCount(c)}: 모순 ${c.open} + 빠진 참조 문서 ${c.missRefs} + 높음 ${c.high}` : "", drafts: c ? `질의 ${c.q} + 이탈 ${c.d}` : "" };
+  const badge = { issues: c ? issueCount(c) : 0, drafts: c ? c.q + c.d + c.tech : 0 };
+  const tip = { issues: c ? `확인할 것 ${issueCount(c)}: 모순 ${c.open} + 빠진 참조 문서 ${c.missRefs} + 높음 ${c.high}${c.tech ? ` + 기술 조건부·부적합 ${c.tech}` : ""}` : "", drafts: c ? `질의 ${c.q} + 이탈 ${c.d}${c.tech ? ` + 기술 후보 ${c.tech}` : ""}` : "" };
   $("#tabs").innerHTML = TABS.map(([id, label], i) => `<a href="#${id}" role="tab" id="t-${id}" aria-controls="p-${id}" aria-selected="${st.tab === id}" tabindex="${st.tab === id ? 0 : -1}" ${tip[id] ? `title="${tip[id]}"` : ""}><span class="n">${String(i + 1).padStart(2, "0")}</span>${label}${badge[id] ? `<span class="c ${id === "issues" && c.open ? "hot" : ""}">${badge[id]}</span>` : ""}</a>`).join("");
   TABS.forEach(([id]) => { const s = $("#p-" + id); s.hidden = id !== st.tab; s.setAttribute("aria-labelledby", "t-" + id); });
   const a = $(`#t-${st.tab}`); if (a) { const nav = $("#tabs"), l = a.offsetLeft, r = l + a.offsetWidth; if (l < nav.scrollLeft || r > nav.scrollLeft + nav.clientWidth) nav.scrollLeft = l - 16; }
@@ -1252,11 +1259,12 @@ $("#tabs").addEventListener("click", e => { const a = e.target.closest("a[role=t
 // 같은 화면을 다시 그릴 때는 스크롤 위치와 포커스를 지킨다
 function focusSel(el) {
   if (!el || el === document.body) return null;
-  for (const a of ["data-rv", "data-k", "data-grp", "data-rf", "data-copy", "data-team", "data-type", "data-q", "data-req", "data-el"]) if (el.hasAttribute && el.hasAttribute(a)) return `${el.tagName.toLowerCase()}[${a}="${CSS.escape(el.getAttribute(a))}"]`;
+  for (const a of ["data-rv", "data-k", "data-grp", "data-rf", "data-copy", "data-team", "data-type", "data-q", "data-req", "data-el", "data-tc"]) if (el.hasAttribute && el.hasAttribute(a)) return `${el.tagName.toLowerCase()}[${a}="${CSS.escape(el.getAttribute(a))}"]`;
   return el.id ? "#" + CSS.escape(el.id) : null;
 }
 function renderTab(keep = true) {
-  const p = cur(), el = $("#p-" + st.tab), y = window.scrollY, fs = keep ? focusSel(document.activeElement) : null;
+  const p = cur(), el = $("#p-" + st.tab), y = window.scrollY, ae = document.activeElement, fs = keep ? focusSel(ae) : null;
+  const typing = keep && ae && ae.tagName === "INPUT" && ae.type !== "checkbox" ? { v: ae.value, a: ae.selectionStart, b: ae.selectionEnd } : null;
   if (!p) { el.innerHTML = `<div class="card pad">입찰 문서를 올려 주세요.</div>`; return; }
   const busy = p.docs.filter(d => d.status === "reading");
   const wait = busy.length ? `<div class="card pad small" style="margin-bottom:12px"><span class="spin"></span> 문서 ${busy.length}권을 읽는 중입니다. ${esc(busy[0].name)} ${esc(busy[0].msg || "")}</div>` : "";
@@ -1264,7 +1272,7 @@ function renderTab(keep = true) {
   if (!p.items.length && !["docs", "guide"].includes(st.tab)) { el.innerHTML = wait + `<div class="card pad">아직 분석한 문서가 없습니다. <button class="btn sm" data-go="docs">07 문서 묶음으로</button></div>`; bindCommon(el); return; }
   el.innerHTML = wait + fn(p);
   bindCommon(el); (bind[st.tab] || (() => {}))(p, el);
-  if (keep) { window.scrollTo({ top: y }); if (fs) { const f = $(fs, el); if (f) f.focus({ preventScroll: true }); } }
+  if (keep) { window.scrollTo({ top: y }); if (fs) { const f = $(fs, el); if (f) { f.focus({ preventScroll: true }); if (typing && f.tagName === "INPUT") { f.value = typing.v; try { f.setSelectionRange(typing.a, typing.b); } catch {} f.dispatchEvent(new Event("validate")); } } } }
 }
 function bindCommon(el) {
   $$("[data-go]", el).forEach(b => b.onclick = () => go(b.dataset.go));
@@ -1330,14 +1338,14 @@ function vSummary(p) {
       <ul class="ctl">${controlList(p, c)}</ul>
     </div>
     <div class="card pad exp"><div class="h3">금액으로 보기</div>
-      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="decimal" placeholder="예: 5억, 500M" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액" aria-describedby="pricehint"><span class="tiny muted" id="pricehint" role="status">${price ? `= ${money(price, cc)}` : ""}</span></div><p class="tiny" id="stalenote" hidden style="color:var(--conflict)"></p>
+      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="decimal" placeholder="예: 5억, 500M" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액" aria-describedby="pricehint"><span class="tiny muted" id="pricehint" role="status">${price ? `= ${money(price, cc)}` : ""}</span></div>
       ${ex ? sec("최대 손실 노출", ex.loss) + sec("은행 보증 한도(발급 필요)", ex.bank, ex.bankSum) + sec("현금흐름", ex.cash)
-        + (ex.unpriced.length ? `<p class="small" style="margin-top:8px"><b>금액으로 못 바꾼 높음 리스크</b>: ${esc(ex.unpriced.map(i => i.label).join(", "))}. 아래 기대손실 표에 원가팀 추정을 넣으세요.</p>` : "")
-        + elTable(p, its, cc)
-        + `<p class="tiny muted" style="margin-top:6px">비율 × 계약금액 단순 환산입니다. 모순 항목은 문서별 값의 범위로 보여 줍니다. 기대손실(EL)은 담당자가 넣은 확률·손실액으로만 계산하며, 도구가 확률을 정하지 않습니다. P90 같은 분포 기반 예비비는 원가팀이 정합니다.</p>`
+        + (ex.unpriced.length ? `<p class="small" style="margin-top:8px"><b>금액으로 못 바꾼 높음 리스크</b>: ${esc(ex.unpriced.map(i => i.label).join(", "))}. 아래 '기대손실(EL)·예비비' 표에 원가팀 추정을 넣으세요.</p>` : "")
+        + `<p class="tiny muted" style="margin-top:6px">비율 × 계약금액 단순 환산입니다. 모순 항목은 문서별 값의 범위로 보여 줍니다.</p>`
         : `<p class="small muted">계약금액을 넣으면 지체상금(하루치·최대), 책임 한도, 보증 한도, 선급금·유보금을 금액으로 보여 줍니다.</p>`}
     </div>
   </div>
+  ${elTable(p, its, cc, price)}
   <div class="card pad">
     <div class="btns" style="margin-bottom:8px">${["전체", ...E.GROUPS].map(g => `<button class="chip" data-grp="${esc(g)}" aria-pressed="${st.group === g}">${esc(g)}</button>`).join("")}
       <span class="grow"></span>${[["all", "모두"], ["flag", "확인할 것만"], ["todo", "검토 안 한 것"]].map(([k, l]) => `<button class="chip" data-rf="${k}" aria-pressed="${st.rf === k}">${l}</button>`).join("")}</div>
@@ -1346,15 +1354,34 @@ function vSummary(p) {
   </div></div>`;
 }
 // 기대손실(EL) = 발생 확률 × 발생 시 손실. 확률·손실은 원가팀이 넣는다(브라우저에 저장).
-function elTable(p, its, cc) {
-  const rows = its.filter(i => i.risk === "high" || i.undetermined), v = store.get("el:" + p.name, {});
-  if (!rows.length) return "";
-  let sum = 0, full = 0;
-  const tr = rows.map(i => { const x = v[i.key] || {}, pr = Number(x.p) || 0, amt = Number(x.a) || 0, el = pr / 100 * amt; sum += el; full += amt;
-    return `<tr><td>${esc(i.label)}</td><td><input class="inp eli" data-el="${i.key}|p" inputmode="decimal" value="${x.p ?? ""}" placeholder="%" aria-label="${esc(i.label)} 발생 확률(%)" style="width:56px"></td><td><input class="inp eli" data-el="${i.key}|a" inputmode="decimal" value="${x.a ? Number(x.a).toLocaleString("en-US") : ""}" placeholder="손실액" aria-label="${esc(i.label)} 발생 시 손실" style="width:120px"></td><td class="num">${el ? money(el, cc) : "-"}</td></tr>`; }).join("");
-  return `<div class="elx"><h4>기대손실(EL)·예비비 <span class="tiny muted">담당자 입력</span></h4><table><tbody><tr><td class="tiny muted">위험</td><td class="tiny muted">확률</td><td class="tiny muted">발생 시 손실</td><td class="tiny muted num">EL</td></tr>${tr}
-    <tr class="sum"><td>EL 합계(예비비 권고 하한)</td><td></td><td class="num">${full ? money(full, cc) : "-"}<div class="tiny muted">모두 발생 시</div></td><td class="num">${sum ? money(sum, cc) : "-"}</td></tr></tbody></table></div>`;
+// 유보금·선급금·지급 기한은 손실이 아니라 자금 묶임이라 EL에서 뺀다. 지체상금 손실은 상한에서 멈춘다.
+const CASH_KEYS = new Set(["retention", "advance_payment", "payment_terms"]);
+function elCap(p, its, price) { const c = its.find(i => i.key === "ld_cap"); const v = c && c.found ? (c.undetermined ? Math.max(...c.candidates.map(x => parseFloat(x.value)).filter(x => !isNaN(x))) : parseFloat(c.value)) : NaN; return price > 0 && isFinite(v) ? price * v / 100 : null; }
+function elRows(p, its, price) {
+  const v = store.get("el:" + p.name, {}), cap = elCap(p, its, price);
+  return its.filter(i => (i.risk === "high" || i.undetermined) && !CASH_KEYS.has(i.key)).map(i => { const x = v[i.key] || {}, pr = Number(x.p) || 0; let a = Number(x.a) || 0, capped = false;
+    if (i.key === "liquidated_damages" && cap != null && a > cap) { a = cap; capped = true; }
+    return { i, x, pr, a, el: pr / 100 * a, capped, cap }; });
 }
+function elTable(p, its, cc, price) {
+  const rows = elRows(p, its, price), cash = its.filter(i => (i.risk === "high" || i.undetermined) && CASH_KEYS.has(i.key));
+  const sum = rows.reduce((s, r) => s + r.el, 0), full = rows.reduce((s, r) => s + r.a, 0);
+  const body = rows.length ? rows.map(({ i, x, el, capped, cap }) => `<div class="elrow">
+      <div class="elname">${esc(i.label)}${i.undetermined ? ' <span class="flag f-open">모순</span>' : ""}</div>
+      <label class="elf"><span class="tiny muted">발생 확률(%)</span><input class="inp eli" data-el="${i.key}|p" inputmode="decimal" value="${x.p ?? ""}" placeholder="0~100" aria-label="${esc(i.label)} 발생 확률(%)"></label>
+      <label class="elf"><span class="tiny muted">발생 시 손실</span><input class="inp eli" data-el="${i.key}|a" inputmode="decimal" value="${x.a ? Number(x.a).toLocaleString("en-US") : ""}" placeholder="예: 2억, 20M" aria-label="${esc(i.label)} 발생 시 손실"></label>
+      <div class="elv"><span class="tiny muted">EL</span> <b class="mono">${el ? money(el, cc) : "-"}</b></div>
+      <div class="elmsg tiny" data-msg="${i.key}" role="status">${capped ? `지체상금 상한(${money(cap, cc)})을 넘어 상한으로 계산했습니다.` : ""}</div></div>`).join("")
+    : `<p class="small muted">높음·모순 항목이 없어 기대손실 표가 없습니다${p.policy && p.policy.domestic ? "(법정 기준 항목은 판정에서 뺌)" : ""}.</p>`;
+  return `<details class="card pad elx" ${st.elOpen !== false ? "open" : ""} id="elbox"><summary class="h3" style="margin:0">기대손실(EL)·예비비 <span class="muted small">담당자 입력${rows.length ? ` · ${rows.length}개 위험` : ""}</span></summary>
+    <p class="tiny muted" style="margin:6px 0 4px">EL = 발생 확률 × 발생 시 손실. 확률과 손실액은 원가팀이 넣습니다(도구가 확률을 정하지 않음, 이 브라우저에 저장). P90 같은 분포 기반 예비비는 원가팀이 따로 정합니다.${cash.length ? ` ${esc(cash.map(i => i.label).join("·"))}은 손실이 아니라 자금 묶임이라 뺐습니다(금액 표의 현금흐름 참고).` : ""}</p>
+    ${body}
+    ${rows.length ? `<div class="elsum"><div><span class="small">EL 합계</span> <span class="tiny muted">예비비 권고 하한</span></div><b class="mono">${sum ? money(sum, cc) : "-"}</b></div>
+    <div class="elsum sub"><div><span class="small">모두 발생할 때 손실 합계</span> <span class="tiny muted">최악 참고값</span></div><span class="mono">${full ? money(full, cc) : "-"}</span></div>` : ""}
+    ${price ? "" : '<p class="tiny muted">위 금액 칸에 계약금액을 넣으면 지체상금 손실이 상한에서 멈추도록 계산합니다.</p>'}</details>`;
+}
+// 금액 입력 해석 보조: "1억5천"처럼 만 단위를 빠뜨린 표기 안내
+function amountHint(t) { return /억\s*\d+\s*천\s*$/.test(String(t).trim()) ? " · 1억 5천만을 뜻하면 '만'까지 써 주세요." : ""; }
 function controlList(p, c) {
   const d = drafts(p), qdl = deadline(p, "clarification_deadline"), its = items(p), out = [];
   const highs = its.filter(i => i.risk === "high" && !i.undetermined).map(i => i.label);
@@ -1365,6 +1392,8 @@ function controlList(p, c) {
   const dl = d.D.map(x => x.label), rest = highs.filter(h => !dl.includes(h));
   if (d.D.length) out.push(`높음 ${d.D.length}건(${esc(dl.join("·"))})은 이탈 ${esc(d.D[0].id)}${d.D.length > 1 ? "~" + esc(d.D[d.D.length - 1].id) : ""}로 요청합니다. 이탈을 넣을지, 거절될 때 가격에 얼마를 넣을지는 <b>입찰 심의(경영진) 결재</b> 사항입니다.`);
   if (rest.length) out.push(`높음 ${rest.length}건(${esc(rest.join("·"))})을 그대로 받을지, 가격에 얼마를 넣을지는 <b>경영진 결재</b> 사항입니다.`);
+  const tc = techCands(p);
+  if (tc.length) out.push(`기술 요구사항 조건부 ${tc.filter(x => x.st === "cond").length}건·부적합 ${tc.filter(x => x.st === "no").length}건(설계·시공 판단)은 03 탭 '기술 질의·이탈 후보'에서 질의나 기술 이탈로 정리하고, 부적합을 안고 입찰할지는 <b>경영진 결재</b> 사항입니다.`);
   if (p.policy && p.policy.domestic) out.push("국내 공공계약: 법정 기준 항목은 판정하지 않고 '정보'로 둡니다. 계약법무가 법령·예규와 같은지 확인하세요.");
   out.push("판정은 업계 통상치 기준의 자동 판정입니다(08 탭 기준표). 회사 기준과 다르면 사람이 고칩니다. 스캔 PDF는 읽지 못합니다.");
   return out.map(x => `<li>${x}</li>`).join("");
@@ -1378,16 +1407,25 @@ bind.summary = (p, el) => {
   $$("[data-rf]", el).forEach(b => b.onclick = () => { st.rf = b.dataset.rf; renderTab(); });
   const pr = $("#price", el);
   if (pr) { let t; const hint = $("#pricehint", el);
-    pr.oninput = () => { const n = parseAmount(pr.value), cc = currencyOf(p), ok = Number.isFinite(n) && n > 0, last = store.get("price:" + p.name, 0);
-      $$(".exp table, .exp .elx", el).forEach(t => t.classList.toggle("stale", !ok && !!pr.value.trim()));
-      const sn = $("#stalenote", el); if (sn) { sn.hidden = ok || !pr.value.trim() || !last; if (last) sn.textContent = `입력을 읽을 수 없어 아래 표는 마지막으로 읽은 값(${money(last, cc)}) 기준입니다.`; }
-      hint.textContent = pr.value.trim() ? (ok ? `= ${money(n, cc)}${cc === "KRW" && n >= 1e8 ? ` (${n.toLocaleString("ko-KR")}원)` : ""}` : /-/.test(pr.value) ? "음수는 넣을 수 없습니다." : "금액으로 읽을 수 없습니다. 예: 5억, 500,000,000, 1.2bn") : "";
-      clearTimeout(t); t = setTimeout(() => { if (ok || !pr.value.trim()) { store.set("price:" + p.name, ok ? n : 0); renderTab(); } }, 600); }; }
+    const check = () => { const n = parseAmount(pr.value), cc = currencyOf(p), ok = Number.isFinite(n) && n > 0, last = store.get("price:" + p.name, 0), bad = !ok && !!pr.value.trim();
+      $$(".exp table", el).forEach(t => t.classList.toggle("stale", bad));
+      if (bad) pr.setAttribute("aria-invalid", "true"); else pr.removeAttribute("aria-invalid"); hint.classList.toggle("err", bad);
+      hint.textContent = !pr.value.trim() ? "" : ok ? `= ${money(n, cc)}${cc === "KRW" && n >= 1e8 ? ` (${n.toLocaleString("ko-KR")}원)` : ""}${amountHint(pr.value)}`
+        : `${/-/.test(pr.value) ? "음수는 넣을 수 없습니다." : "금액으로 읽을 수 없습니다(예: 5억, 500,000,000, 1.2bn)."}${last ? ` 아래 표는 마지막으로 읽은 값(${money(last, cc)}) 기준입니다.` : ""}`;
+      return { n, ok }; };
+    pr.addEventListener("validate", check);
+    pr.oninput = () => { const { n, ok } = check(); clearTimeout(t); t = setTimeout(() => { if (ok || !pr.value.trim()) { store.set("price:" + p.name, ok ? n : 0); renderTab(); } }, 600); }; }
   const cu = $("#curr", el); if (cu) cu.onchange = () => { store.set("cur:" + p.name, cu.value); renderTab(); };
-  $$(".eli", el).forEach(inp => { let t; inp.oninput = () => { clearTimeout(t); t = setTimeout(() => { const [k, f] = inp.dataset.el.split("|"), v = store.get("el:" + p.name, {}); v[k] = v[k] || {};
-    const n = f === "a" ? parseAmount(inp.value) : Number(inp.value.replace(/[^\d.]/g, ""));
-    if (inp.value.trim() && !(Number.isFinite(n) && n >= 0 && (f === "a" || n <= 100))) { inp.setAttribute("aria-invalid", "true"); return; }
-    inp.removeAttribute("aria-invalid"); v[k][f] = inp.value.trim() ? n : ""; store.set("el:" + p.name, v); renderTab(); }, 600); }; });
+  const elb = $("#elbox", el); if (elb) elb.ontoggle = () => { st.elOpen = elb.open; };
+  $$(".eli", el).forEach(inp => { let t; const [k, f] = inp.dataset.el.split("|"), msg = $(`[data-msg="${k}"]`, el);
+    const check = () => { const raw = inp.value.trim(); let n = NaN, err = "";
+      if (!raw) n = ""; else if (/-/.test(raw)) err = "음수는 넣을 수 없습니다.";
+      else if (f === "p") { n = /^\d+(?:\.\d+)?\s*%?$/.test(raw) ? parseFloat(raw) : NaN; if (!Number.isFinite(n)) err = "확률은 숫자로 넣어 주세요(0~100)."; else if (n > 100) err = "확률은 0~100% 사이로 넣어 주세요."; }
+      else { n = parseAmount(raw); if (!Number.isFinite(n)) err = "금액으로 읽을 수 없습니다(예: 2억, 20M)."; }
+      if (err) inp.setAttribute("aria-invalid", "true"); else inp.removeAttribute("aria-invalid"); if (msg && (err || msg.dataset.err)) { msg.textContent = err; msg.classList.toggle("err", !!err); msg.dataset.err = err ? "1" : ""; }
+      return err ? null : n; };
+    inp.addEventListener("validate", check);
+    inp.oninput = () => { const n = check(); clearTimeout(t); if (n === null) return; t = setTimeout(() => { const v = store.get("el:" + p.name, {}); v[k] = v[k] || {}; v[k][f] = n; store.set("el:" + p.name, v); renderTab(); }, 600); }; });
   const on = (id, f) => { const b = $("#" + id, el); if (b) b.onclick = f; };
   on("deep", () => claudeExtract(p)); on("stop", () => st.busy && st.busy.ctl.abort());
   on("csv", () => saveCsv(p, "summary")); on("copy", () => copyRows(summaryRows(p)));
@@ -1402,7 +1440,7 @@ function vIssues(p) {
   const conflictCard = (it, isOpen) => `<div class="card icard ${isOpen ? "open" : "add"}"><div class="btns">${isOpen ? `<span class="flag f-open">모순</span>` : `<span class="flag f-add">추가 공고 반영</span>`}<span class="tiny muted">${esc(it.group)} · 담당 ${esc(it.dept)}</span></div>
     <h3>${esc(it.label)}${isOpen ? ' <span class="small muted">값 미정</span>' : ` <span class="mono small">${esc(it.value)}</span>`}</h3><div class="vs">${it.conflict.values.map((v, i) => `<div class="row2"><span class="vv">${esc(v.value)}</span><span class="tiny muted">${esc(typeLabel(v.type))}${v.clause ? " " + esc(v.clause) : ""}</span>${refBtn(p, v.docId, v.page, it.key, (it.candidates.find(x => x.docId === v.docId) || {}).evidence)}${isOpen ? (i === 0 ? '<span class="tiny muted">우선순위로는 앞섬</span>' : "") : (v.docId === it.docId ? '<span class="tiny">← 적용</span>' : "")}</div>`).join("")}</div>
     <p class="rule">${esc(it.conflict.rule)}</p>${isOpen && qOf(it) ? `<div class="btns" style="margin-top:8px"><button class="btn sm" data-goq="${qOf(it).id}">질의 ${qOf(it).id} 보기</button></div>` : ""}</div>`;
-  return `<div class="sec-h"><h2>모순·리스크</h2><span class="muted small">확인할 것 ${issueCount(c)}건 = 모순 ${c.open} + 빠진 참조 문서 ${c.missRefs} + 높음 ${c.high}</span></div>
+  return `<div class="sec-h"><h2>모순·리스크</h2><span class="muted small">확인할 것 ${issueCount(c)}건 = 모순 ${c.open} + 빠진 참조 문서 ${c.missRefs} + 높음 ${c.high}${c.tech ? ` + 기술 조건부·부적합 ${c.tech}` : ""}</span></div>
   <p class="lede">문서끼리 값이 다른 곳, 받은 묶음에 없는 문서를 가리키는 참조, 계약자에게 불리한 조건을 모았습니다. 우선순위는 입찰 절차 항목(마감·보증·유효기간 등)은 입찰지침이, 계약 항목은 ${["CD", "PCC", "GCC", "ER", "TS"].map(a => `<abbr title="${esc(ABBR[a])}">${a}</abbr>`).join(" > ")} 순서(흔한 PCC 1.5 기준)가 정하고, 추가 공고는 늘 앞선 판보다 우선합니다.</p>
   <div class="stack">
   <div><div class="h3">모순 ${open.length}건 <span class="muted small">값 미정, 질의 필요</span></div>${open.length ? `<div class="grid">${open.map(i => conflictCard(i, true)).join("")}</div>` : `<p class="empty">${p.built.docs.length > 1 ? "문서끼리 값이 다른 항목이 없습니다." : "문서가 1권이라 문서 간 대조를 하지 않았습니다."}</p>`}</div>
@@ -1418,20 +1456,39 @@ function vIssues(p) {
 const REQ_ST = [["", "미검토"], ["ok", "적합"], ["cond", "조건부"], ["no", "부적합"]];
 function reqMatrix(p) {
   if (!p.reqs) p.reqs = E.requirements(p.built);
-  const r = p.reqs, v = store.get("req:" + p.name, {}), cnt = k => r.filter(x => (v[x.key] || "") === k).length;
-  if (!r.length) return "";
-  return `<details class="card pad" ${st.reqOpen ? "open" : ""} id="reqbox"><summary class="h3" style="margin:0">기술 요구사항 적합성 ${r.length}건 <span class="muted small">적합 ${cnt("ok")} · 조건부 ${cnt("cond")} · 부적합 ${cnt("no")} · 미검토 ${cnt("")}</span></summary>
-    <p class="tiny muted" style="margin:6px 0">요구사항·시방 문서에서 'shall·하여야 한다' 문장을 뽑았습니다. 설계·시공이 상태를 고르면, 조건부·부적합은 질의나 기술 이탈 후보가 됩니다. 상태는 이 브라우저에 저장됩니다.</p>
-    <div class="tscroll"><table class="t" style="min-width:0"><tbody>${r.map(x => `<tr><td style="width:100%">${esc(x.text)}<div>${refBtn(p, x.docId, x.page, "-", x.text)}</div></td><td><select class="sel" data-req="${esc(x.key)}" aria-label="적합성 상태">${REQ_ST.map(([k, l]) => `<option value="${k}" ${(v[x.key] || "") === k ? "selected" : ""}>${l}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div>
+  const R = p.reqs, r = R.list, v = store.get("req:" + p.name, {}), cnt = k => r.filter(x => (v[x.key] || "") === k).length;
+  if (!r.length) return `<div class="card pad small muted">기술 요구사항 적합성: 요구사항·시방 문서에서 'shall·하여야 한다' 문장을 찾지 못했습니다(0건).</div>`;
+  return `<details class="card pad" ${st.reqOpen ? "open" : ""} id="reqbox"><summary class="h3" style="margin:0">기술 요구사항 적합성 ${R.total > r.length ? `${r.length}/${R.total}건` : `${r.length}건`} <span class="muted small">적합 ${cnt("ok")} · 조건부 ${cnt("cond")} · 부적합 ${cnt("no")} · 미검토 ${cnt("")}</span></summary>
+    <p class="tiny muted" style="margin:6px 0">${R.fallback ? "요구사항·시방(ER·TS) 문서가 없어 계약 문서에서 뽑았습니다(요약표가 다루는 상업 조항·발주처 의무는 뺌). " : "요구사항·시방 문서에서 'shall·하여야 한다' 문장을 뽑았습니다. "}${R.total > r.length ? `앞 ${r.length}건만 표시합니다(전체 ${R.total}건). ` : ""}설계·시공이 상태를 고르면 조건부·부적합은 03 탭 '기술 질의·이탈 후보'와 결재·통제에 올라갑니다. 상태는 이 브라우저에 저장됩니다.</p>
+    <div class="tscroll"><table class="t" style="min-width:0"><tbody>${r.map(x => `<tr><td style="width:100%">${esc(x.text)}<div>${refBtn(p, x.docId, x.page, "~", x.text)}</div></td><td><select class="sel" data-req="${esc(x.key)}" aria-label="적합성 상태">${REQ_ST.map(([k, l]) => `<option value="${k}" ${(v[x.key] || "") === k ? "selected" : ""}>${l}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div>
     <div class="btns" style="margin-top:8px"><button class="btn sm" id="copyreq">적합성 표 복사</button></div></details>`;
 }
 bind.issues = (p, el) => {
   const box = $("#reqbox", el); if (box) box.ontoggle = () => { st.reqOpen = box.open; };
-  $$("[data-req]", el).forEach(sel => sel.onchange = () => { const v = store.get("req:" + p.name, {}); if (sel.value) v[sel.dataset.req] = sel.value; else delete v[sel.dataset.req]; store.set("req:" + p.name, v); renderTab(); });
-  const c = $("#copyreq", el); if (c) c.onclick = () => { const v = store.get("req:" + p.name, {}); copyRows([["문서", "쪽", "요구사항", "상태"], ...p.reqs.map(x => [x.docName, x.page, x.text, (REQ_ST.find(s => s[0] === (v[x.key] || "")) || [])[1]])]); };
+  $$("[data-req]", el).forEach(sel => sel.onchange = () => { const v = store.get("req:" + p.name, {}); if (sel.value) v[sel.dataset.req] = sel.value; else delete v[sel.dataset.req]; store.set("req:" + p.name, v); renderTabs(); renderTab(); });
+  const c = $("#copyreq", el); if (c) c.onclick = () => { const v = store.get("req:" + p.name, {}); copyRows([["문서", "쪽", "요구사항", "상태"], ...p.reqs.list.map(x => [x.docName, x.page, x.text, (REQ_ST.find(s => s[0] === (v[x.key] || "")) || [])[1]])]); };
 };
 
 // 03 질의·이탈
+// 기술 요구사항 중 담당자가 조건부·부적합으로 고른 것 → 기술 질의·이탈 후보
+function techCands(p) {
+  if (!p.built || !p.built.docs.length) return [];
+  if (!p.reqs) p.reqs = E.requirements(p.built);
+  const v = store.get("req:" + p.name, {});
+  return p.reqs.list.filter(x => v[x.key] === "cond" || v[x.key] === "no").map(x => ({ ...x, st: v[x.key] }));
+}
+function techSection(p) {
+  const tc = techCands(p); if (!tc.length) return "";
+  return `<div><div class="h3">기술 질의·이탈 후보 ${tc.length}건 <span class="muted small">02 탭 적합성 표에서 조건부·부적합으로 고른 요구사항</span></div><div class="grid">${tc.map((x, n) => `<div class="card draft" data-tc="${n}"><div class="hd"><span class="k-q">T-${String(n + 1).padStart(2, "0")}</span><b>${x.st === "no" ? "부적합" : "조건부"}</b></div>
+    <div class="tiny muted" style="margin:-2px 0 6px">기술 · 담당 설계·시공</div><p class="small">${esc(x.text)}</p>
+    <div class="en" lang="en">${esc(x.st === "no" ? `Technical deviation: the Bidder cannot comply with the requirement "${x.text.slice(0, 160)}" (${x.docName.replace(/\.[^.]+$/, "")}, p.${x.page}) and proposes the following alternative: [설계·시공이 대안 작성].` : `Clarification: regarding "${x.text.slice(0, 160)}" (${x.docName.replace(/\.[^.]+$/, "")}, p.${x.page}), please confirm whether the following is acceptable: [설계·시공이 조건 작성].`)}</div>
+    <div class="btns"><span class="tiny muted">근거</span>${refBtn(p, x.docId, x.page, "~", x.text)}</div></div>`).join("")}</div></div>`;
+}
+function reqNote(p) {
+  const r = p.reqs && p.reqs.list.find(x => x.docId === st.src.doc && x.page === st.src.page && x.text.startsWith((st.src.line || "").slice(0, 30)));
+  const v = store.get("req:" + p.name, {}), s = r ? (REQ_ST.find(z => z[0] === (v[r.key] || "")) || [])[1] : "";
+  return `<span class="small"><b>기술 요구사항</b>(shall 문장)을 칠했습니다. 현재 적합성 상태: <b>${esc(s || "미검토")}</b>. 상태는 02 탭 '기술 요구사항 적합성' 표에서 고릅니다.</span>`;
+}
 function vDrafts(p) {
   const d = drafts(p), polishing = st.busy && st.busy.kind === "polish", pol = p.policy || {}, qd = deadline(p, "clarification_deadline");
   const card = (x, kind) => `<div class="card draft" data-card="${x.id}"><div class="hd"><span class="${kind === "Q" ? "k-q" : "k-d"}">${x.id}</span><b>${esc(x.label)}</b></div>
@@ -1447,6 +1504,7 @@ function vDrafts(p) {
   <details class="small" style="margin-bottom:10px"><summary class="muted">질의를 만드는 기준</summary><p class="tiny muted" style="margin-top:4px">문서 간 모순, 빠진 참조 문서, 못 찾은 핵심 항목(${E.MUST.filter(k => !(pol.domestic && (k === "retention" || k === "bid_currency"))).map(k => E.ITEMS.find(i => i.key === k).label).join("·")}), 발주처가 보증하지 않는 조사 자료.${pol.forbidden ? " 이탈이 금지된 입찰은 높음 조건의 완화 요청도 질의로 넣습니다." : ""}${pol.domestic ? " 국내 공공계약은 유보금·입찰 통화를 묻지 않고, 법정 기준 항목은 '정보'로 둡니다." : ""} 그 밖의 '확인 필요' 항목은 담당자가 판단합니다.</p></details>
   ${p.claudeDrafts ? `<p class="small" style="margin-bottom:12px"><span class="k-q">Claude 다듬음</span> 조항·수치는 그대로 두고 문체만 다듬었습니다. 제출 전에 원문과 대조하세요.</p>` : ""}
   <div class="stack"><div><div class="h3">질의 ${d.Q.length}건</div>${d.Q.length ? `<div class="grid">${d.Q.map(x => card(x, "Q")).join("")}</div>` : '<p class="empty">질의할 모순·누락이 없습니다.</p>'}</div>
+  ${techSection(p)}
   <div><div class="h3">이탈 요청 ${d.D.length}건</div>${d.D.length ? `<div class="grid">${d.D.map(x => card(x, "D")).join("")}</div>` : `<p class="empty">${pol.domestic ? "국내 공공계약이라 이탈·조건 완화 요청을 만들지 않았습니다(법정 기준 항목은 '정보')." : pol.forbidden ? (d.Q.some(q => q.basis === "조건 완화 질의") ? "이탈을 쓸 수 없는 입찰이라 조건 완화 요청을 질의로 넣었습니다." : "이탈을 쓸 수 없는 입찰이고, 완화를 요청할 높음 조건도 없습니다.") : "높음 판정 항목이 없어 이탈 초안이 없습니다."}</p>`}</div></div>`;
 }
 bind.drafts = (p, el) => {
@@ -1483,7 +1541,7 @@ function vSource(p) {
   const doc = docOf(p, st.src.doc), pages = doc.pages, pi = Math.max(0, pages.findIndex(x => x.number === st.src.page)), page = pages[pi];
   const { text, spans } = marksFor(p, doc, page.number);
   let html = "", at = 0;
-  for (const sp of spans) { if (sp.line) { html += esc(text.slice(at, sp.s)) + `<mark class="hl g5 refline focus" title="참조 문장">${esc(text.slice(sp.s, sp.e))}<sup>참조 문장</sup></mark>`; at = sp.e; continue; } html += esc(text.slice(at, sp.s)) + `<mark class="hl ${GCLS[sp.it.group]} ${st.src.focus === sp.it.key ? "focus" : ""}" data-k="${sp.it.key}" tabindex="0" title="${esc(sp.it.label)}${sp.applied ? "" : sp.it.undetermined ? " (모순: 값 미정)" : " (다른 문서 값이 적용됨)"}">${esc(text.slice(sp.s, sp.e))}<sup>${esc(sp.it.label)}</sup></mark>`; at = sp.e; }
+  for (const sp of spans) { if (sp.line) { html += esc(text.slice(at, sp.s)) + `<mark class="hl ${st.src.lineKind === "req" ? "g4" : "g5"} refline focus" title="${st.src.lineKind === "req" ? "기술 요구사항" : "참조 문장"}">${esc(text.slice(sp.s, sp.e))}<sup>${st.src.lineKind === "req" ? "기술 요구사항" : "참조 문장"}</sup></mark>`; at = sp.e; continue; } html += esc(text.slice(at, sp.s)) + `<mark class="hl ${GCLS[sp.it.group]} ${st.src.focus === sp.it.key ? "focus" : ""}" data-k="${sp.it.key}" tabindex="0" title="${esc(sp.it.label)}${sp.applied ? "" : sp.it.undetermined ? " (모순: 값 미정)" : " (다른 문서 값이 적용됨)"}">${esc(text.slice(sp.s, sp.e))}<sup>${esc(sp.it.label)}</sup></mark>`; at = sp.e; }
   html += esc(text.slice(at));
   const cnt = Object.fromEntries(live.map(d => [d.id, items(p).reduce((n, it) => n + it.candidates.filter(c => c.docId === d.id).length, 0)]));
   const fit = st.src.focus && items(p).find(i => i.key === st.src.focus), onPage = fit && spans.some(sp => sp.it && sp.it.key === fit.key);
@@ -1493,7 +1551,7 @@ function vSource(p) {
   <div class="srcbar"><label class="small" for="sdoc">문서</label><select class="sel" id="sdoc">${live.map(d => `<option value="${d.id}" ${d.id === doc.id ? "selected" : ""}>${esc(shortDoc(d))} · ${esc(typeLabel(d.type))} · 칠한 곳 ${cnt[d.id]}</option>`).join("")}</select>
     <button class="btn sm" id="pprev" ${pi <= 0 ? "disabled" : ""}>이전 쪽</button><span class="mono small">${page.number} / ${pages.length}</span><button class="btn sm" id="pnext" ${pi >= pages.length - 1 ? "disabled" : ""}>다음 쪽</button></div>
   <div class="src-grid"><div class="paper"><div class="run"><span>${esc(doc.name)}</span><span>${esc(typeLabel(doc.type))} · ${doc.kind === "pdf" ? "쪽" : "구간"} ${page.number}</span></div><pre id="ptext">${html}</pre></div>
-  <div class="side stack" style="gap:10px"><div class="card pad focuscard">${fit ? `<div class="btns"><b>${esc(fit.label)}</b>${flagsOf(fit)}</div><div class="mono small" style="margin:4px 0">${valOf(fit)}</div><p class="small">${esc(fit.risk_reason || "")}</p>${fit.conflict ? `<p class="small muted" style="margin-top:4px">${esc(fit.conflict.rule)}</p>` : ""}${!onPage ? `<p class="small" style="margin-top:4px">이 쪽에는 이 항목의 근거가 없습니다.</p>` : ""}${fit.found && !fit.undetermined && fit.docId !== doc.id ? `<p class="small" style="margin-top:4px">적용 값 출처: ${refBtn(p, fit.docId, fit.pages[0], fit.key, fit.evidence)}</p>` : ""}` : (st.src.line ? `<span class="small">${st.src.target ? `<b>${esc(st.src.target)}</b> 문서를 가리키는` : "다른 문서를 가리키는"} <b>참조 문장</b>을 칠했습니다.${st.src.target && p.refs.some(r => r.target === st.src.target && !r.present) ? ` 이 문서는 받은 묶음에 없어 03 탭 ${esc((drafts(p).Q.find(q => q.label === "빠진 참조 문서: " + st.src.target) || {}).id || "")} 질의로 배포를 요청합니다.` : ""}</span>` : `<span class="small muted">이 쪽에서 칠한 곳 ${spans.filter(sp => sp.it).length}개. 칠한 곳이나 아래 목록을 누르세요.</span>`)}</div>
+  <div class="side stack" style="gap:10px"><div class="card pad focuscard">${fit ? `<div class="btns"><b>${esc(fit.label)}</b>${flagsOf(fit)}</div><div class="mono small" style="margin:4px 0">${valOf(fit)}</div><p class="small">${esc(fit.risk_reason || "")}</p>${fit.conflict ? `<p class="small muted" style="margin-top:4px">${esc(fit.conflict.rule)}</p>` : ""}${!onPage ? `<p class="small" style="margin-top:4px">이 쪽에는 이 항목의 근거가 없습니다.</p>` : ""}${fit.found && !fit.undetermined && fit.docId !== doc.id ? `<p class="small" style="margin-top:4px">적용 값 출처: ${refBtn(p, fit.docId, fit.pages[0], fit.key, fit.evidence)}</p>` : ""}` : (st.src.line && st.src.lineKind === "req" ? reqNote(p) : st.src.line ? `<span class="small">${st.src.target ? `<b>${esc(st.src.target)}</b> 문서를 가리키는` : "다른 문서를 가리키는"} <b>참조 문장</b>을 칠했습니다.${st.src.target && p.refs.some(r => r.target === st.src.target && !r.present) ? ` 이 문서는 받은 묶음에 없어 03 탭 ${esc((drafts(p).Q.find(q => q.label === "빠진 참조 문서: " + st.src.target) || {}).id || "")} 질의로 배포를 요청합니다.` : ""}</span>` : `<span class="small muted">이 쪽에서 칠한 곳 ${spans.filter(sp => sp.it).length}개. 칠한 곳이나 아래 목록을 누르세요.</span>`)}</div>
     <div class="card mlist">${spans.filter(sp => sp.it).map(sp => `<button class="mrow ${st.src.focus === sp.it.key ? "on" : ""}" data-k="${sp.it.key}"><span>${esc(sp.it.label)}</span><span class="flag r-${sp.it.risk}">${RISK[sp.it.risk]}</span><span class="vv">${esc(text.slice(sp.s, sp.e).slice(0, 70))}</span></button>`).join("") || '<div class="pad small muted">이 쪽에는 추출한 값이 없습니다.</div>'}</div></div></div>`;
 }
 bind.source = (p, el) => {
@@ -1505,10 +1563,9 @@ bind.source = (p, el) => {
   $$("mark.hl[data-k],.mrow", el).forEach(m => { const f = () => { st.src.focus = m.dataset.k; st.src.line = null; renderTab(); }; m.onclick = f; m.onkeydown = e => { if (e.key === "Enter") f(); }; });
 };
 function openSource(docId, page, key, hl, target) {
-  const p = cur(); let k = key && key !== "-" ? key : null;
-  st.src.line = key === "-" ? hl : null;
-  if (!k && hl && key !== "-") { const it = items(p).find(i => i.candidates.some(c => c.docId === docId && c.page === page && c.evidence.startsWith(hl.slice(0, 30)))); k = it ? it.key : null; }
-  st.src = { doc: docId, page, focus: k, line: key === "-" ? hl : null, target: target || "" }; go("source", false);
+  const p = cur(), lineMode = key === "-" || key === "~"; let k = key && !lineMode ? key : null;
+  if (!k && hl && !lineMode) { const it = items(p).find(i => i.candidates.some(c => c.docId === docId && c.page === page && c.evidence.startsWith(hl.slice(0, 30)))); k = it ? it.key : null; }
+  st.src = { doc: docId, page, focus: k, line: lineMode ? hl : null, lineKind: key === "~" ? "req" : "ref", target: target || "" }; go("source", false);
   const bar = ($(".tabbar") || {}).offsetHeight || 0, narrow = window.innerWidth <= 1000;
   const fm = narrow ? $("#p-source .side") : ($("#p-source mark.focus") || $("#p-source mark.refline"));
   if (fm) { const top = fm.getBoundingClientRect().top + window.scrollY - bar - (narrow ? 8 : 120); window.scrollTo({ top: Math.max(0, top) }); }

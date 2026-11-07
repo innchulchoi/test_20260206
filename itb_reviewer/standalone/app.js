@@ -262,7 +262,7 @@ function vSummary(p) {
     <div><div class="k">높음</div><div class="v ${c.high ? "high" : ""}">${c.high}</div><div class="n">주의 ${c.medium} · 확인 필요 ${c.unknown}</div></div>
     <div><div class="k">모순(값 미정)</div><div class="v ${c.open ? "conflict" : ""}">${c.open}</div><div class="n">추가 공고로 해소 ${c.added}</div></div>
     <div><div class="k">질의 초안</div><div class="v">${c.q}</div><div class="n">빠진 참조 문서 ${c.missRefs}${c.tech ? ` · 기술 후보 ${c.tech}` : ""}</div></div>
-    <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.domestic ? "국내 공공계약: 이탈 없음" : p.policy.forbidden ? `이탈 불가 → 완화 질의 ${drafts(p).Q.filter(q => q.basis === "조건 완화 질의").length}건` : "높음 판정에서"}${techCands(p).some(x => x.st === "no") ? ` · 기술 이탈 후보 ${techCands(p).filter(x => x.st === "no").length}` : ""}</div></div>
+    <div><div class="k">이탈 초안</div><div class="v">${c.d}</div><div class="n">${p.policy.domestic ? "국내 공공계약: 이탈 없음" : p.policy.forbidden ? `이탈 불가 → 완화 질의 ${drafts(p).Q.filter(q => q.basis === "조건 완화 질의").length}건` : "높음 판정에서"}${techCands(p).some(x => x.st === "no") ? ` · 별도로 기술 이탈 후보 T ${techCands(p).filter(x => x.st === "no").length}건` : ""}</div></div>
     <div><div class="k">검토 완료</div><div class="v">${c.reviewed}/${c.total}</div><div class="n">담당자가 근거를 보고 체크</div></div>
   </div>
   <div class="verdict">
@@ -316,6 +316,7 @@ const rawBad = (p, k) => ["p", "a"].some(f => { const r = (st.elRaw || {})[p.id 
 function elTable(p, its, cc, price) {
   const rows = elRows(p, its, price), cash = its.filter(i => (i.risk === "high" || i.undetermined) && CASH_KEYS.has(i.key));
   const sum = rows.reduce((s, r) => s + r.el, 0), full = rows.reduce((s, r) => s + r.a, 0);
+  const nbad = rows.reduce((s, r) => s + ["p", "a"].filter(f => { const v = rawOf(p, r.i.key, f); return v !== undefined && parseEl(f, v, cc).err; }).length, 0);
   const body = rows.length ? rows.map(({ i, x, el, capped, cap }) => `<div class="elrow">
       <div class="elname">${esc(i.label)}${i.undetermined ? ' <span class="flag f-open">모순</span>' : ""}</div>
       <label class="elf"><span class="tiny muted">발생 확률(%)</span><input class="inp eli" data-el="${i.key}|p" inputmode="decimal" value="${esc(rawOf(p, i.key, "p") ?? (x.p ?? ""))}" placeholder="0~100" aria-label="${esc(i.label)} 발생 확률(%)"></label>
@@ -326,8 +327,9 @@ function elTable(p, its, cc, price) {
   return `<details class="card pad elx" ${st.elOpen !== false ? "open" : ""} id="elbox"><summary class="h3" style="margin:0">기대손실(EL)·예비비 <span class="muted small">담당자 입력${rows.length ? ` · ${rows.length}개 위험` : ""}</span></summary>
     <p class="tiny muted" style="margin:6px 0 4px">EL = 발생 확률 × 발생 시 손실. 확률과 손실액은 원가팀이 넣습니다(도구가 확률을 정하지 않음, 이 브라우저에 저장). P90 같은 분포 기반 예비비는 원가팀이 따로 정합니다.${cash.length ? ` ${esc(cash.map(i => i.label).join("·"))}은 손실이 아니라 자금 묶임이라 뺐습니다(금액 표의 현금흐름 참고).` : ""}</p>
     ${body}
-    ${rows.length ? `<div class="elsum"><div><span class="small">EL 합계</span> <span class="tiny muted">예비비 권고 하한</span></div><b class="mono">${sum ? money(sum, cc) : "-"}</b></div>
-    <div class="elsum sub"><div><span class="small">모두 발생할 때 손실 합계</span> <span class="tiny muted">최악 참고값</span></div><span class="mono">${full ? money(full, cc) : "-"}</span></div>` : ""}
+    ${rows.length ? `<div class="elsum${nbad ? " stale" : ""}"><div><span class="small">EL 합계</span> <span class="tiny muted">예비비 권고 하한</span></div><b class="mono">${sum ? money(sum, cc) : "-"}</b></div>
+    <div class="elsum sub${nbad ? " stale" : ""}"><div><span class="small">모두 발생할 때 손실 합계</span> <span class="tiny muted">최악 참고값</span></div><span class="mono">${full ? money(full, cc) : "-"}</span></div>
+    <div class="elmsg err tiny elsumnote" role="status" ${nbad ? "" : "hidden"}>${nbad ? `입력 오류 ${nbad}건: 합계는 마지막으로 읽은 값 기준입니다.` : ""}</div>` : ""}
     ${price ? "" : '<p class="tiny muted">위 금액 칸에 계약금액을 넣으면 지체상금 손실이 상한에서 멈추도록 계산합니다.</p>'}</details>`;
 }
 // 금액 입력 해석 보조: "1억5천"처럼 만 단위를 빠뜨린 표기 안내
@@ -375,6 +377,7 @@ bind.summary = (p, el) => {
       if (msg) { msg.textContent = err || (f === "a" && Number.isFinite(n) && n > 0 ? `= ${money(n, cc)}` : ""); msg.classList.toggle("err", !!err); msg.classList.toggle("muted", !err); }
       // 잘못된 값이 있으면 그 줄 EL을 바로 흐리고 기준을 알린다
       if (row) { const bad = $$(".eli", row).some(x => parseEl(x.dataset.el.split("|")[1], x.value, cc).err), elv = $(".elv", row); if (elv) { elv.classList.toggle("stale", bad); const note = $(".elnote", elv); if (note) note.hidden = !bad; } }
+      const box = $("#elbox"); if (box) { const nb = $$(".eli", box).filter(x => parseEl(x.dataset.el.split("|")[1], x.value, cc).err).length; $$(".elsum", box).forEach(s => s.classList.toggle("stale", nb > 0)); const sn = $(".elsumnote", box); if (sn) { sn.hidden = !nb; sn.textContent = `입력 오류 ${nb}건: 합계는 마지막으로 읽은 값 기준입니다.`; } }
       return err ? null : n; };
     inp.addEventListener("validate", check);
     // 저장은 칸별 타이머 하나로, 실행할 때 그 칸의 최신 입력 원문을 다시 읽는다(다시 그리기 전 타이머가 입력 도중 값을 저장하지 않게)
@@ -467,9 +470,9 @@ function vDrafts(p) {
   const d = drafts(p), polishing = st.busy && st.busy.kind === "polish", pol = p.policy || {}, qd = deadline(p, "clarification_deadline");
   const card = (x, kind) => `<div class="card draft" data-card="${x.id}"><div class="hd"><span class="${kind === "Q" ? "k-q" : "k-d"}">${x.id}</span><b>${esc(x.label)}</b></div>
     <div class="tiny muted" style="margin:-2px 0 6px">${kind === "Q" ? "질의" : "이탈"} · ${esc(x.basis.replace("리스크 높음", "높음"))} · 담당 ${esc(x.owner)}</div>
-    <p class="small">${esc(x.ko)}</p>${x.why ? `<p class="tiny muted" style="margin-top:2px">${esc(x.why)}</p>` : ""}${x.next ? `<p class="tiny" style="margin-top:4px">순서: 이 질의의 회신이 불리하면 <button class="docref" data-goq="${x.next}">${x.next}</button> 이탈을 넣습니다.</p>` : ""}${x.after ? `<p class="tiny" style="margin-top:4px">순서: <button class="docref" data-goq="${x.after}">${x.after}</button> 질의 회신이 불리할 때 넣는 이탈입니다.</p>` : ""}<div class="en" ${pol.korean ? "" : 'lang="en"'}>${esc(x.en)}</div>
+    <p class="small">${esc(x.ko)}</p>${x.why ? `<p class="tiny muted" style="margin-top:2px">${esc(x.why)}</p>` : ""}${x.next ? `<p class="tiny" style="margin-top:4px">순서: 이 질의의 회신이 불리하면 <button class="docref" data-goq="${x.next}">${x.next}</button> 이탈을 넣습니다.</p>` : ""}${x.after ? `<p class="tiny" style="margin-top:4px">순서: <button class="docref" data-goq="${x.after}">${x.after}</button> 질의 회신이 불리할 때 넣는 이탈입니다.</p>` : ""}${(tb => tb.length ? `<p class="tiny" style="margin-top:4px">관련 기술 후보: ${tb.map(id => `<button class="docref" data-goq="${id}">${id}</button>`).join(" ")} (같은 사안이면 한쪽만 제출하거나 질의 회신 뒤 판단)</p>` : "")(tdAll.filter(t => t.rel.includes(x.id)).map(t => t.id))}<div class="en" ${pol.korean ? "" : 'lang="en"'}>${esc(x.en)}</div>
     <div class="btns"><span class="tiny muted">근거</span>${(x.refs || []).length ? x.refs.map(r => refBtn(p, r.docId, r.page, r.line ? "-" : x.item, r.hl, r.line ? x.label.replace("빠진 참조 문서: ", "") : "")).join(" ") : `<span class="tiny muted">${esc(x.where)}</span>`}<span class="grow"></span><button class="btn sm" data-copy="${kind}:${x.id}">${pol.korean ? "문안 복사" : "영문 복사"}</button></div></div>`;
-  const tcN = techCands(p).length;
+  const tcN = techCands(p).length, tdAll = techDrafts(p);
   return `<div class="sec-h"><h2>질의·이탈 초안</h2><span class="muted small">질의 ${d.Q.length} · 이탈 ${d.D.length}${tcN ? ` · 기술 후보 ${tcN}` : ""}</span></div>
   <p class="lede"><b>질의</b>는 질의 마감 전에 모순·누락을 발주처에 묻는 문서이고, <b>이탈</b>은 입찰서의 이탈 목록에 '이 조건은 이렇게 바꿔 달라'고 적는 요청입니다. 모두 초안이며 계약법무 검토 뒤 제출하세요.${qd.state === "ok" ? ` 질의 마감은 <span class="mono">${esc(qd.item.value)}</span>(${dtxt(qd)})입니다.` : ""}</p>
   ${pol.note ? `<div class="banner" style="margin-bottom:12px">${esc(pol.note)}${pol.evidence ? ` <span class="muted">근거: "${esc(pol.evidence)}"</span>` : ""}</div>` : ""}

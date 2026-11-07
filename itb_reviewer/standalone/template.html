@@ -140,7 +140,8 @@ td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top
 td.flags{min-width:172px} .exp table.stale{opacity:.45} #pricehint.err,.elmsg.err{color:var(--conflict);font-weight:600}
 .elx .elrow{display:grid;grid-template-columns:minmax(140px,1.4fr) 110px 170px minmax(120px,1fr);gap:4px 12px;align-items:end;padding:8px 0;border-bottom:1px solid var(--line-2)}
 .elx .elname{align-self:center;font-weight:600} .elx .elf{display:flex;flex-direction:column;gap:2px} .elx .elf .inp{width:100%} .elx .elv{text-align:right;align-self:center} .elx .elmsg{grid-column:1/-1} .elx .elmsg:empty{display:none}
-.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)} .elx .elv.stale b{opacity:.5}
+.elx .elsum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0 2px;border-top:1px solid var(--line)} .elx .elsum b{font-size:16px} .elx .elsum.sub{border-top:0;padding-top:2px;color:var(--muted)} .elx .elv.stale b{opacity:.5} .elx .elsum.stale b,.elx .elsum.stale .mono{opacity:.5} .elsumnote{margin-top:4px}
+#reqbox td .flag{vertical-align:1px}
 #reqbox table{width:100%} #reqbox td:last-child{width:120px} #reqbox td:first-child{min-width:0;overflow-wrap:anywhere} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
@@ -190,7 +191,7 @@ mark.hl sup{font-family:var(--f-sans);font-size:10px;font-weight:600;margin-left
 .team h3{display:flex;gap:8px;align-items:baseline;font-size:15px}
 .team ul{margin:6px 0 0;padding:0;list-style:none}
 .team li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:5px 0;border-bottom:1px solid var(--line-2);font-size:13px;align-items:baseline}
-.team li .vv{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);grid-column:1/-1}
+.team li .vv{font-size:12.5px;color:var(--muted);grid-column:1/-1}
 /* chat */
 .msgs{display:flex;flex-direction:column;gap:10px;max-height:600px;overflow:auto;margin:10px 0}
 .msg{padding:10px 12px;border-radius:10px;white-space:pre-wrap;max-width:100%}
@@ -242,7 +243,7 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   .pkgbar .wrap{align-items:stretch} .pkgbar .grow{display:none}
 }
 @media (max-width:1180px){.top .sub{display:none} .pkgbar .lg{display:none} .pkgbtn{max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
-@media (max-width:600px){body{font-size:14px}.sec-h h2{font-size:18px}.brand h1{font-size:17px}main.wrap{padding-block:14px 40px}}
+@media (max-width:600px){#reqbox td .flag{display:flex;width:max-content;margin:0 0 4px}body{font-size:14px}.sec-h h2{font-size:18px}.brand h1{font-size:17px}main.wrap{padding-block:14px 40px}}
 </style>
 
 <header class="top">

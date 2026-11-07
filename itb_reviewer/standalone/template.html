@@ -120,6 +120,7 @@ mark.refline{outline:2px dashed var(--ink);outline-offset:1px}
 .toplist li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start}
 .exp table{width:100%;border-collapse:collapse;font-size:13px}
 .exp th,.exp td{padding:5px 6px;border-bottom:1px solid var(--line-2);text-align:left}
+.inp[aria-invalid="true"]{border-color:var(--high)}
 .exp td.num{text-align:right;font-family:var(--f-mono);white-space:nowrap}
 .priceinp{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px} .priceinp .inp{width:170px}
 .inp{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:6px 9px;min-width:0;width:200px;max-width:100%;font-family:var(--f-mono)}
@@ -136,7 +137,7 @@ td.lab .car{display:inline-block;width:12px;color:var(--faint);font-weight:400}
 td.val{font-family:var(--f-mono);font-size:13px;max-width:420px}
 td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top:2px}
 .miss{font-family:var(--f-sans);color:var(--muted);font-style:italic}
-td.flags{min-width:150px} td.dep{white-space:nowrap;min-width:64px}
+td.flags{min-width:172px} .exp table.stale,.exp .elx.stale{opacity:.45} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 tr.det td{background:var(--bg);font-size:13px}
@@ -227,7 +228,8 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   table.t tr.row td.refc{grid-column:1/-1;grid-row:4;font-size:12.5px} table.t tr.row td.dep{grid-column:1/-1;grid-row:5;font-size:12.5px} table.t tr.row td.dep::before{content:"담당 "}
   .exp table,.exp tbody{display:block} .exp tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;padding:6px 0;border-bottom:1px solid var(--line-2)}
   .exp td{border:0;padding:0;font-size:12.5px} .exp td:first-child{grid-column:1/-1} .exp td.num{white-space:nowrap;text-align:left} .exp td.num:last-child{text-align:right;white-space:normal}
-  .pkgbtn{max-width:none} details>summary{min-height:34px;display:flex;align-items:center}
+  .pkgbar .pkgbtn{max-width:none;white-space:normal} details>summary{min-height:34px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px} .exp td.num br{display:none}
+  .elx input.inp{width:100%!important}
   select.sel{min-height:34px}
   table.t tr.grp,table.t tr.det{display:block} table.t tr.grp td,table.t tr.det td{display:block}
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}

@@ -120,6 +120,7 @@ mark.refline{outline:2px dashed var(--ink);outline-offset:1px}
 .toplist li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start}
 .exp table{width:100%;border-collapse:collapse;font-size:13px}
 .exp th,.exp td{padding:5px 6px;border-bottom:1px solid var(--line-2);text-align:left}
+.inp[aria-invalid="true"]{border-color:var(--high)}
 .exp td.num{text-align:right;font-family:var(--f-mono);white-space:nowrap}
 .priceinp{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px} .priceinp .inp{width:170px}
 .inp{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:6px 9px;min-width:0;width:200px;max-width:100%;font-family:var(--f-mono)}
@@ -136,7 +137,7 @@ td.lab .car{display:inline-block;width:12px;color:var(--faint);font-weight:400}
 td.val{font-family:var(--f-mono);font-size:13px;max-width:420px}
 td.val .s{font-family:var(--f-sans);font-size:12px;color:var(--muted);margin-top:2px}
 .miss{font-family:var(--f-sans);color:var(--muted);font-style:italic}
-td.flags{min-width:150px} td.dep{white-space:nowrap;min-width:64px}
+td.flags{min-width:172px} .exp table.stale,.exp .elx.stale{opacity:.45} td.dep{white-space:nowrap;min-width:64px}
 td.ck{text-align:center}
 td.ck input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 tr.det td{background:var(--bg);font-size:13px}
@@ -227,7 +228,8 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   table.t tr.row td.refc{grid-column:1/-1;grid-row:4;font-size:12.5px} table.t tr.row td.dep{grid-column:1/-1;grid-row:5;font-size:12.5px} table.t tr.row td.dep::before{content:"담당 "}
   .exp table,.exp tbody{display:block} .exp tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;padding:6px 0;border-bottom:1px solid var(--line-2)}
   .exp td{border:0;padding:0;font-size:12.5px} .exp td:first-child{grid-column:1/-1} .exp td.num{white-space:nowrap;text-align:left} .exp td.num:last-child{text-align:right;white-space:normal}
-  .pkgbtn{max-width:none} details>summary{min-height:34px;display:flex;align-items:center}
+  .pkgbar .pkgbtn{max-width:none;white-space:normal} details>summary{min-height:34px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px} .exp td.num br{display:none}
+  .elx input.inp{width:100%!important}
   select.sel{min-height:34px}
   table.t tr.grp,table.t tr.det{display:block} table.t tr.grp td,table.t tr.det td{display:block}
   .btn.sm,.chip{min-height:34px} .docref{display:inline-block;padding:7px 2px} td.ck input{width:24px;height:24px}
@@ -1025,7 +1027,27 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
     return { loss, bank, bankSum: sum(bank.slice(1)), bankSumLabel: "계약 후 동시 최대(이행+선급금 보증)", cash, unpriced };
   }
 
-  const api = { ITEMS, MUST, josa, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
+  // 기술 요구사항 적합성 표: 요구사항·시방 문서의 'shall/must/하여야' 문장
+  function requirements(pkg, max = 60) {
+    const pref = pkg.docs.filter(d => d.type === "ER" || d.type === "TS");
+    const docs = pref.length ? pref : pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS");
+    const out = [], seen = new Set();
+    for (const d of docs) for (const p of d.pages) for (const s of sentences(p.text)) {
+      if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) continue;
+      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k);
+      const id = `${d.id}:${p.number}:${out.length}`;
+      out.push({ id, key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
+      if (out.length >= max) return out;
+    }
+    return out;
+  }
+  // 입찰 참가 자격 요건의 핵심 수치만 추린다(예: two · 400 MW · ten years · USD 800 million)
+  function pqFacts(text) {
+    const re = /(?:USD|EUR|KRW|US\$)\s?[\d,.]+\s*(?:million|billion|M|bn)?|[\d,.]+\s*(?:MW|kV|km|million|billion|years?|억\s*원?|원|년|건|개)|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\b(?:\s+\w+){0,4}?\s+(?:plants?|projects?|contracts?|years?)\b/gi;
+    return [...new Set((String(text).match(re) || []).map(x => x.trim()))].slice(0, 6);
+  }
+
+  const api = { ITEMS, MUST, josa, requirements, pqFacts, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ITBEngine = api;
 })(typeof window !== "undefined" ? window : globalThis);
 </script>
@@ -1088,7 +1110,7 @@ function analyze(pkg) {
   pkg.refs = live.length ? E.crossRefs(pkg.built) : [];
   pkg.mix = live.length > 1 ? E.mixWarning(pkg.built) : "";
   pkg.drafts = E.drafts(pkg.items, pkg.refs, pkg.policy);
-  pkg.claude = null; pkg.claudeDrafts = null; // 문서가 바뀌면 Claude 결과·다듬은 문장은 옛것이 되므로 버린다
+  pkg.claude = null; pkg.claudeDrafts = null; pkg.reqs = null; // 문서가 바뀌면 Claude 결과·다듬은 문장은 옛것이 되므로 버린다
 }
 function newPkg(name, sample) { const p = { id: "p" + (++seq), name, sample: !!sample, docs: [], chat: [], items: [], refs: [], drafts: { Q: [], D: [] }, policy: {} }; st.pkgs.push(p); return p; }
 function addSamplePkg(s) {
@@ -1184,7 +1206,12 @@ function parseAmount(t) {
   if (/\d*\.\d*\.|\.\D|\.$/.test(t)) return NaN; // 1.2.3 같은 숫자는 거부
   let total = 0, rest = t;
   if (/[조억만천백십]/.test(t)) {
-    rest = t.replace(/([\d.]+)?\s*(십|백|천)?\s*(조|억|만)?/g, (m, n, sub, big) => { if (!n && !sub) return m; total += (n ? parseFloat(n) : 1) * (sub ? SUB[sub] : 1) * (big ? KO[big] : 1); return " "; });
+    // 큰 단위(조·억·만)까지를 한 묶음으로 보고, 묶음 안의 천·백·십을 먼저 더한 뒤 큰 단위를 곱한다: 3천5백억 = (3000+500)×1억
+    rest = t.replace(/((?:\s*[\d.]*\s*(?:십|백|천)?)+?)\s*(조|억|만|$)/g, (m, grp, big) => {
+      if (!grp.trim()) return big ? m : "";
+      let sub = 0, left = grp.replace(/([\d.]+)?\s*(십|백|천)/g, (mm, n, u) => { sub += (n ? parseFloat(n) : 1) * SUB[u]; return " "; });
+      const plain = left.match(/[\d.]+/g); if (plain) { sub += parseFloat(plain.join("")); left = left.replace(/[\d.]+/g, " "); }
+      total += sub * (big ? KO[big] : 1); return left; });
   } else {
     rest = t.replace(/([\d.]+)\s*(thousand|million|billion|mil|mn|bn|k|m|b)?\b/gi, (m, n, u) => { total += parseFloat(n) * (u ? EN[u.toLowerCase()] : 1); return " "; });
   }
@@ -1225,7 +1252,7 @@ $("#tabs").addEventListener("click", e => { const a = e.target.closest("a[role=t
 // 같은 화면을 다시 그릴 때는 스크롤 위치와 포커스를 지킨다
 function focusSel(el) {
   if (!el || el === document.body) return null;
-  for (const a of ["data-rv", "data-k", "data-grp", "data-rf", "data-copy", "data-team", "data-type", "data-q"]) if (el.hasAttribute && el.hasAttribute(a)) return `${el.tagName.toLowerCase()}[${a}="${CSS.escape(el.getAttribute(a))}"]`;
+  for (const a of ["data-rv", "data-k", "data-grp", "data-rf", "data-copy", "data-team", "data-type", "data-q", "data-req", "data-el"]) if (el.hasAttribute && el.hasAttribute(a)) return `${el.tagName.toLowerCase()}[${a}="${CSS.escape(el.getAttribute(a))}"]`;
   return el.id ? "#" + CSS.escape(el.id) : null;
 }
 function renderTab(keep = true) {
@@ -1252,6 +1279,7 @@ function vSummary(p) {
   const top = its.filter(i => i.risk === "high" || i.undetermined).sort((a, b) => (b.undetermined - a.undetermined));
   const legal = its.filter(i => i.found && i.risk === "none" && /^국내 공공계약/.test(i.risk_reason || ""));
   const unk = its.filter(i => i.risk === "unknown"), unkQ = unk.filter(i => drafts(p).Q.some(q => q.item === i.key)).length;
+  const unkRest = unk.filter(i => !drafts(p).Q.some(q => q.item === i.key) && !(i.key === "prequalification" && i.found)).length;
   const ex = E.exposure(its, price);
   const vis = its.filter(i => (st.group === "전체" || i.group === st.group) && (st.rf === "all" || (st.rf === "flag" ? (i.risk === "high" || i.risk === "medium" || i.risk === "unknown" || i.undetermined) : !rv[i.key])));
   let rows = "";
@@ -1295,17 +1323,18 @@ function vSummary(p) {
       ${p.claude && p.claude.overall ? `<p style="margin-bottom:10px">${esc(p.claude.overall)}</p>` : ""}
       ${top.length ? `<ul class="toplist">${top.map(i => `<li>${i.undetermined ? `<span class="flag f-open">모순</span>` : `<span class="flag r-high">높음</span>`}<span><b>${esc(i.label)}</b> ${esc(i.undetermined ? i.conflict.values.map(v => `${typeLabel(v.type)} ${v.value}`).join(" vs ") : i.risk_reason)}</span></li>`).join("")}</ul>` : `<p class="muted">자동 판정상 높음·모순이 없습니다${legal.length ? "(법정 기준 항목은 판정에서 뺌)" : ""}.</p>`}
       ${legal.length ? `<p class="small" style="margin-top:8px"><span class="flag r-none">정보</span> <b>법정 기준 항목(판정 안 함)</b>: ${esc(legal.map(i => `${i.label} ${i.value}`).join(", "))}. 금액은 오른쪽 표, 법정 기준과 같은지는 계약법무가 확인합니다.</p>` : ""}
-      ${unk.length ? `<p class="small" style="margin-top:6px"><span class="flag r-unknown">확인 필요</span> <b>${unk.length}건</b>: ${esc(unk.map(i => i.label).join(", "))}. ${unkQ ? `이 중 ${unkQ}건은 질의 초안이 있고, ` : ""}나머지는 담당자가 판단합니다.</p>` : ""}
+      ${unk.length ? `<p class="small" style="margin-top:6px"><span class="flag r-unknown">확인 필요</span> <b>${unk.length}건</b>: ${esc(unk.map(i => i.label).join(", "))}. ${[unkQ ? `${unkQ}건은 질의 초안이 있습니다.` : "", unk.some(i => i.key === "prequalification" && i.found) ? "PQ는 아래 결재·통제 첫 줄에서 다룹니다." : "", unkRest ? `${unkRest}건은 담당자가 판단합니다.` : ""].filter(Boolean).join(" ")}</p>` : ""}
       <div class="btns" style="margin-top:12px"><button class="btn sm" data-go="issues">02 모순·리스크</button><button class="btn sm" data-go="drafts">03 질의·이탈 초안 ${c.q + c.d}건</button>
       ${st.sample ? (claudeBusy ? `<span class="small muted"><span class="spin"></span> ${esc(st.busy.msg)}</span><button class="btn sm" id="stop">중지</button>` : `<button class="btn sm primary" id="deep" ${st.busy ? "disabled" : ""}>${p.claude ? "Claude로 다시 분석" : "Claude로 정밀 분석"}</button>`) : ""}</div>
       <div class="h3" style="margin-top:16px">제출 전 결재·통제</div>
       <ul class="ctl">${controlList(p, c)}</ul>
     </div>
     <div class="card pad exp"><div class="h3">금액으로 보기</div>
-      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="decimal" placeholder="예: 5억, 500M" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액" aria-describedby="pricehint"><span class="tiny muted" id="pricehint" role="status">${price ? `= ${money(price, cc)}` : ""}</span></div>
+      <div class="priceinp"><label for="price" class="small">예상 계약금액</label><select class="sel" id="curr" aria-label="통화">${CURRENCIES.map(x => `<option ${x === cc ? "selected" : ""}>${x}</option>`).join("")}</select><input class="inp" id="price" inputmode="decimal" placeholder="예: 5억, 500M" value="${price ? price.toLocaleString("en-US") : ""}" aria-label="예상 계약금액" aria-describedby="pricehint"><span class="tiny muted" id="pricehint" role="status">${price ? `= ${money(price, cc)}` : ""}</span></div><p class="tiny" id="stalenote" hidden style="color:var(--conflict)"></p>
       ${ex ? sec("최대 손실 노출", ex.loss) + sec("은행 보증 한도(발급 필요)", ex.bank, ex.bankSum) + sec("현금흐름", ex.cash)
-        + (ex.unpriced.length ? `<p class="small" style="margin-top:8px"><b>금액으로 못 바꾼 높음 리스크</b>: ${esc(ex.unpriced.map(i => i.label).join(", "))}. 원가팀이 별도로 산정해야 합니다.</p>` : "")
-        + `<p class="tiny muted" style="margin-top:6px">비율 × 계약금액 단순 환산입니다. 모순 항목은 문서별 값의 범위로 보여 줍니다. 예비비·기대 손실(EL·P90)은 계산하지 않습니다. 공정·기상·물량 위험을 넣어 원가팀이 정합니다.</p>`
+        + (ex.unpriced.length ? `<p class="small" style="margin-top:8px"><b>금액으로 못 바꾼 높음 리스크</b>: ${esc(ex.unpriced.map(i => i.label).join(", "))}. 아래 기대손실 표에 원가팀 추정을 넣으세요.</p>` : "")
+        + elTable(p, its, cc)
+        + `<p class="tiny muted" style="margin-top:6px">비율 × 계약금액 단순 환산입니다. 모순 항목은 문서별 값의 범위로 보여 줍니다. 기대손실(EL)은 담당자가 넣은 확률·손실액으로만 계산하며, 도구가 확률을 정하지 않습니다. P90 같은 분포 기반 예비비는 원가팀이 정합니다.</p>`
         : `<p class="small muted">계약금액을 넣으면 지체상금(하루치·최대), 책임 한도, 보증 한도, 선급금·유보금을 금액으로 보여 줍니다.</p>`}
     </div>
   </div>
@@ -1316,13 +1345,23 @@ function vSummary(p) {
     <div class="btns" style="margin-top:10px">${st.downloads ? `<button class="btn sm" id="csv">요약표 CSV 저장</button>` : ""}<button class="btn sm" id="copy">요약표 복사(엑셀용)</button><span class="tiny muted">${st.downloads ? "" : "CSV 저장은 claude.ai에서 열 때 쓸 수 있습니다. "}검토 체크는 이 브라우저에만 저장됩니다.</span></div>
   </div></div>`;
 }
+// 기대손실(EL) = 발생 확률 × 발생 시 손실. 확률·손실은 원가팀이 넣는다(브라우저에 저장).
+function elTable(p, its, cc) {
+  const rows = its.filter(i => i.risk === "high" || i.undetermined), v = store.get("el:" + p.name, {});
+  if (!rows.length) return "";
+  let sum = 0, full = 0;
+  const tr = rows.map(i => { const x = v[i.key] || {}, pr = Number(x.p) || 0, amt = Number(x.a) || 0, el = pr / 100 * amt; sum += el; full += amt;
+    return `<tr><td>${esc(i.label)}</td><td><input class="inp eli" data-el="${i.key}|p" inputmode="decimal" value="${x.p ?? ""}" placeholder="%" aria-label="${esc(i.label)} 발생 확률(%)" style="width:56px"></td><td><input class="inp eli" data-el="${i.key}|a" inputmode="decimal" value="${x.a ? Number(x.a).toLocaleString("en-US") : ""}" placeholder="손실액" aria-label="${esc(i.label)} 발생 시 손실" style="width:120px"></td><td class="num">${el ? money(el, cc) : "-"}</td></tr>`; }).join("");
+  return `<div class="elx"><h4>기대손실(EL)·예비비 <span class="tiny muted">담당자 입력</span></h4><table><tbody><tr><td class="tiny muted">위험</td><td class="tiny muted">확률</td><td class="tiny muted">발생 시 손실</td><td class="tiny muted num">EL</td></tr>${tr}
+    <tr class="sum"><td>EL 합계(예비비 권고 하한)</td><td></td><td class="num">${full ? money(full, cc) : "-"}<div class="tiny muted">모두 발생 시</div></td><td class="num">${sum ? money(sum, cc) : "-"}</td></tr></tbody></table></div>`;
+}
 function controlList(p, c) {
   const d = drafts(p), qdl = deadline(p, "clarification_deadline"), its = items(p), out = [];
   const highs = its.filter(i => i.risk === "high" && !i.undetermined).map(i => i.label);
   if (d.Q.length) out.push(`질의 ${d.Q.length}건${c.open || c.missRefs ? `(모순 ${c.open}·빠진 참조 문서 ${c.missRefs} 포함)` : ""}을 <b>질의 마감${qdl.iso ? `(${esc(qdl.iso)})` : ""}</b> 전에 제출해야 추가 공고로 고칠 수 있습니다.`);
   if (d.Q.length || d.D.length) out.push(`질의·이탈 문안은 초안입니다. <b>계약법무 검토</b> 뒤 제출하세요.`);
   const pq = its.find(i => i.key === "prequalification");
-  if (pq) out.unshift(pq.found ? `<b>참가 자격(PQ) 충족 여부</b>: ${esc(pq.value.length > 90 ? pq.value.slice(0, 88) + "…" : pq.value)} → 영업이 회사 실적과 대조한 뒤 결재합니다(못 맞추면 입찰 무효).` : `<b>참가 자격(PQ)</b> 조항을 찾지 못했습니다. 질의로 확인한 뒤 영업이 충족 여부를 결재에 올립니다.`);
+  if (pq) out.unshift(pq.found ? `<b>참가 자격(PQ) 충족 여부</b>: 요건 핵심 ${esc(E.pqFacts(pq.evidence).join(" · ") || "원문 참조")} ${refBtn(p, pq.docId, pq.pages[0], pq.key, pq.evidence)} → 영업이 회사 실적과 대조한 뒤 결재합니다(못 맞추면 입찰 무효).` : `<b>참가 자격(PQ)</b> 조항을 찾지 못했습니다. 질의로 확인한 뒤 영업이 충족 여부를 결재에 올립니다.`);
   const dl = d.D.map(x => x.label), rest = highs.filter(h => !dl.includes(h));
   if (d.D.length) out.push(`높음 ${d.D.length}건(${esc(dl.join("·"))})은 이탈 ${esc(d.D[0].id)}${d.D.length > 1 ? "~" + esc(d.D[d.D.length - 1].id) : ""}로 요청합니다. 이탈을 넣을지, 거절될 때 가격에 얼마를 넣을지는 <b>입찰 심의(경영진) 결재</b> 사항입니다.`);
   if (rest.length) out.push(`높음 ${rest.length}건(${esc(rest.join("·"))})을 그대로 받을지, 가격에 얼마를 넣을지는 <b>경영진 결재</b> 사항입니다.`);
@@ -1339,10 +1378,16 @@ bind.summary = (p, el) => {
   $$("[data-rf]", el).forEach(b => b.onclick = () => { st.rf = b.dataset.rf; renderTab(); });
   const pr = $("#price", el);
   if (pr) { let t; const hint = $("#pricehint", el);
-    pr.oninput = () => { const n = parseAmount(pr.value), cc = currencyOf(p), ok = Number.isFinite(n) && n > 0;
+    pr.oninput = () => { const n = parseAmount(pr.value), cc = currencyOf(p), ok = Number.isFinite(n) && n > 0, last = store.get("price:" + p.name, 0);
+      $$(".exp table, .exp .elx", el).forEach(t => t.classList.toggle("stale", !ok && !!pr.value.trim()));
+      const sn = $("#stalenote", el); if (sn) { sn.hidden = ok || !pr.value.trim() || !last; if (last) sn.textContent = `입력을 읽을 수 없어 아래 표는 마지막으로 읽은 값(${money(last, cc)}) 기준입니다.`; }
       hint.textContent = pr.value.trim() ? (ok ? `= ${money(n, cc)}${cc === "KRW" && n >= 1e8 ? ` (${n.toLocaleString("ko-KR")}원)` : ""}` : /-/.test(pr.value) ? "음수는 넣을 수 없습니다." : "금액으로 읽을 수 없습니다. 예: 5억, 500,000,000, 1.2bn") : "";
       clearTimeout(t); t = setTimeout(() => { if (ok || !pr.value.trim()) { store.set("price:" + p.name, ok ? n : 0); renderTab(); } }, 600); }; }
   const cu = $("#curr", el); if (cu) cu.onchange = () => { store.set("cur:" + p.name, cu.value); renderTab(); };
+  $$(".eli", el).forEach(inp => { let t; inp.oninput = () => { clearTimeout(t); t = setTimeout(() => { const [k, f] = inp.dataset.el.split("|"), v = store.get("el:" + p.name, {}); v[k] = v[k] || {};
+    const n = f === "a" ? parseAmount(inp.value) : Number(inp.value.replace(/[^\d.]/g, ""));
+    if (inp.value.trim() && !(Number.isFinite(n) && n >= 0 && (f === "a" || n <= 100))) { inp.setAttribute("aria-invalid", "true"); return; }
+    inp.removeAttribute("aria-invalid"); v[k][f] = inp.value.trim() ? n : ""; store.set("el:" + p.name, v); renderTab(); }, 600); }; });
   const on = (id, f) => { const b = $("#" + id, el); if (b) b.onclick = f; };
   on("deep", () => claudeExtract(p)); on("stop", () => st.busy && st.busy.ctl.abort());
   on("csv", () => saveCsv(p, "summary")); on("copy", () => copyRows(summaryRows(p)));
@@ -1363,10 +1408,28 @@ function vIssues(p) {
   <div><div class="h3">모순 ${open.length}건 <span class="muted small">값 미정, 질의 필요</span></div>${open.length ? `<div class="grid">${open.map(i => conflictCard(i, true)).join("")}</div>` : `<p class="empty">${p.built.docs.length > 1 ? "문서끼리 값이 다른 항목이 없습니다." : "문서가 1권이라 문서 간 대조를 하지 않았습니다."}</p>`}</div>
   ${add.length ? `<div><div class="h3">추가 공고 반영 ${add.length}건 <span class="muted small">해소됨</span></div><div class="grid">${add.map(i => conflictCard(i, false)).join("")}</div></div>` : ""}
   <div><div class="h3">빠진 참조 문서 ${miss.length}건</div>${miss.length ? `<div class="grid">${miss.map(r => `<div class="card icard open"><span class="flag f-miss">빠진 참조 문서</span><h3>${esc(r.target)}</h3>${r.refs.map(f => `<div class="small" style="margin-top:4px">${refBtn(p, f.docId, f.page, "-", f.text, r.target)} <span class="muted">${esc(f.text)}</span></div>`).join("")}</div>`).join("")}</div>` : '<p class="empty">다른 문서를 가리키는 참조가 모두 묶음 안에 있습니다.</p>'}</div>
+  ${reqMatrix(p)}
   <div><div class="h3">판정 높음·주의 ${risks.length}건 <span class="muted small">높음 ${risks.filter(r => r.risk === "high").length} · 주의 ${risks.filter(r => r.risk === "medium").length}</span></div>
     ${risks.length ? `<div class="grid">${risks.map(i => `<div class="card icard ${i.risk}">${flagsOf(i)}<h3>${esc(i.label)} <span class="mono small">${esc(i.undetermined ? "값 미정" : i.found ? (i.value.length > 40 ? "" : i.value) : "")}</span></h3><p class="small">${esc(i.risk_reason)}</p>${i.undetermined ? `<div class="small" style="margin-top:6px">${i.conflict.values.map(v => refBtn(p, v.docId, v.page, i.key, (i.candidates.find(x => x.docId === v.docId) || {}).evidence)).join(" ")}</div>` : i.found ? `<div class="small" style="margin-top:6px">${refBtn(p, i.docId, i.pages[0], i.key, i.evidence)}</div>` : ""}</div>`).join("")}</div>` : '<p class="empty">리스크로 판정된 항목이 없습니다.</p>'}</div>
   </div>`;
 }
+
+// 기술 요구사항 적합성 표(ER·TS의 shall 문장, 상태는 담당자가 고름)
+const REQ_ST = [["", "미검토"], ["ok", "적합"], ["cond", "조건부"], ["no", "부적합"]];
+function reqMatrix(p) {
+  if (!p.reqs) p.reqs = E.requirements(p.built);
+  const r = p.reqs, v = store.get("req:" + p.name, {}), cnt = k => r.filter(x => (v[x.key] || "") === k).length;
+  if (!r.length) return "";
+  return `<details class="card pad" ${st.reqOpen ? "open" : ""} id="reqbox"><summary class="h3" style="margin:0">기술 요구사항 적합성 ${r.length}건 <span class="muted small">적합 ${cnt("ok")} · 조건부 ${cnt("cond")} · 부적합 ${cnt("no")} · 미검토 ${cnt("")}</span></summary>
+    <p class="tiny muted" style="margin:6px 0">요구사항·시방 문서에서 'shall·하여야 한다' 문장을 뽑았습니다. 설계·시공이 상태를 고르면, 조건부·부적합은 질의나 기술 이탈 후보가 됩니다. 상태는 이 브라우저에 저장됩니다.</p>
+    <div class="tscroll"><table class="t" style="min-width:0"><tbody>${r.map(x => `<tr><td style="width:100%">${esc(x.text)}<div>${refBtn(p, x.docId, x.page, "-", x.text)}</div></td><td><select class="sel" data-req="${esc(x.key)}" aria-label="적합성 상태">${REQ_ST.map(([k, l]) => `<option value="${k}" ${(v[x.key] || "") === k ? "selected" : ""}>${l}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div>
+    <div class="btns" style="margin-top:8px"><button class="btn sm" id="copyreq">적합성 표 복사</button></div></details>`;
+}
+bind.issues = (p, el) => {
+  const box = $("#reqbox", el); if (box) box.ontoggle = () => { st.reqOpen = box.open; };
+  $$("[data-req]", el).forEach(sel => sel.onchange = () => { const v = store.get("req:" + p.name, {}); if (sel.value) v[sel.dataset.req] = sel.value; else delete v[sel.dataset.req]; store.set("req:" + p.name, v); renderTab(); });
+  const c = $("#copyreq", el); if (c) c.onclick = () => { const v = store.get("req:" + p.name, {}); copyRows([["문서", "쪽", "요구사항", "상태"], ...p.reqs.map(x => [x.docName, x.page, x.text, (REQ_ST.find(s => s[0] === (v[x.key] || "")) || [])[1]])]); };
+};
 
 // 03 질의·이탈
 function vDrafts(p) {

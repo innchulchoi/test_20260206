@@ -762,6 +762,26 @@
     return { loss, bank, bankSum: sum(bank.slice(1)), bankSumLabel: "계약 후 동시 최대(이행+선급금 보증)", cash, unpriced };
   }
 
-  const api = { ITEMS, MUST, josa, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
+  // 기술 요구사항 적합성 표: 요구사항·시방 문서의 'shall/must/하여야' 문장
+  function requirements(pkg, max = 60) {
+    const pref = pkg.docs.filter(d => d.type === "ER" || d.type === "TS");
+    const docs = pref.length ? pref : pkg.docs.filter(d => d.type !== "ADD" && d.type !== "ITB" && d.type !== "BDS");
+    const out = [], seen = new Set();
+    for (const d of docs) for (const p of d.pages) for (const s of sentences(p.text)) {
+      if (!/\b(?:shall|must)\b|하여야\s*한다|해야\s*한다/i.test(s) || s.length < 30) continue;
+      const k = s.slice(0, 60); if (seen.has(k)) continue; seen.add(k);
+      const id = `${d.id}:${p.number}:${out.length}`;
+      out.push({ id, key: d.name + "|" + k, docId: d.id, docName: d.name, page: p.number, text: s.length > 260 ? s.slice(0, 257) + "…" : s });
+      if (out.length >= max) return out;
+    }
+    return out;
+  }
+  // 입찰 참가 자격 요건의 핵심 수치만 추린다(예: two · 400 MW · ten years · USD 800 million)
+  function pqFacts(text) {
+    const re = /(?:USD|EUR|KRW|US\$)\s?[\d,.]+\s*(?:million|billion|M|bn)?|[\d,.]+\s*(?:MW|kV|km|million|billion|years?|억\s*원?|원|년|건|개)|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\b(?:\s+\w+){0,4}?\s+(?:plants?|projects?|contracts?|years?)\b/gi;
+    return [...new Set((String(text).match(re) || []).map(x => x.trim()))].slice(0, 6);
+  }
+
+  const api = { ITEMS, MUST, josa, requirements, pqFacts, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ITBEngine = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -97,6 +97,7 @@ mark.refline{outline:2px dashed var(--ink);outline-offset:1px}
 .k-q,.k-d{font-family:var(--f-mono);font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:4px;border:1px solid var(--accent);color:var(--accent)} .k-d{background:var(--accent);color:var(--accent-ink)}
 .banner{border-left:3px solid var(--chk);background:var(--chk-bg);padding:9px 12px;border-radius:0 6px 6px 0;font-size:13.5px}
 .banner.warn{border-left-color:var(--conflict);background:var(--conflict-bg)}
+.banner.samplebar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .fl{display:flex;flex-wrap:wrap;gap:4px}
 .exp h4{font-size:13px;margin:10px 0 2px;color:var(--muted)} .exp tr.sum td{font-weight:700;border-top:1px solid var(--line)}
 .ctl{margin:0;padding-left:18px;font-size:13.5px} .ctl li{margin:3px 0}
@@ -270,7 +271,6 @@ abbr[title]{text-decoration:underline dotted var(--faint);text-underline-offset:
   <section id="p-docs" role="tabpanel" hidden></section>
   <section id="p-guide" role="tabpanel" hidden></section>
 </main>
-<input type="file" id="file" accept=".pdf,.docx,.txt,.md" multiple hidden>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script id="samples" type="application/json">{"bundle": {"name": "Riverside 600 MW 복합화력 EPC (가상)", "note": "소프트웨어 시험용 가상 입찰 문서 묶음. 발주처·프로젝트·문서 번호는 모두 가상이다.", "docs": [{"name": "V1_Instructions_to_Bidders.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "NORTHBAY ENERGY AUTHORITY\nRIVERSIDE 600 MW COMBINED CYCLE POWER PLANT PROJECT\nTender No. NEA-RCC-2027-01\nVOLUME 1 - INSTRUCTIONS TO BIDDERS\nIssue r0, December 2026\nThis is a fictional document generated for software testing only."}, {"number": 2, "text": "1. General\n1.1 The Employer, Northbay Energy Authority (the \"Employer\"), invites sealed bids for the Riverside 600 MW Combined Cycle Power Plant Project (the \"Project\").\n1.2 The Site is located in the Riverside Industrial Zone, Port Halden, Republic of Nordavia.\n1.3 The scope of work comprises the engineering, procurement, construction, commissioning and testing of a 600 MW combined cycle power plant including two gas turbines, two heat recovery steam generators, one steam turbine, a 400 kV switchyard and all balance of plant.\n1.4 The Contract shall be a lump sum turnkey EPC contract based on the FIDIC Conditions of Contract for EPC/Turnkey Projects (Silver Book), 2017 Edition, as amended by the Particular Conditions.\n2. Bidding Schedule\n2.1 A pre-bid meeting and site visit will be held on 2027-01-20 at 10:00 hrs at the Employer's site office. Attendance is mandatory for all bidders.\n2.2 Bidders may submit requests for clarification in writing no later than 2027-02-10. The Employer will respond to all clarification queries by way of Addenda, which shall form part of the Tender Documents.\n2.3 Bids must be received at the Employer's address no later than 2027-03-16 at 14:00 hrs local time (the bid submission deadline). Late bids shall be rejected.\n2.4 Bids shall remain valid for a period of 180 days after the bid submission deadline."}, {"number": 3, "text": "3. Preparation of Bids\n3.1 The Bid shall comprise two separate envelopes: Envelope A (Technical Proposal) and Envelope B (Price Proposal including the completed Price Schedules).\n3.2 The currency of the Bid shall be United States Dollars (USD). Local costs may be quoted up to 20% in Nordavian Krona (NVK) at the exchange rate published by the Central Bank 28 days prior to the bid submission deadline.\n3.3 The Price Proposal shall contain the completed Schedule of Prices, in which the lump sum price is broken down by plant area. Provisional Sums shall be included only as stated in the Schedule of Prices and shall be re-measured.\n3.4 Each bid shall be accompanied by a Bid Security in the amount of 2% of the Bid Price, in the form of an unconditional bank guarantee valid for 28 days beyond the bid validity period.\n4. Evaluation and Award\n4.1 Bids will be evaluated on a pass/fail technical evaluation followed by commercial evaluation. Technical compliance carries a weighting of 30% and price a weighting of 70%.\n4.2 The Contract will be awarded to the bidder whose bid is technically compliant and has the lowest evaluated price after applying the weighting.\n4.3 Deviations from the Conditions of Contract shall be listed in the Schedule of Deviations. Unlisted deviations will not be considered.\n5. Qualification of Bidders\n5.1 Bidders shall have completed at least two combined cycle power plants of not less than 400 MW each within the last ten years and shall have an average annual construction turnover of not less than USD 800 million over the last three years."}]}, {"name": "V2_Contract_Data.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 2 - CONTRACT DATA\nRiverside 600 MW Combined Cycle Power Plant Project\nThe following data apply to the Conditions of Contract. Clause numbers refer to the General Conditions."}, {"number": 2, "text": "Clause 4.2 Performance Security\nThe Contractor shall deliver a Performance Security in the amount of 10% of the Contract Price within 28 days after receiving the Letter of Acceptance.\nClause 8.2 Time for Completion\nThe Time for Completion of the whole of the Works shall be 36 months from the Commencement Date.\nClause 8.8 Delay Damages\nThe Contractor shall pay liquidated damages to the Employer at the rate of 0.15% of the Contract Price per calendar day of delay.\nThe total amount of delay damages shall not exceed a maximum of 15% of the Contract Price.\nClause 11.3 Defects Notification Period\nThe Defects Notification Period shall be 24 months from the date of Taking Over.\nClause 14.2 Advance Payment\nThe Employer shall make an advance payment of 10% of the Contract Price, against submission of an Advance Payment Guarantee of equal amount.\nClause 14.3 Retention Money\nRetention Money of 5% shall be deducted from each interim payment until the total Retention Money reaches 5% of the Contract Price."}]}, {"name": "V3_Particular_Conditions.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 3 - PARTICULAR CONDITIONS OF CONTRACT\nClause 1.5 Priority of Documents\nThe documents forming the Contract are to be taken as mutually explanatory. In case of ambiguity or discrepancy the priority shall be: the Contract Agreement, the Contract Data, these Particular Conditions, the General Conditions, the Employer's Requirements, the Technical Specifications.\nClause 8.8 Delay Damages\nThe total amount of delay damages under the Contract shall not exceed a maximum of 10% of the Contract Price.\nClause 13.8 Adjustments for Changes in Cost\nThe Contract Price is fixed and firm and shall not be subject to any adjustment for rise or fall in the cost of labour, materials, equipment or other inputs to the Works."}, {"number": 2, "text": "Clause 14.3 Application for Interim Payments\nThe Contractor shall submit monthly statements. The Employer shall pay the amount certified in each Interim Payment Certificate within 56 days after receiving the statement and supporting documents.\nClause 14.9 Retention Money\nRetention Money of 10% shall be deducted from each interim payment until the total Retention Money reaches 10% of the Contract Price. Half shall be released at Taking Over.\nClause 17.6 Limitation of Liability\nThe total liability of the Contractor to the Employer under or in connection with the Contract shall not exceed 150% of the Accepted Contract Amount. Neither Party shall be liable for loss of profit or any indirect or consequential loss, except in cases of fraud or wilful misconduct.\nClause 19 Insurance\nThe Contractor shall effect and maintain Contractor's All Risks insurance for the full replacement value of the Works and third party liability insurance with a minimum limit of USD 50,000,000 per occurrence.\nClause 21 Disputes and Arbitration\nThe Contract shall be governed by the laws of the Republic of Nordavia. Any dispute not settled amicably shall be finally settled by arbitration under the Rules of Arbitration of the International Chamber of Commerce (ICC), with the seat of arbitration in Singapore."}]}, {"name": "V4_Employers_Requirements.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "VOLUME 4 - EMPLOYER'S REQUIREMENTS\n1. Scope\n1.1 The Works shall be designed and constructed in accordance with the Technical Specifications in Volume 5 and the Site Data in Appendix G.\n1.2 The Contractor shall verify the Site Data. The Employer does not warrant the accuracy of the geotechnical information in Appendix G, which is provided for information only.\n2. Local Content\n2.1 The Contractor shall ensure that not less than 30% of the total value of the Works is sourced from Nordavian nationals, local subcontractors and local suppliers (in-country value).\n3. Interfaces\n3.1 The gas supply connection at the plant boundary shall be provided by others as described in Appendix I, Clause 2.6. The Contractor shall coordinate the tie-in schedule with the gas pipeline operator."}]}, {"name": "A1_Addendum_No1.pdf", "kind": "pdf", "pages": [{"number": 1, "text": "ADDENDUM NO. 1\nRiverside 600 MW Combined Cycle Power Plant Project, Tender No. NEA-RCC-2027-01\nIssued 2027-02-20. This Addendum forms part of the Tender Documents and prevails over any earlier issue.\n1. Bid Submission Deadline\nITB Clause 2.3 is amended: Bids must be received no later than 2027-03-30 at 14:00 hrs local time.\n2. Delay Damages\nContract Data Clause 8.8 is amended to read: The total amount of delay damages shall not exceed a maximum of 10% of the Contract Price.\n3. Responses to Clarification Requests\nQuery 07: The Employer confirms that the pre-bid meeting minutes are for information only."}]}]}, "ko": {"name": "한빛시 하수처리장 증설 (가상, 단일 문서)", "docs": [{"name": "샘플_하수처리장_입찰안내서.docx", "kind": "docx", "pages": [{"number": 1, "text": "입찰안내서 (가상 예시 문서)\n이 문서는 소프트웨어 시험용으로 만든 가상 문서입니다.\n제1장 입찰 개요\n1. 공사명: 한빛시 하수처리장 증설 및 고도처리시설 설치공사 (가상 예시)\n2. 발주기관: 한빛시 상하수도사업소\n3. 공사 위치: 한빛시 동구 강변로 일원\n4. 공사 개요: 하수처리 용량 50,000㎥/일 증설, 고도처리시설 설치 및 기존 시설 개량을 포함한다.\n5. 계약방식: 총액 확정 계약, 설계·시공 일괄입찰(턴키) 방식\n제2장 입찰 일정\n6. 현장설명회는 2027년 2월 5일 14시 한빛시청 대회의실에서 개최하며 참석은 선택사항이다.\n7. 입찰 관련 질의는 2027년 2월 20일까지 서면으로 제출하여야 한다.\n8. 입찰서 제출 마감일시는 2027년 3월 10일 17시이며 마감 이후 도착분은 무효로 한다.\n9. 입찰유효기간은 입찰서 제출 마감일로부터 90일로 한다.\n10. 입찰서류는 기술제안서와 가격제안서를 각각 별도 봉투에 넣어 제출한다.\n11. 낙찰자 결정: 기술평가 60점, 가격평가 40점을 합산하여 최고 득점자를 낙찰자로 결정한다.\n제3장 보증 및 대가 지급\n12. 입찰보증금은 입찰금액의 5%로 하며 보증보험증권으로 납부할 수 있다.\n13. 계약보증금은 계약금액의 15%로 한다.\n14. 선급금은 계약금액의 30%를 지급하며 선급금 보증서를 제출하여야 한다.\n15. 기성 대가는 매월 1회 청구하며 발주기관은 청구를 받은 날부터 5일 이내에 지급한다.\n[표]\n구분 | 비율 | 비고\n입찰보증금 | 5% | 보증보험 가능\n계약보증금 | 15% | 현금 또는 보증서\n제4장 공기 및 지체상금\n16. 공사기간은 착공일로부터 30개월로 한다.\n17. 지체상금률은 계약금액의 1000분의 0.5로 하며 지체일수 1일마다 부과한다.\n18. 지체상금 총액은 계약금액의 30%를 초과할 수 없다.\n제5장 계약 조건\n19. 하자담보책임기간은 준공일로부터 3년으로 한다.\n20. 계약금액은 국가를 당사자로 하는 계약에 관한 법률에 따라 물가변동으로 인한 계약금액 조정을 할 수 있다.\n21. 손해배상 책임은 계약금액을 한도로 하며 간접손해는 배상하지 아니한다.\n22. 계약상대자는 공사보험(건설공사보험)과 제3자 배상책임보험에 가입하여야 한다.\n23. 이 계약과 관련한 분쟁은 발주기관 소재지 관할 법원에서 해결한다."}]}]}}</script>
@@ -1167,6 +1167,7 @@ function openPaste(into) {
   setTimeout(() => $("#ptext", dlg).focus(), 30);
 }
 async function addFiles(files, intoPkg) {
+  if (intoPkg && intoPkg.sample) intoPkg = null;
   const all = [...files], ok = all.filter(f => /\.(pdf|docx|txt|md)$/i.test(f.name));
   if (!ok.length) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다. 다른 형식이면 본문을 '붙여넣기'로 넣어 주세요.");
   if (ok.length < all.length) toast(`${all.length - ok.length}개 파일은 형식이 맞지 않아 건너뜁니다.`);
@@ -1186,8 +1187,8 @@ async function addFiles(files, intoPkg) {
     delete d.file; renderAll();
   }
   analyze(pkg);
-  const n = recs.filter(d => d.status === "done").length;
-  if (n) toast(`문서 ${n}권을 분석했습니다.`);
+  const n = recs.filter(d => d.status === "done").length, bad = recs.filter(d => d.status === "error");
+  if (bad.length) toast(`${bad.length}개 파일을 읽지 못했습니다: ${bad[0].msg}`); else if (n) toast(`문서 ${n}권을 분석했습니다.`);
   renderAll();
 }
 
@@ -1273,18 +1274,17 @@ function renderAll() { paintEngine(); renderPkgbar(); renderTabs(); renderTab();
 function paintEngine() { const el = $("#engine"); el.className = "pill" + (st.sample ? " on" : ""); el.lastChild.textContent = st.sample ? "Claude 연결됨" : "규칙 엔진만"; el.title = st.sample ? "Claude 정밀 분석·질문·문장 다듬기를 쓸 수 있습니다(보는 사람의 Claude 사용량 사용)" : "claude.ai에서 열면 Claude 기능이 켜집니다"; }
 function renderPkgbar() {
   const p = cur(), qd = p && p.items.length ? deadline(p, "clarification_deadline") : { state: "none" }, bd = p && p.items.length ? deadline(p, "bid_due_date") : { state: "none" };
-  $("#pkgbar").innerHTML = `
+  const html = `
     <div class="pkgsel" role="group" aria-label="입찰 건">${st.pkgs.map(x => `<button class="pkgbtn" data-pkg="${x.id}" aria-current="${x.id === st.cur}">${esc(x.name)}<span class="t">${x.sample ? "가상 샘플 · " : ""}문서 ${x.docs.length}권</span></button>`).join("")}</div>
     <span class="grow"></span>
     ${qd.state !== "none" || bd.state !== "none" ? `<span class="dday ${[qd, bd].some(x => x.state === "ok" && x.n <= 14 && x.n >= 0) ? "soon" : ""}" title="질의 마감 ${esc(qd.iso || dtxt(qd))} · 입찰 마감 ${esc(bd.iso || dtxt(bd))}">질의 ${dtxt(qd)} · 입찰 ${dtxt(bd)}</span>` : ""}
-    ${p ? `<span class="btn pick"><span class="lg">이 건에 </span>문서 추가<input type="file" id="f-add" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="이 건에 문서 추가"></span>` : ""}
-    <span class="btn primary pick">새 입찰 건<span class="lg"> 올리기</span><input type="file" id="f-new" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="새 입찰 건 올리기"></span>
-    <button class="btn" id="b-paste" title="파일 선택이 안 될 때">붙여넣기</button>`;
+    ${p && !p.sample ? `<span class="btn pick">이 건에 파일 추가<input type="file" id="f-add" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="이 건에 파일 추가"></span>` : ""}
+    <span class="btn primary pick">ITB 파일 올리기<input type="file" id="f-new" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="ITB 파일 올리기(새 입찰 건)"></span>`;
+  const bar = $("#pkgbar"); if (bar._h === html) return; bar._h = html; bar.innerHTML = html;
   $$(".pkgbtn").forEach(b => b.onclick = () => { clearToast(); st.cur = b.dataset.pkg; st.open = new Set(); st.src = { doc: null, page: 1, focus: null }; renderAll(); });
   const fa = $("#f-add"), fn = $("#f-new");
   if (fa) fa.onchange = e => { if (e.target.files.length) addFiles(e.target.files, cur()); e.target.value = ""; };
   fn.onchange = e => { if (e.target.files.length) addFiles(e.target.files, null); e.target.value = ""; };
-  $("#b-paste").onclick = () => openPaste();
 }
 function issueCount(c) { return c.open + c.missRefs + c.high + (c.tech || 0); }
 function renderTabs() {
@@ -1357,7 +1357,8 @@ function vSummary(p) {
   }
   const claudeBusy = st.busy && st.busy.kind === "extract";
   const sec = (title, rowsX, sum) => `<h4>${title}</h4><table><tbody>${rowsX.map(r => `<tr><td>${esc(r.label)}<div class="tiny muted">${esc(r.note || "")}</div></td><td class="num">${esc(r.pct || (r.fixed ? "정액" : "-"))}</td><td class="num">${mrange(r, cc)}${r.range ? ' <span class="flag f-open">모순</span>' : ""}</td></tr>`).join("")}${sum ? `<tr class="sum"><td>${esc(ex.bankSumLabel)}</td><td></td><td class="num">${mrange(sum, cc)}</td></tr>` : ""}</tbody></table>`;
-  return `
+  return `${p.sample ? `<div class="banner samplebar" style="margin-bottom:12px"><span>지금 보는 것은 <b>가상 샘플</b>입니다. 내 입찰 문서(PDF·DOCX·TXT, 여러 개 한꺼번에)를 올리면 새 입찰 건으로 분석합니다.</span>
+    <span class="btn primary sm pick">ITB 파일 올리기<input type="file" id="f-sample" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="ITB 파일 올리기(새 입찰 건)"></span></div>` : ""}
   <div class="sec-h"><h2>입찰 요약표</h2><span class="muted small">${esc(p.name)} · 문서 ${docsN}권 · ${p.claude ? "Claude 분석" : "규칙 엔진 추출"}</span></div>
   <p class="lede">${docsN}권에서 ${c.total}개 항목 중 <b>${c.found}개</b>를 찾았습니다${c.total - c.found ? `(못 찾은 ${c.total - c.found}개는 '확인 필요')` : ""}. ${docsN > 1 ? "같은 항목을 문서끼리 대조해, 값이 다르면 적용 값을 정하지 않고 <b>모순(값 미정)</b>으로 올립니다." : "문서가 1권이라 문서 간 대조는 하지 않았습니다."} 쪽 번호를 누르면 원문에서 그 자리가 칠해져 보입니다.</p>
   <div class="stack">
@@ -1456,6 +1457,7 @@ function controlList(p, c) {
   return out.map(x => `<li>${x}</li>`).join("");
 }
 bind.summary = (p, el) => {
+  const fs = $("#f-sample", el); if (fs) fs.onchange = e => { if (e.target.files.length) addFiles(e.target.files, null); e.target.value = ""; };
   $$("tr.row", el).forEach(tr => { const tog = () => { const k = tr.dataset.k; st.open.has(k) ? st.open.delete(k) : st.open.add(k); renderTab(); };
     tr.onclick = e => { if (!e.target.closest(".docref,input")) tog(); };
     tr.onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target === tr) { e.preventDefault(); tog(); } }; });
@@ -1710,8 +1712,8 @@ function vDocs(p) {
   return `<div class="sec-h"><h2>문서 묶음</h2><span class="muted small">${esc(p.name)}</span></div>
   <p class="lede">한 입찰 건의 문서를 모두 올리세요(입찰지침, 입찰 데이터 시트, 계약 데이터, 특수·일반조건, 요구사항, 시방, 추가 공고). 문서 종류는 파일 이름과 첫 쪽으로 추정합니다. 틀리면 고르세요. 종류에 따라 문서 우선순위가 정해집니다. 파일은 이 브라우저 안에서만 읽고 어디로도 올라가지 않으며, 창을 닫으면 사라집니다.</p>
   ${p.mix ? `<div class="banner warn" style="margin-bottom:10px">${esc(p.mix)}</div>` : ""}
-  <label class="drop" id="drop"><strong>파일을 끌어다 놓거나 눌러서 이 건에 추가</strong>PDF · DOCX · TXT, 여러 개 한꺼번에<input type="file" id="file2" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="파일 선택"></label>
-  <p class="tiny muted" style="margin:6px 0 0">파일 선택 창이 열리지 않으면(일부 앱 안 화면) <button class="docref" id="b-paste2">본문 붙여넣기</button>로 문서 내용을 넣을 수 있습니다.</p>
+  <label class="drop" id="drop"><strong>${p.sample ? "눌러서 ITB 파일 올리기(새 입찰 건으로)" : "파일을 끌어다 놓거나 눌러서 이 건에 추가"}</strong>PDF · DOCX · TXT, 여러 개 한꺼번에<input type="file" id="file2" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="파일 선택"></label>
+  <p class="tiny muted" style="margin:6px 0 0">눌러도 파일 선택 창이 열리지 않으면 Claude 앱 안 화면이 파일 선택을 막는 경우입니다. 같은 링크를 PC 크롬·엣지나 휴대폰 기본 브라우저(사파리·크롬)에서 열어 주세요. 급하면 <button class="docref" id="b-paste2">본문 붙여넣기</button>도 됩니다.</p>
   <div class="doclist">${p.docs.map(d => { const pending = p.docs.some(x => x.status === "reading"); return `<div class="docrow"><span class="nm">${esc(d.name)}</span>
     ${d.status === "done" && pending ? '<span class="tiny muted">종류 판단 중</span>' : d.status === "done" ? `<select class="sel" data-type="${d.id}" aria-label="${esc(d.name)} 문서 종류">${E.DOC_TYPES.map(t => `<option value="${t.code}" ${t.code === d.type ? "selected" : ""}>${esc(t.label)}</option>`).join("")}</select>` : d.status === "error" ? '<span class="flag r-high">읽기 실패</span>' : '<span class="spin" aria-label="읽는 중"></span>'}
     <span class="mt">${d.status === "done" && pending ? `${d.pages.length}${d.kind === "pdf" ? "쪽" : "구간"} · 묶음을 다 읽은 뒤 종류를 정합니다` : d.status === "done" ? `${d.pages.length}${d.kind === "pdf" ? "쪽" : "구간"} · ${d.type === "ADD" ? "추가 공고는 앞선 판보다 우선" : `우선순위 ${(E.TYPE[d.type] || E.TYPE.ETC).rank + 1}위`}` : esc(d.msg || "읽는 중")}</span></div>`; }).join("")}</div>`;
@@ -1922,7 +1924,6 @@ async function copyText(t, ok) { try { await navigator.clipboard.writeText(t); t
 function clearToast() { const t = $("#toast"); if (t) t.hidden = true; }
 let tt; function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3600); }
 
-$("#file").onchange = e => { if (e.target.files.length) addFiles(e.target.files, st.pickInto); e.target.value = ""; };
 document.addEventListener("dragover", e => e.preventDefault());
 document.addEventListener("drop", e => { e.preventDefault(); if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files, cur()); });
 
@@ -1933,7 +1934,8 @@ st.cur = first.id; st.tab = TABS.some(t => t[0] === location.hash.slice(1)) ? lo
 renderAll();
 (async () => {
   const c = window.claude; if (!c || !c.use) return;
-  const [sample, downloads] = await Promise.all([c.use("sample").catch(() => null), c.use("downloads").catch(() => null)]);
+  const use = n => { try { return Promise.resolve(c.use(n)).catch(() => null); } catch { return Promise.resolve(null); } };
+  const [sample, downloads] = await Promise.all([use("sample"), use("downloads")]);
   st.downloads = downloads;
   if (sample) { st.sample = sample; const lim = await sample.limits().catch(() => null); st.tools = !!(lim && lim.tools); }
   renderAll();

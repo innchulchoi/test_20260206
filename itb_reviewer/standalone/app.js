@@ -82,6 +82,7 @@ function openPaste(into) {
   setTimeout(() => $("#ptext", dlg).focus(), 30);
 }
 async function addFiles(files, intoPkg) {
+  if (intoPkg && intoPkg.sample) intoPkg = null;
   const all = [...files], ok = all.filter(f => /\.(pdf|docx|txt|md)$/i.test(f.name));
   if (!ok.length) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다. 다른 형식이면 본문을 '붙여넣기'로 넣어 주세요.");
   if (ok.length < all.length) toast(`${all.length - ok.length}개 파일은 형식이 맞지 않아 건너뜁니다.`);
@@ -101,8 +102,8 @@ async function addFiles(files, intoPkg) {
     delete d.file; renderAll();
   }
   analyze(pkg);
-  const n = recs.filter(d => d.status === "done").length;
-  if (n) toast(`문서 ${n}권을 분석했습니다.`);
+  const n = recs.filter(d => d.status === "done").length, bad = recs.filter(d => d.status === "error");
+  if (bad.length) toast(`${bad.length}개 파일을 읽지 못했습니다: ${bad[0].msg}`); else if (n) toast(`문서 ${n}권을 분석했습니다.`);
   renderAll();
 }
 
@@ -188,18 +189,17 @@ function renderAll() { paintEngine(); renderPkgbar(); renderTabs(); renderTab();
 function paintEngine() { const el = $("#engine"); el.className = "pill" + (st.sample ? " on" : ""); el.lastChild.textContent = st.sample ? "Claude 연결됨" : "규칙 엔진만"; el.title = st.sample ? "Claude 정밀 분석·질문·문장 다듬기를 쓸 수 있습니다(보는 사람의 Claude 사용량 사용)" : "claude.ai에서 열면 Claude 기능이 켜집니다"; }
 function renderPkgbar() {
   const p = cur(), qd = p && p.items.length ? deadline(p, "clarification_deadline") : { state: "none" }, bd = p && p.items.length ? deadline(p, "bid_due_date") : { state: "none" };
-  $("#pkgbar").innerHTML = `
+  const html = `
     <div class="pkgsel" role="group" aria-label="입찰 건">${st.pkgs.map(x => `<button class="pkgbtn" data-pkg="${x.id}" aria-current="${x.id === st.cur}">${esc(x.name)}<span class="t">${x.sample ? "가상 샘플 · " : ""}문서 ${x.docs.length}권</span></button>`).join("")}</div>
     <span class="grow"></span>
     ${qd.state !== "none" || bd.state !== "none" ? `<span class="dday ${[qd, bd].some(x => x.state === "ok" && x.n <= 14 && x.n >= 0) ? "soon" : ""}" title="질의 마감 ${esc(qd.iso || dtxt(qd))} · 입찰 마감 ${esc(bd.iso || dtxt(bd))}">질의 ${dtxt(qd)} · 입찰 ${dtxt(bd)}</span>` : ""}
-    ${p ? `<span class="btn pick"><span class="lg">이 건에 </span>문서 추가<input type="file" id="f-add" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="이 건에 문서 추가"></span>` : ""}
-    <span class="btn primary pick">새 입찰 건<span class="lg"> 올리기</span><input type="file" id="f-new" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="새 입찰 건 올리기"></span>
-    <button class="btn" id="b-paste" title="파일 선택이 안 될 때">붙여넣기</button>`;
+    ${p && !p.sample ? `<span class="btn pick">이 건에 파일 추가<input type="file" id="f-add" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="이 건에 파일 추가"></span>` : ""}
+    <span class="btn primary pick">ITB 파일 올리기<input type="file" id="f-new" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="ITB 파일 올리기(새 입찰 건)"></span>`;
+  const bar = $("#pkgbar"); if (bar._h === html) return; bar._h = html; bar.innerHTML = html;
   $$(".pkgbtn").forEach(b => b.onclick = () => { clearToast(); st.cur = b.dataset.pkg; st.open = new Set(); st.src = { doc: null, page: 1, focus: null }; renderAll(); });
   const fa = $("#f-add"), fn = $("#f-new");
   if (fa) fa.onchange = e => { if (e.target.files.length) addFiles(e.target.files, cur()); e.target.value = ""; };
   fn.onchange = e => { if (e.target.files.length) addFiles(e.target.files, null); e.target.value = ""; };
-  $("#b-paste").onclick = () => openPaste();
 }
 function issueCount(c) { return c.open + c.missRefs + c.high + (c.tech || 0); }
 function renderTabs() {
@@ -272,7 +272,8 @@ function vSummary(p) {
   }
   const claudeBusy = st.busy && st.busy.kind === "extract";
   const sec = (title, rowsX, sum) => `<h4>${title}</h4><table><tbody>${rowsX.map(r => `<tr><td>${esc(r.label)}<div class="tiny muted">${esc(r.note || "")}</div></td><td class="num">${esc(r.pct || (r.fixed ? "정액" : "-"))}</td><td class="num">${mrange(r, cc)}${r.range ? ' <span class="flag f-open">모순</span>' : ""}</td></tr>`).join("")}${sum ? `<tr class="sum"><td>${esc(ex.bankSumLabel)}</td><td></td><td class="num">${mrange(sum, cc)}</td></tr>` : ""}</tbody></table>`;
-  return `
+  return `${p.sample ? `<div class="banner samplebar" style="margin-bottom:12px"><span>지금 보는 것은 <b>가상 샘플</b>입니다. 내 입찰 문서(PDF·DOCX·TXT, 여러 개 한꺼번에)를 올리면 새 입찰 건으로 분석합니다.</span>
+    <span class="btn primary sm pick">ITB 파일 올리기<input type="file" id="f-sample" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="ITB 파일 올리기(새 입찰 건)"></span></div>` : ""}
   <div class="sec-h"><h2>입찰 요약표</h2><span class="muted small">${esc(p.name)} · 문서 ${docsN}권 · ${p.claude ? "Claude 분석" : "규칙 엔진 추출"}</span></div>
   <p class="lede">${docsN}권에서 ${c.total}개 항목 중 <b>${c.found}개</b>를 찾았습니다${c.total - c.found ? `(못 찾은 ${c.total - c.found}개는 '확인 필요')` : ""}. ${docsN > 1 ? "같은 항목을 문서끼리 대조해, 값이 다르면 적용 값을 정하지 않고 <b>모순(값 미정)</b>으로 올립니다." : "문서가 1권이라 문서 간 대조는 하지 않았습니다."} 쪽 번호를 누르면 원문에서 그 자리가 칠해져 보입니다.</p>
   <div class="stack">
@@ -371,6 +372,7 @@ function controlList(p, c) {
   return out.map(x => `<li>${x}</li>`).join("");
 }
 bind.summary = (p, el) => {
+  const fs = $("#f-sample", el); if (fs) fs.onchange = e => { if (e.target.files.length) addFiles(e.target.files, null); e.target.value = ""; };
   $$("tr.row", el).forEach(tr => { const tog = () => { const k = tr.dataset.k; st.open.has(k) ? st.open.delete(k) : st.open.add(k); renderTab(); };
     tr.onclick = e => { if (!e.target.closest(".docref,input")) tog(); };
     tr.onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target === tr) { e.preventDefault(); tog(); } }; });
@@ -625,8 +627,8 @@ function vDocs(p) {
   return `<div class="sec-h"><h2>문서 묶음</h2><span class="muted small">${esc(p.name)}</span></div>
   <p class="lede">한 입찰 건의 문서를 모두 올리세요(입찰지침, 입찰 데이터 시트, 계약 데이터, 특수·일반조건, 요구사항, 시방, 추가 공고). 문서 종류는 파일 이름과 첫 쪽으로 추정합니다. 틀리면 고르세요. 종류에 따라 문서 우선순위가 정해집니다. 파일은 이 브라우저 안에서만 읽고 어디로도 올라가지 않으며, 창을 닫으면 사라집니다.</p>
   ${p.mix ? `<div class="banner warn" style="margin-bottom:10px">${esc(p.mix)}</div>` : ""}
-  <label class="drop" id="drop"><strong>파일을 끌어다 놓거나 눌러서 이 건에 추가</strong>PDF · DOCX · TXT, 여러 개 한꺼번에<input type="file" id="file2" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="파일 선택"></label>
-  <p class="tiny muted" style="margin:6px 0 0">파일 선택 창이 열리지 않으면(일부 앱 안 화면) <button class="docref" id="b-paste2">본문 붙여넣기</button>로 문서 내용을 넣을 수 있습니다.</p>
+  <label class="drop" id="drop"><strong>${p.sample ? "눌러서 ITB 파일 올리기(새 입찰 건으로)" : "파일을 끌어다 놓거나 눌러서 이 건에 추가"}</strong>PDF · DOCX · TXT, 여러 개 한꺼번에<input type="file" id="file2" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="파일 선택"></label>
+  <p class="tiny muted" style="margin:6px 0 0">눌러도 파일 선택 창이 열리지 않으면 Claude 앱 안 화면이 파일 선택을 막는 경우입니다. 같은 링크를 PC 크롬·엣지나 휴대폰 기본 브라우저(사파리·크롬)에서 열어 주세요. 급하면 <button class="docref" id="b-paste2">본문 붙여넣기</button>도 됩니다.</p>
   <div class="doclist">${p.docs.map(d => { const pending = p.docs.some(x => x.status === "reading"); return `<div class="docrow"><span class="nm">${esc(d.name)}</span>
     ${d.status === "done" && pending ? '<span class="tiny muted">종류 판단 중</span>' : d.status === "done" ? `<select class="sel" data-type="${d.id}" aria-label="${esc(d.name)} 문서 종류">${E.DOC_TYPES.map(t => `<option value="${t.code}" ${t.code === d.type ? "selected" : ""}>${esc(t.label)}</option>`).join("")}</select>` : d.status === "error" ? '<span class="flag r-high">읽기 실패</span>' : '<span class="spin" aria-label="읽는 중"></span>'}
     <span class="mt">${d.status === "done" && pending ? `${d.pages.length}${d.kind === "pdf" ? "쪽" : "구간"} · 묶음을 다 읽은 뒤 종류를 정합니다` : d.status === "done" ? `${d.pages.length}${d.kind === "pdf" ? "쪽" : "구간"} · ${d.type === "ADD" ? "추가 공고는 앞선 판보다 우선" : `우선순위 ${(E.TYPE[d.type] || E.TYPE.ETC).rank + 1}위`}` : esc(d.msg || "읽는 중")}</span></div>`; }).join("")}</div>`;
@@ -837,7 +839,6 @@ async function copyText(t, ok) { try { await navigator.clipboard.writeText(t); t
 function clearToast() { const t = $("#toast"); if (t) t.hidden = true; }
 let tt; function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3600); }
 
-$("#file").onchange = e => { if (e.target.files.length) addFiles(e.target.files, st.pickInto); e.target.value = ""; };
 document.addEventListener("dragover", e => e.preventDefault());
 document.addEventListener("drop", e => { e.preventDefault(); if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files, cur()); });
 
@@ -848,7 +849,8 @@ st.cur = first.id; st.tab = TABS.some(t => t[0] === location.hash.slice(1)) ? lo
 renderAll();
 (async () => {
   const c = window.claude; if (!c || !c.use) return;
-  const [sample, downloads] = await Promise.all([c.use("sample").catch(() => null), c.use("downloads").catch(() => null)]);
+  const use = n => { try { return Promise.resolve(c.use(n)).catch(() => null); } catch { return Promise.resolve(null); } };
+  const [sample, downloads] = await Promise.all([use("sample"), use("downloads")]);
   st.downloads = downloads;
   if (sample) { st.sample = sample; const lim = await sample.limits().catch(() => null); st.tools = !!(lim && lim.tools); }
   renderAll();

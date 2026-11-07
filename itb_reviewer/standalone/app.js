@@ -64,9 +64,26 @@ function addSamplePkg(s) {
   p.docs = s.docs.map((d, i) => ({ id: p.id + "d" + (i + 1), name: d.name, kind: d.kind, pages: d.pages, status: "done", type: d.type }));
   analyze(p); return p;
 }
+// 파일 선택이 막힌 화면(앱 안 WebView 등)을 위한 대체 경로: 본문을 붙여넣어 문서 1권으로 만든다
+function openPaste(into) {
+  let dlg = $("#pastedlg");
+  if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "pastedlg"; dlg.className = "card pad pastedlg"; document.body.appendChild(dlg); }
+  const p = into || cur();
+  dlg.innerHTML = `<form method="dialog" class="stack" style="gap:8px"><div class="h3" style="margin:0">문서 본문 붙여넣기</div>
+    <p class="tiny muted" style="margin:0">PDF·Word에서 전체 선택(Ctrl/⌘+A) → 복사한 내용을 붙여넣으세요. 문서마다 한 번씩 넣으면 묶음이 됩니다. 이 브라우저 안에서만 읽습니다.</p>
+    <label class="tiny muted">문서 이름(종류 추정에 씀: 예 "ITB", "Conditions of Contract", "Addendum 1")<input class="inp" id="pname" value="붙여넣은 문서 ${p ? p.docs.length + 1 : 1}" style="width:100%"></label>
+    <textarea class="inp" id="ptext" rows="10" style="width:100%;font-size:13px" placeholder="여기에 ITB 본문을 붙여넣기"></textarea>
+    ${p && !p.sample ? `<label class="tiny"><input type="checkbox" id="pinto" checked> 지금 보는 건(${esc(p.name)})에 추가</label>` : ""}
+    <div class="elmsg err tiny" id="perr" role="status"></div><div class="btns"><span class="grow"></span><button class="btn" value="cancel">닫기</button><button class="btn primary" id="pgo" value="ok">분석</button></div></form>`;
+  $("#pgo", dlg).onclick = e => { const t = $("#ptext", dlg).value.trim(); if (t.length < 50) { e.preventDefault(); $("#perr", dlg).textContent ="본문이 너무 짧습니다. 문서 내용을 붙여넣어 주세요."; return; }
+    const nm = ($("#pname", dlg).value.trim() || "붙여넣은 문서").replace(/[\\/:*?"<>|]/g, " ") + ".txt", into2 = $("#pinto", dlg) && $("#pinto", dlg).checked ? p : null;
+    addFiles([new File([t], nm, { type: "text/plain" })], into2); };
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  setTimeout(() => $("#ptext", dlg).focus(), 30);
+}
 async function addFiles(files, intoPkg) {
   const all = [...files], ok = all.filter(f => /\.(pdf|docx|txt|md)$/i.test(f.name));
-  if (!ok.length) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다.");
+  if (!ok.length) return toast("PDF, DOCX, TXT 파일만 읽을 수 있습니다. 다른 형식이면 본문을 '붙여넣기'로 넣어 주세요.");
   if (ok.length < all.length) toast(`${all.length - ok.length}개 파일은 형식이 맞지 않아 건너뜁니다.`);
   clearToast();
   const pkg = intoPkg || newPkg(ok.length === 1 ? ok[0].name.replace(/\.[^.]+$/, "") : `새 입찰 건 ${st.pkgs.length + 1}`);
@@ -175,11 +192,14 @@ function renderPkgbar() {
     <div class="pkgsel" role="group" aria-label="입찰 건">${st.pkgs.map(x => `<button class="pkgbtn" data-pkg="${x.id}" aria-current="${x.id === st.cur}">${esc(x.name)}<span class="t">${x.sample ? "가상 샘플 · " : ""}문서 ${x.docs.length}권</span></button>`).join("")}</div>
     <span class="grow"></span>
     ${qd.state !== "none" || bd.state !== "none" ? `<span class="dday ${[qd, bd].some(x => x.state === "ok" && x.n <= 14 && x.n >= 0) ? "soon" : ""}" title="질의 마감 ${esc(qd.iso || dtxt(qd))} · 입찰 마감 ${esc(bd.iso || dtxt(bd))}">질의 ${dtxt(qd)} · 입찰 ${dtxt(bd)}</span>` : ""}
-    <button class="btn" id="b-add" ${p ? "" : "disabled"}><span class="lg">이 건에 </span>문서 추가</button>
-    <button class="btn primary" id="b-new">새 입찰 건<span class="lg"> 올리기</span></button>`;
+    ${p ? `<span class="btn pick"><span class="lg">이 건에 </span>문서 추가<input type="file" id="f-add" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="이 건에 문서 추가"></span>` : ""}
+    <span class="btn primary pick">새 입찰 건<span class="lg"> 올리기</span><input type="file" id="f-new" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="새 입찰 건 올리기"></span>
+    <button class="btn" id="b-paste" title="파일 선택이 안 될 때">붙여넣기</button>`;
   $$(".pkgbtn").forEach(b => b.onclick = () => { clearToast(); st.cur = b.dataset.pkg; st.open = new Set(); st.src = { doc: null, page: 1, focus: null }; renderAll(); });
-  $("#b-new").onclick = () => { st.pickInto = null; $("#file").click(); };
-  $("#b-add").onclick = () => { st.pickInto = cur(); $("#file").click(); };
+  const fa = $("#f-add"), fn = $("#f-new");
+  if (fa) fa.onchange = e => { if (e.target.files.length) addFiles(e.target.files, cur()); e.target.value = ""; };
+  fn.onchange = e => { if (e.target.files.length) addFiles(e.target.files, null); e.target.value = ""; };
+  $("#b-paste").onclick = () => openPaste();
 }
 function issueCount(c) { return c.open + c.missRefs + c.high + (c.tech || 0); }
 function renderTabs() {
@@ -605,13 +625,14 @@ function vDocs(p) {
   return `<div class="sec-h"><h2>문서 묶음</h2><span class="muted small">${esc(p.name)}</span></div>
   <p class="lede">한 입찰 건의 문서를 모두 올리세요(입찰지침, 입찰 데이터 시트, 계약 데이터, 특수·일반조건, 요구사항, 시방, 추가 공고). 문서 종류는 파일 이름과 첫 쪽으로 추정합니다. 틀리면 고르세요. 종류에 따라 문서 우선순위가 정해집니다. 파일은 이 브라우저 안에서만 읽고 어디로도 올라가지 않으며, 창을 닫으면 사라집니다.</p>
   ${p.mix ? `<div class="banner warn" style="margin-bottom:10px">${esc(p.mix)}</div>` : ""}
-  <label class="drop" id="drop"><strong>파일을 끌어다 놓거나 눌러서 이 건에 추가</strong>PDF · DOCX · TXT, 여러 개 한꺼번에<input type="file" id="file2" accept=".pdf,.docx,.txt,.md" multiple hidden></label>
+  <label class="drop" id="drop"><strong>파일을 끌어다 놓거나 눌러서 이 건에 추가</strong>PDF · DOCX · TXT, 여러 개 한꺼번에<input type="file" id="file2" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" multiple aria-label="파일 선택"></label>
+  <p class="tiny muted" style="margin:6px 0 0">파일 선택 창이 열리지 않으면(일부 앱 안 화면) <button class="docref" id="b-paste2">본문 붙여넣기</button>로 문서 내용을 넣을 수 있습니다.</p>
   <div class="doclist">${p.docs.map(d => { const pending = p.docs.some(x => x.status === "reading"); return `<div class="docrow"><span class="nm">${esc(d.name)}</span>
     ${d.status === "done" && pending ? '<span class="tiny muted">종류 판단 중</span>' : d.status === "done" ? `<select class="sel" data-type="${d.id}" aria-label="${esc(d.name)} 문서 종류">${E.DOC_TYPES.map(t => `<option value="${t.code}" ${t.code === d.type ? "selected" : ""}>${esc(t.label)}</option>`).join("")}</select>` : d.status === "error" ? '<span class="flag r-high">읽기 실패</span>' : '<span class="spin" aria-label="읽는 중"></span>'}
     <span class="mt">${d.status === "done" && pending ? `${d.pages.length}${d.kind === "pdf" ? "쪽" : "구간"} · 묶음을 다 읽은 뒤 종류를 정합니다` : d.status === "done" ? `${d.pages.length}${d.kind === "pdf" ? "쪽" : "구간"} · ${d.type === "ADD" ? "추가 공고는 앞선 판보다 우선" : `우선순위 ${(E.TYPE[d.type] || E.TYPE.ETC).rank + 1}위`}` : esc(d.msg || "읽는 중")}</span></div>`; }).join("")}</div>`;
 }
 bind.docs = (p, el) => {
-  const drop = $("#drop", el), f2 = $("#file2", el);
+  const drop = $("#drop", el), f2 = $("#file2", el); $("#b-paste2", el).onclick = () => openPaste(p);
   f2.onchange = e => { if (e.target.files.length) addFiles(e.target.files, p); e.target.value = ""; };
   drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); }; drop.ondragleave = () => drop.classList.remove("over");
   drop.ondrop = e => { e.preventDefault(); e.stopPropagation(); drop.classList.remove("over"); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files, p); };

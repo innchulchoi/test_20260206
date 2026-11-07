@@ -487,18 +487,27 @@
   }
 
   // 근거 문장을 실제로 관장하는 조항 제목(청크 안에서 문장 앞의 마지막 제목)
+  // 반환: { sec: 조항 제목, sub: 문장 앞 가장 가까운 번호(예 1.2) }
   function sectionFor(chunk, sentence) {
     const key = sentence.slice(0, 24), lines = chunk.text.split("\n");
-    let sec = chunk.start || "", pos = 0;
-    const at = mergeLines(chunk.text).indexOf(key);
-    for (const l of lines) { if (at >= 0 && pos > at) break; if (HEADING_RE.test(l) && l.trim().length < 100) sec = l.trim(); pos += l.length + 1; }
-    return sec || chunk.section;
+    let sec = chunk.start || "", sub = "", pos = 0;
+    const flat = chunk.text.replace(/\s+/g, " "), at = flat.indexOf(key.replace(/\s+/g, " "));
+    if (at < 0) return { sec: chunk.section, sub: "" };
+    for (const l of lines) {
+      if (pos > at) break;
+      if (HEADING_RE.test(l) && l.trim().length < 100) sec = l.trim();
+      const m = l.match(/^\s*(\d{1,2}(?:\.\d+)+)\.?\s/); if (m) sub = m[1];
+      else if (HEADING_RE.test(l)) sub = "";
+      pos += l.replace(/\s+/g, " ").length + 1;
+    }
+    return { sec, sub };
   }
   // 질의서에 쓰는 조항 인용(예: "Clause 14.3", "ITB 2.3")
   function clauseOf(c) {
     let m = c.evidence.match(/^(?:Sub-)?(?:Clause|Article|ITB|GCC|PCC)?\s*(\d+(?:\.\d+)+)\s/i) || c.evidence.match(/^(\d+(?:\.\d+)+)\s/);
     if (m) return `Clause ${m[1]}`;
-    m = (c.section || "").match(/((?:Sub-)?Clause|Article|Section)\s+([\dA-Z][\d.]*)/i); if (m) return `${m[1]} ${m[2]}`;
+    if (c.sub) return `Clause ${c.sub}`;
+    m = (c.section || "").match(/((?:Sub-)?Clause|Article|Section)\s+([\dA-Z][\d.]*)/i); if (m) return `${m[1]} ${m[2].replace(/\.$/, "")}`;
     m = (c.section || "").match(/^(\d+(?:\.\d+)*)\.?\s/); if (m) return `Clause ${m[1]}`;
     m = (c.section || "").match(/제\s*\d+\s*[조장절]/); if (m) return m[0];
     return "";
@@ -512,7 +521,8 @@
     let value = b.val;
     if (value == null && (item.valueType === "text" || item.key === "limitation_of_liability"))
       value = b.s.length <= 220 ? b.s : b.s.slice(0, 217) + "…";
-    const c = { docId: d.id, docName: d.name, type: d.type, rank: rankOf(item, d.type), addNo: d.addNo, page: b.chunk.page, section: sectionFor(b.chunk, b.s),
+    const sf = sectionFor(b.chunk, b.s);
+    const c = { docId: d.id, docName: d.name, type: d.type, rank: rankOf(item, d.type), addNo: d.addNo, page: b.chunk.page, section: sf.sec, sub: sf.sub,
       value, raw: b.raw, evidence: b.s.slice(0, 600), ctx: b.ctx, sc: b.sc, norm: norm(item, value, b.s), amount: !!(b.vm && b.vm.amount) };
     c.clause = clauseOf(c);
     return c;
@@ -521,7 +531,9 @@
   const rankOf = (item, type) => (PROCEDURAL.has(item.key) && (type === "ITB" || type === "BDS")) ? (type === "BDS" ? 0.4 : 0.5) : TYPE[type].rank;
   const SEV = { high: 4, medium: 3, unknown: 2, low: 1, none: 0 };
 
-  function analyzePackage(pkg) {
+  const LEGAL = new Set(["liquidated_damages", "ld_cap", "bid_bond", "performance_bond", "warranty", "retention", "advance_payment", "payment_terms"]);
+  function analyzePackage(pkg, policy) {
+    policy = policy || {};
     const items = ITEMS.map(item => {
       let cands = pkg.docs.map(d => candidateFor(item, d)).filter(c => c && c.value != null);
       // 추가 공고는 '바꾼다'는 문장일 때만 값 변경으로 본다(질의 회신·불수용 문장은 제외)
@@ -554,6 +566,7 @@
       }
       let [risk, reason] = assessRisk(item.key, applied.value, applied.evidence, applied.ctx);
       let value = applied.value;
+      if (policy.domestic && LEGAL.has(item.key)) { risk = "none"; reason = "국내 공공계약: 법령·계약예규가 정하는 값일 수 있어 해외 통상치로 판정하지 않습니다. 법정 기준과 같은지 계약법무가 확인하세요."; }
       if (conflict && conflict.status === "open") {
         // 가장 불리한 값 기준 판정
         let worst = null;
@@ -576,8 +589,10 @@
     const korean = hangul > latin;
     const domestic = korean && /국가를\s*당사자로|지방자치단체를\s*당사자로|조달청|공공기관|발주기관|입찰참가자격/.test(all);
     const m = all.match(/[^.\n]*(?:deviation|qualified bid|conditional (?:bid|tender))[^.\n]*(?:non-responsive|rejected|shall not be (?:permitted|considered|accepted)|not be permitted)[^.\n]*|[^.\n]*(?:조건부\s*입찰|이탈)[^.\n]*(?:무효|허용하지|불허)[^.\n]*/i);
-    const forbidden = !!m;
-    return { korean, domestic, forbidden, evidence: m ? m[0].trim().slice(0, 200) : "",
+    const listed = m && /not listed|unlisted|unless (?:stated|listed|included)|other than those (?:listed|stated)|not (?:included|stated) in the schedule/i.test(m[0]);
+    const forbidden = !!m && !listed;
+    let ev = ""; if (m) { const i = all.indexOf(m[0]); const ls = all.lastIndexOf("\n", i) + 1, le = all.indexOf("\n", i + m[0].length); ev = all.slice(ls, le < 0 ? undefined : le).trim().slice(0, 220); }
+    return { korean, domestic, forbidden, evidence: forbidden ? ev : "",
       note: forbidden ? "입찰지침이 이탈을 허용하지 않아 이탈 요청 대신 질의로 바꿨습니다." : domestic ? "국내 공공계약은 계약 조건 이탈을 입찰서에 붙일 수 없어 질의(또는 이의 제기)로 바꿨습니다." : "" };
   }
   // 서로 다른 사업의 문서가 섞였는지: 입찰 번호가 다르거나 국문·영문 문서가 섞였을 때
@@ -621,6 +636,11 @@
     }).sort((a, b) => a.present - b.present || a.target.localeCompare(b.target));
   }
 
+  // 받침에 맞춘 조사: josa("유보금","이","가") → "유보금이"
+  function josa(w, a, b) { const t = String(w).trim(), c = t.charCodeAt(t.length - 1);
+    if (c >= 0xac00 && c <= 0xd7a3) return t + (((c - 0xac00) % 28) ? a : b);
+    return t + (/[0-9LMNR]$/i.test(t) ? a : b); }
+  const enVal = v => String(v).replace(/%\/일/, "% of the Contract Price per day").replace(/%\/주/, "% of the Contract Price per week");
   const cite = v => `${TYPE[v.type].en}${v.clause ? ", " + v.clause : ""}`;
   const citeKo = v => `${TYPE[v.type].label}${v.clause ? " " + v.clause : ""}`;
   function drafts(items, refs, policy) {
@@ -631,27 +651,27 @@
     for (const it of items) {
       if (!it.conflict || it.conflict.status !== "open") continue;
       const vs = it.conflict.values;
-      q({ item: it.key, label: it.label, basis: "모순", owner: it.dept, refs: vs.map(v => ({ docId: v.docId, page: v.page, label: `${v.docName.replace(/\.[^.]+$/, "")}`, hl: (it.candidates.find(c => c.docId === v.docId) || {}).evidence || "" })),
+      q({ item: it.key, label: it.label, basis: "모순", owner: it.dept, refs: vs.map(v => ({ docId: v.docId, page: v.page, hl: (it.candidates.find(c => c.docId === v.docId) || {}).evidence || "" })),
         where: vs.map(v => `${citeKo(v)} (${v.docName} p.${v.page})`).join(" · "),
-        en: ko ? `${it.label}이(가) ${vs.map(v => `${citeKo(v)}에는 ${v.value}`).join(", ")}로 서로 다르게 기재되어 있습니다. 적용되는 값을 확인하여 주시고, 정정 공고로 일치시켜 주시기 바랍니다.`
-          : `${vs.map(v => `${cite(v)} states ${v.value}`).join(", whereas ")}. Please confirm the applicable ${it.en.toLowerCase()} and amend the Tender Documents by Addendum.`,
-        ko: `${it.label}이(가) 문서마다 다릅니다: ${vs.map(v => `${citeKo(v)} ${v.value}`).join(" vs ")}. 적용 값을 확인하고 추가 공고로 정정해 달라고 요청합니다.` });
+        en: ko ? `${josa(it.label, "이", "가")} ${vs.map(v => `${citeKo(v)}에는 ${v.value}`).join(", ")}(으)로 서로 다르게 기재되어 있습니다. 적용되는 값을 확인하여 주시고, 정정 공고로 일치시켜 주시기 바랍니다.`
+          : `${vs.map(v => `${cite(v)} states ${enVal(v.value)}`).join(", whereas ")}. Please confirm the applicable ${it.en.toLowerCase()} and amend the Tender Documents by Addendum.`,
+        ko: `${josa(it.label, "이", "가")} 문서마다 다릅니다: ${vs.map(v => `${citeKo(v)} ${v.value}`).join(" vs ")}. 적용 값을 확인하고 추가 공고로 정정해 달라고 요청합니다.` });
     }
     for (const k of MUST) {
       const it = by[k]; if (!it || it.found) continue;
-      if (ko && k === "bid_currency") continue;
+      if (policy.domestic && (k === "retention" || k === "bid_currency")) continue; // 국내 공공계약에는 없는 제도·항목
       q({ item: k, label: it.label, basis: "조항 못 찾음", owner: it.dept, where: "입찰 문서 전체",
         en: ko ? `입찰 문서에서 ${it.label}에 관한 조항을 찾지 못하였습니다. 해당 조건과 근거 조항을 알려 주시기 바랍니다.` : `We could not find the ${it.en.toLowerCase()} in the Tender Documents. Please confirm the applicable requirement and the governing clause.`,
         ko: `${it.label} 조항을 찾지 못했습니다. 조건과 근거 조항을 확인 요청합니다.` });
     }
     for (const r of refs.filter(r => !r.present)) {
       const f = r.refs[0];
-      q({ item: null, label: `빠진 참조 문서: ${r.target}`, basis: "빠진 참조 문서", owner: "영업", refs: [{ docId: f.docId, page: f.page, label: f.docName.replace(/\.[^.]+$/, ""), hl: f.text }], where: `${f.docName} p.${f.page}`,
-        en: ko ? `${f.docName}이(가) ${r.target}을(를) 참조하나 배포된 입찰 문서에 포함되어 있지 않습니다. 해당 문서를 배포하여 주시기 바랍니다.` : `The Tender Documents refer to ${r.target}, which was not included in the documents issued to Bidders. Please issue ${r.target}.`,
-        ko: `${r.target}을(를) 참조하지만 받은 입찰 문서에 없습니다. 배포 요청합니다.` });
+      q({ item: null, label: `빠진 참조 문서: ${r.target}`, basis: "빠진 참조 문서", owner: "영업", refs: [{ docId: f.docId, page: f.page, hl: f.text, line: true }], where: `${f.docName} p.${f.page}`,
+        en: ko ? `입찰 문서가 ${r.target} 문서를 참조하나 배포된 입찰 문서에 포함되어 있지 않습니다. 해당 문서를 배포하여 주시기 바랍니다.` : `The Tender Documents refer to ${r.target}, which was not included in the documents issued to Bidders. Please issue ${r.target}.`,
+        ko: `본문이 ${r.target} 문서를 참조하지만 받은 입찰 문서에 없습니다. 배포를 요청합니다.` });
     }
     const sd = by.site_data_reliance;
-    if (sd && sd.found && sd.risk === "high") q({ item: sd.key, label: sd.label, basis: "리스크 높음", owner: sd.dept, refs: [{ docId: sd.docId, page: sd.pages[0], label: sd.docName.replace(/\.[^.]+$/, ""), hl: sd.evidence }], where: `${citeKo(sd.candidates[0])} (${sd.docName} p.${sd.pages[0]})`,
+    if (sd && sd.found && sd.risk === "high") q({ item: sd.key, label: sd.label, basis: "리스크 높음", owner: sd.dept, refs: [{ docId: sd.docId, page: sd.pages[0], hl: sd.evidence }], where: `${citeKo(sd.candidates[0])} (${sd.docName} p.${sd.pages[0]})`,
       en: ko ? "입찰 시 제공된 현장·지반 자료를 설계와 가격 산정의 근거로 사용할 수 있는지, 자료가 실제와 다를 경우 비용은 누가 부담하는지 확인하여 주시기 바랍니다."
         : `Please confirm whether Bidders may rely on the site and geotechnical data issued with the Tender Documents (${cite(sd.candidates[0])}) for design and pricing, and which party bears the cost of any inaccuracy.`,
       ko: "제공된 현장·지반 자료를 설계·가격에 믿고 써도 되는지, 틀리면 비용은 누가 지는지 확인 요청합니다." });
@@ -659,31 +679,33 @@
     const pct = it => parseFloat(it.value);
     const DEV = {
       liquidated_damages: it => ["지체상금률을 일 0.1% 이하로 낮춤", "the rate of delay damages be reduced to 0.1% of the Contract Price per day of delay"],
-      ld_cap: it => [it.found ? `지체상금 상한을 ${it.value || "현재 값"}에서 10%로 낮춤` : "지체상금 상한을 계약금액의 10%로 정함", "the total amount of delay damages be limited to 10% of the Contract Price"],
-      limitation_of_liability: it => [!it.found ? "총 책임 한도를 계약금액의 100%로 정함" : /unlimit|무제한|제한(?:하지| 없)/i.test(it.evidence) ? "무제한 책임을 계약금액의 100%로 제한" : `총 책임 한도를 ${isNaN(pct(it)) ? "현재 값" : pct(it) + "%"}에서 계약금액의 100%로 낮춤`, "the Contractor's total liability be limited to 100% of the Accepted Contract Amount, with indirect and consequential loss excluded"],
+      ld_cap: it => [it.found ? `지체상금 상한(현재 ${it.value || "값 미정"})을 10%로 낮춤` : "지체상금 상한을 계약금액의 10%로 정함", "the total amount of delay damages be limited to 10% of the Contract Price"],
+      limitation_of_liability: it => [!it.found ? "총 책임 한도를 계약금액의 100%로 정함" : /unlimit|무제한|제한(?:하지| 없)/i.test(it.evidence) ? "무제한 책임을 계약금액의 100%로 제한" : `총 책임 한도(현재 ${isNaN(pct(it)) ? "문장 참조" : pct(it) + "%"})를 계약금액의 100%로 낮춤`, "the Contractor's total liability be limited to 100% of the Accepted Contract Amount, with indirect and consequential loss excluded"],
       price_adjustment: () => ["주요 자재(강재·동·연료)와 인건비에 물가변동 조정 공식을 넣음", "a price adjustment formula for steel, copper, fuel and labour indices be included"],
-      payment_terms: it => [`기성 지급 기한을 ${it.value}에서 56일 이하로 줄임`, "the period for payment of Interim Payment Certificates be reduced to 56 days"],
-      warranty: it => [`하자담보기간을 ${it.value}에서 24개월 이하로 줄임`, "the Defects Notification Period be limited to 24 months from Taking Over"],
-      bid_bond: it => [`입찰보증을 ${it.value}에서 2%로 낮춤`, "the Bid Security be reduced to 2% of the Bid Price"],
-      performance_bond: it => [`이행보증을 ${it.value}에서 10%로 낮춤`, "the Performance Security be reduced to 10% of the Contract Price"],
-      retention: it => [`유보금을 ${it.value || "현재 값"}에서 5%로 낮추고 인수 때 절반 반환`, "Retention Money be limited to 5% of the Contract Price, with half released at Taking Over"],
+      payment_terms: it => [`기성 지급 기한(현재 ${it.value})을 56일 이하로 줄임`, "the period for payment of Interim Payment Certificates be reduced to 56 days"],
+      warranty: it => [`하자담보기간(현재 ${it.value})을 24개월 이하로 줄임`, "the Defects Notification Period be limited to 24 months from Taking Over"],
+      bid_bond: it => [`입찰보증(현재 ${it.value})을 2%로 낮춤`, "the Bid Security be reduced to 2% of the Bid Price"],
+      performance_bond: it => [`이행보증(현재 ${it.value})을 10%로 낮춤`, "the Performance Security be reduced to 10% of the Contract Price"],
+      retention: it => [`유보금(현재 ${it.value || "값 미정"})을 5%로 낮추고 인수 때 절반 반환`, "Retention Money be limited to 5% of the Contract Price, with half released at Taking Over"],
       advance_payment: () => ["선급금 10%를 선급금 보증과 교환으로 지급", "an advance payment of 10% of the Contract Price be made against an Advance Payment Guarantee"],
       site_data_reliance: () => ["발주처 조사 자료를 믿고 써도 되는 자료(RUI)로 지정", "the geotechnical and site data be designated as Rely Upon Information for which the Employer is responsible"],
-      local_content: it => [`현지화 의무 ${it.value}를 낮추거나 미달 시 제재를 협의로 바꿈`, "the local content requirement be reduced, or the sanction for shortfall be replaced with a negotiated remedy"],
+      local_content: it => [`현지화 의무(현재 ${it.value})를 낮추거나 미달 시 제재를 협의로 바꿈`, "the local content requirement be reduced, or the sanction for shortfall be replaced with a negotiated remedy"],
     };
     const noDev = policy.forbidden || policy.domestic;
     for (const it of items) {
-      if (it.risk !== "high" || !DEV[it.key] || it.undetermined) continue;
+      if (it.risk !== "high" || !DEV[it.key] || it.undetermined || !it.found) continue; // 못 찾은 항목은 질의로 묻는다
       const [k, e] = DEV[it.key](it);
-      const c = it.found ? it.candidates.find(x => x.docId === it.docId) || it.candidates[0] : null;
-      const ref = c ? { docId: c.docId, page: c.page, label: c.docName.replace(/\.[^.]+$/, ""), hl: c.evidence } : null;
+      const c = !it.found ? null : (it.candidates.find(x => x.docId === it.docId && x.page === it.pages[0]) ||
+        { docId: it.docId, docName: it.docName, page: it.pages[0], type: it.docType || "ETC", clause: it.clause || "", evidence: it.evidence });
+      const ref = c ? { docId: c.docId, page: c.page, hl: c.evidence } : null;
       const at = c ? `${citeKo(c)} (${c.docName} p.${c.page})` : "조항 없음";
       if (noDev) {
+        if (Q.some(x => x.item === it.key)) continue; // 같은 항목 질의는 하나만
         q({ item: it.key, label: it.label, basis: "조건 완화 질의", owner: it.dept, refs: ref ? [ref] : [], where: at,
-          en: ko ? `${it.label} 조건(${it.value || "조항 없음"})이 통상 수준보다 계약자에게 불리합니다. 다음과 같이 조정이 가능한지 검토하여 주시기 바랍니다: ${k}.` : `${c ? cite(c) : "The Tender Documents"}: we kindly request the Employer to consider that ${e}. Please confirm by Addendum.`,
+          en: ko ? `${it.label} 조건(${it.value || "조항 없음"})이 계약자에게 불리합니다. 다음과 같이 조정이 가능한지 검토하여 주시기 바랍니다: ${k}.` : `${c ? cite(c) : "The Tender Documents"}: we kindly request the Employer to consider that ${e}. Please confirm by Addendum.`,
           ko: `${k} (이탈 불가라 질의로 요청)` });
       } else {
-        D.push({ item: it.key, label: it.label, basis: it.risk_reason, owner: it.dept, refs: ref ? [ref] : [], where: at, ko: k,
+        D.push({ item: it.key, label: it.label, basis: "리스크 높음", why: it.risk_reason, owner: it.dept, refs: ref ? [ref] : [], where: at, ko: k,
           en: `${c ? cite(c) : "Conditions of Contract"}: the Bidder requests that ${e}.` });
       }
     }
@@ -705,13 +727,13 @@
       note: cap.hi ? `약 ${Math.ceil(cap.lo / (price * perDay / 100))}일 늦으면 상한 도달` : "상한이 없으면 늦는 만큼 계속 늘어남", item: ld } : null;
     const adv = row("advance_payment", "선급금 보증", "받는 선급금과 같은 금액");
     const loss = [daily, cap, row("limitation_of_liability", "총 책임 한도", "계약 전체 최대 손실")].filter(Boolean);
-    const bank = [row("bid_bond", "입찰보증", "입찰가 기준, 입찰 중"), row("performance_bond", "이행보증", "계약 후 인수까지"), adv];
+    const bank = [row("bid_bond", "입찰보증", "입찰 중에만, 계약하면 반환"), row("performance_bond", "이행보증", "계약 후 인수까지"), adv];
     const cash = [{ ...row("advance_payment", "선급금 받음", "초기 현금 유입") }, row("retention", "유보금 묶임", "인수·하자 기간 뒤 반환")];
     const sum = arr => { const lo = arr.reduce((a, r) => a + (r.lo || 0), 0), hi = arr.reduce((a, r) => a + (r.hi || 0), 0); return { lo, hi }; };
     const unpriced = items.filter(i => i.risk === "high" && !["ld_cap", "liquidated_damages", "limitation_of_liability", "bid_bond", "performance_bond", "retention", "advance_payment"].includes(i.key));
-    return { loss, bank, bankSum: sum(bank), cash, unpriced };
+    return { loss, bank, bankSum: sum(bank.slice(1)), bankSumLabel: "계약 후 동시 최대(이행+선급금 보증)", cash, unpriced };
   }
 
-  const api = { ITEMS, MUST, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
+  const api = { ITEMS, MUST, josa, THRESHOLDS, CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, policyOf, mixWarning, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ITBEngine = api;
 })(typeof window !== "undefined" ? window : globalThis);

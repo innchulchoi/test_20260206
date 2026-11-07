@@ -1,4 +1,4 @@
-"""단독 HTML(standalone/itb_reviewer.html) 생성: template.html + engine.js + 가상 샘플 페이지 텍스트.
+"""단독 HTML(standalone/itb_reviewer.html) 생성: template.html + engine.js + 가상 샘플(문서 묶음 + 국문 단일 문서).
 
   python standalone/build.py
 """
@@ -12,15 +12,18 @@ sys.path.insert(0, str(ROOT))
 
 from itb.parser import parse_document  # noqa: E402
 
-samples = {}
-for key, name in (("en", "sample_itb_en.pdf"), ("ko", "sample_itb_ko.docx")):
-    path = ROOT / "samples" / name
-    if not path.exists():
-        import runpy
+path = ROOT / "samples" / "sample_itb_ko.docx"
+if not path.exists():
+    import runpy
 
-        runpy.run_path(str(ROOT / "samples" / "make_samples.py"), run_name="__main__")
-    d = parse_document(path)
-    samples[key] = {"kind": d.kind, "pages": [{"number": p.number, "text": p.text} for p in d.pages]}
+    runpy.run_path(str(ROOT / "samples" / "make_samples.py"), run_name="__main__")
+ko = parse_document(path)
+samples = {
+    "bundle": json.loads((HERE / "sample_bundle.json").read_text(encoding="utf-8")),
+    "ko": {"name": "한빛시 하수처리장 증설 (가상, 단일 문서)",
+           "docs": [{"name": "샘플_하수처리장_입찰안내서.docx", "kind": ko.kind,
+                     "pages": [{"number": p.number, "text": p.text} for p in ko.pages]}]},
+}
 
 data = json.dumps(samples, ensure_ascii=False).replace("</", "<\\/")
 engine = (HERE / "engine.js").read_text(encoding="utf-8")

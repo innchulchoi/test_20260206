@@ -16,7 +16,7 @@
     I("clarification_deadline", "질의 마감일", "입찰 절차", "clarification queries questions requests deadline 질의 질의응답 질의서 회신", "clarif|quer|question|질의", "date", "입찰 질의서 제출 기한"),
     I("site_visit", "현장설명회", "입찰 절차", "pre-bid meeting site visit conference schedule 현장설명회 현장답사 입찰설명회 일정", "pre-bid|site visit|conference|meeting|현장설명|현장답사|설명회", "date", "현장설명회/Pre-bid meeting 일정과 참석 의무"),
     I("bid_validity", "입찰 유효기간", "입찰 절차", "bid validity period remain valid days 입찰유효기간 유효기간", "valid|유효", "duration", "입찰서 유효기간(일)", "security|guarantee|bond|보증"),
-    I("bid_currency", "입찰 통화", "입찰 절차", "currency of bid currencies payment exchange rate 입찰통화 통화 환율", "currenc|exchange|통화|환율", "text", "입찰·지급 통화와 환율 적용 기준"),
+    I("bid_currency", "입찰 통화", "입찰 절차", "currency of bid currencies payment exchange rate 입찰통화 통화 환율", "currency of|currencies|priced in|통화", "text", "입찰·지급 통화와 환율 적용 기준"),
     I("evaluation", "평가 기준", "입찰 절차", "evaluation criteria technical commercial weighting lowest evaluated award 평가기준 낙찰자 결정 기술평가 가격평가 배점", "evaluat|award|weight|lowest|평가|낙찰|배점", "text", "기술·가격 평가 방식, 배점, 낙찰자 결정 방법"),
     I("submission_documents", "제출 서류", "입찰 절차", "bid shall comprise documents submitted envelope technical proposal price schedule 제출서류 입찰서류 구비서류", "comprise|envelope|document|proposal|제출서류|구비서류|입찰서류", "text", "기술·가격 제안서 등 제출 서류 구성과 봉투 방식"),
     I("bid_bond", "입찰보증금", "보증·지급", "bid security bid bond tender guarantee 입찰보증금 입찰보증서 보증", "bid security|bid bond|tender (?:security|guarantee)|입찰보증", "percent", "입찰보증 금액(비율)과 유효기간", "performance|이행|계약보증"),
@@ -33,7 +33,43 @@
     I("governing_law", "준거법·분쟁해결", "계약 리스크", "governing law dispute resolution arbitration court ICC jurisdiction 준거법 분쟁 중재 관할법원", "governing law|dispute|arbitrat|court|jurisdiction|준거법|분쟁|중재|관할", "text", "준거법, 중재기관/관할 법원"),
     I("insurance", "보험", "계약 리스크", "insurance contractor all risks CAR third party liability 보험 공사보험 배상책임", "insurance|all risks|보험", "text", "계약자 부보 의무 보험 종류와 금액"),
     I("local_content", "현지화 요건", "계약 리스크", "local content local subcontractors nationals localization in-country value 현지화 현지 업체 현지인 고용", "local content|in-country|national|locali|현지", "percent", "현지 조달·고용 의무 비율"),
+    I("site_data_reliance", "현장 자료 신뢰 범위", "계약 리스크", "site data geotechnical information accuracy warrant reliance for information only verify 현장 자료 지반 조사 참고용 정확성 보증", "for information only|warrant|relian|rely|verify the site data|참고용|정확성|책임지지", "text", "발주처가 준 조사 자료를 계약자가 믿고 쓸 수 있는지(RUI)"),
+    I("interfaces", "인터페이스·타 계약자 범위", "계약 리스크", "interface by others other contractors coordinate tie-in boundary 인터페이스 타 계약자 경계 연계", "by others|interface|tie-in|other contractor|인터페이스|타 계약자|경계", "text", "타 계약자·발주처가 맡는 범위와 경계 조건"),
   ];
+  // 입찰 요약표 묶음, 담당 부서, 영문 명칭(질의서용), 쓰임새
+  const META = {
+    project_name: ["일반", "영업", "Project name", "견적서·표지·질의서 머리에 쓰는 공식 명칭"],
+    employer: ["일반", "영업", "Employer", "보증서 수익자, 질의서 수신처"],
+    location: ["일반", "시공", "Site location", "물류·현지 단가·허가 검토의 기준"],
+    scope: ["기술 조건", "설계", "Scope of work", "견적 범위표(WBS)의 기준"],
+    contract_type: ["상업 조건", "계약법무", "Contract type", "가격 구조와 적용 계약조건(FIDIC 판)"],
+    bid_due_date: ["일정", "영업", "Bid submission deadline", "거꾸로 세어 부서별 회신 마감을 잡음"],
+    clarification_deadline: ["일정", "계약법무", "Clarification deadline", "모순은 이 날까지 질의해야 추가 공고로 고칠 수 있음"],
+    site_visit: ["일정", "시공", "Pre-bid meeting / site visit", "참석자 지정, 현장 확인 항목 준비"],
+    bid_validity: ["상업 조건", "재무", "Bid validity", "보증 만기·환율·금속 헤지 기간"],
+    bid_currency: ["상업 조건", "재무", "Currency of bid", "환위험·현지 통화 비중"],
+    evaluation: ["일정", "영업", "Evaluation criteria", "가격·기술 배점에 맞춘 제안 전략"],
+    submission_documents: ["제출 서류", "영업", "Bid documents", "제출 서류 체크리스트"],
+    bid_bond: ["제출 서류", "재무", "Bid security", "은행 보증 한도 신청"],
+    performance_bond: ["상업 조건", "재무", "Performance security", "은행 한도 점유, 보증 수수료 원가"],
+    advance_payment: ["상업 조건", "재무", "Advance payment", "초기 현금흐름, 선급금 보증"],
+    payment_terms: ["상업 조건", "재무", "Interim payment terms", "현금흐름·금융비용"],
+    retention: ["상업 조건", "재무", "Retention money", "현금흐름, 유보금 반환 시점"],
+    completion_period: ["일정", "시공", "Time for completion", "공정표·자원 계획의 기준"],
+    liquidated_damages: ["상업 조건", "계약법무", "Delay damages rate", "공기 지연 1일당 손실, 예비비 산정"],
+    ld_cap: ["상업 조건", "계약법무", "Maximum delay damages", "최대 지연 손실 노출"],
+    warranty: ["상업 조건", "시공", "Defects notification period", "하자 대응 인력·보증 기간"],
+    limitation_of_liability: ["상업 조건", "계약법무", "Limitation of liability", "최대 손실 노출, 보험·이사회 승인 기준"],
+    price_adjustment: ["상업 조건", "원가", "Price adjustment", "자재·인건비 상승분 예비비"],
+    governing_law: ["상업 조건", "계약법무", "Governing law and disputes", "분쟁 비용·집행 가능성"],
+    insurance: ["상업 조건", "재무", "Insurance", "보험료 원가, 부보 범위"],
+    local_content: ["기술 조건", "원가", "Local content", "현지 조달 단가·하도급 계획"],
+    site_data_reliance: ["기술 조건", "설계", "Reliance on site data", "조사 자료 오류의 비용 주인, 추가 조사 예산"],
+    interfaces: ["기술 조건", "시공", "Interfaces with others", "타 계약자 지연 시 대기·범위 다툼"],
+  };
+  for (const it of ITEMS) { const m = META[it.key]; it.group = m[0]; it.dept = m[1]; it.en = m[2]; it.use = m[3]; }
+  const GROUPS = ["일정", "상업 조건", "기술 조건", "제출 서류", "일반"];
+  const DEPTS = ["영업", "원가", "설계", "시공", "계약법무", "재무"];
 
   // ── parser (text → pages → chunks) ─────────────────────
   const PSEUDO_PAGE_CHARS = 3000, CHUNK_CHARS = 1200, CHUNK_OVERLAP = 200;
@@ -172,31 +208,34 @@
   const durationDays = s => { const m = durationMonths(s); return m == null ? null : m * 30.4; };
   const PER_DAY = /per (?:calendar )?day|each day|daily|매일|1일|지체일수/i;
 
-  function valueFor(item, s) {
+  // 값과 함께 원문에서 그 값이 나온 글자(raw)를 돌려준다(원문 형광펜용).
+  function valueMatch(item, s) {
     const vt = item.valueType;
     if (vt === "date") {
       for (const r of DATE_RES) {
         const m = s.match(r);
-        if (m) { const t = s.slice(m.index + m[0].length, m.index + m[0].length + 40).match(TIME_RE); return t ? `${m[0]} ${t[0].trim()}` : m[0]; }
+        if (m) { const t = s.slice(m.index + m[0].length, m.index + m[0].length + 40).match(TIME_RE); return { v: t ? `${m[0]} ${t[0].trim()}` : m[0], raw: m[0] }; }
       }
       return null;
     }
     if (vt === "percent") {
+      const ms = [...s.matchAll(PCT_RE)].map(m => m[0]).concat([...s.matchAll(PERMIL_RE)].map(m => m[0]));
       const p = percents(s); if (!p.length) return null;
-      if (item.key === "ld_cap") return g(p[p.length - 1]) + "%";
+      if (item.key === "ld_cap") return { v: g(p[p.length - 1]) + "%", raw: ms[ms.length - 1] };
       if (item.key === "liquidated_damages") {
         const unit = PER_DAY.test(s) ? "/일" : /per week|each week|weekly|1주|매주/i.test(s) ? "/주" : "";
-        return g(p[0]) + "%" + unit;
+        return { v: g(p[0]) + "%" + unit, raw: ms[0] };
       }
-      return g(p[0]) + "%";
+      return { v: g(p[0]) + "%", raw: ms[0] };
     }
-    if (vt === "duration") { const m = s.match(DUR_RE); return m ? m[0].trim().replace(/^[ )]+|[ )]+$/g, "") : null; }
+    if (vt === "duration") { const m = s.match(DUR_RE); return m ? { v: m[0].trim().replace(/^[ )]+|[ )]+$/g, ""), raw: m[0].trim() } : null; }
     if (item.key === "contract_type") {
       const hits = s.match(/lump[- ]sum|unit[- ]price|turnkey|EPC|FIDIC[^,.;]{0,40}|cost[- ]reimbursable|총액|단가|턴키|일괄입찰/gi);
-      if (hits) return [...new Set(hits.map(h => h.trim()))].join(", ");
+      if (hits) return { v: [...new Set(hits.map(h => h.trim()))].join(", "), raw: hits[0] };
     }
     return null;
   }
+  const valueFor = (item, s) => { const m = valueMatch(item, s); return m ? m.v : null; };
 
   function assessRisk(key, value, evidence, context) {
     const ev = evidence || "";
@@ -288,6 +327,16 @@
         if (/court|법원/.test(low)) return R("medium", "중재 없이 현지 법원 관할입니다.");
         return R("none");
       }
+      case "site_data_reliance": {
+        if (!ev) return R("unknown", "조사 자료를 어디까지 믿을 수 있는지 정한 조항을 찾지 못했습니다.");
+        if (/for information only|does not warrant|not warrant|no responsibility|shall verify|참고용|책임지지|보증하지/.test(low))
+          return R("high", "발주처가 조사 자료의 정확성을 보증하지 않습니다. 자료 오류(지반·수심 등)의 비용을 계약자가 집니다.");
+        return R("low", "조사 자료를 믿고 쓸 수 있는 조항이 있습니다.");
+      }
+      case "interfaces": {
+        if (!ev) return R("none");
+        return R("medium", "다른 계약자·발주처가 맡는 범위가 있습니다. 경계 조건과 지연 시 보상을 확인해야 합니다.");
+      }
       case "local_content": {
         if (!p.length) return ev ? R("low") : R("none");
         const v = p[0];
@@ -308,10 +357,10 @@
       const sents = sentences(chunk.text);
       sents.forEach((s, k) => {
         if (!anchor.test(s) || (exclude && exclude.test(s))) return;
-        const val = valueFor(item, s);
+        const vm = valueMatch(item, s), val = vm ? vm.v : null;
         const overlap = new Set(tokenize(s).filter(t => qtok.has(t))).size;
         const sc = score * (1 - 0.08 * rank) + overlap * 0.6 + (val ? 4 : 0) - s.length / 600 - (/^[a-z]/.test(s) ? 2 : 0);
-        if (!best || sc > best.sc) best = { sc, s, val, chunk, ctx: sents.slice(k, k + 2).join(" ") };
+        if (!best || sc > best.sc) best = { sc, s, val, raw: vm ? vm.raw : null, chunk, ctx: sents.slice(k, k + 2).join(" ") };
       });
     });
     return best;
@@ -347,6 +396,195 @@
     return out;
   }
 
-  const api = { CATEGORIES, ITEMS, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
+  // ── 입찰 문서 묶음(패키지) ─────────────────────────────
+  // 우선순위는 FIDIC 계열 PCC 1.5의 흔한 순서를 기본으로 한다. 추가 공고는 앞선 판을 바꾼다.
+  const DOC_TYPES = [
+    { code: "ADD", label: "추가 공고", en: "Addendum", rank: 0, re: /addendum|corrigendum|amendment no|추가\s*공고|정정\s*공고|변경\s*공고/i },
+    { code: "CA", label: "계약서", en: "Contract Agreement", rank: 1, re: /contract agreement|form of agreement|계약서/i },
+    { code: "CD", label: "계약 데이터(CD)", en: "Contract Data", rank: 2, re: /contract data|appendix to tender|계약\s*데이터/i },
+    { code: "PCC", label: "특수조건(PCC)", en: "Particular Conditions", rank: 3, re: /particular conditions|special conditions|특수\s*조건|특약/i },
+    { code: "GCC", label: "일반조건(GCC)", en: "General Conditions", rank: 4, re: /general conditions|일반\s*조건/i },
+    { code: "ITB", label: "입찰지침(ITB)", en: "Instructions to Bidders", rank: 5, re: /instructions to (?:bidders|tenderers)|입찰\s*(?:안내|지침|공고)|입찰안내서/i },
+    { code: "ER", label: "발주처 요구사항(ER)", en: "Employer's Requirements", rank: 6, re: /employer'?s requirements|과업\s*(?:지시|내용)/i },
+    { code: "TS", label: "기술 시방(TS)", en: "Technical Specifications", rank: 7, re: /technical specification|시방서/i },
+    { code: "APP", label: "부록·참고 자료", en: "Appendix", rank: 8, re: /appendix|annex|부록|별첨/i },
+    { code: "ETC", label: "기타", en: "Document", rank: 9, re: /$^/ },
+  ];
+  const TYPE = Object.fromEntries(DOC_TYPES.map(t => [t.code, t]));
+  function detectDocType(name, firstText) {
+    const nm = String(name || "").replace(/\.[^.]+$/, "").replace(/[_\-.]+/g, " ");
+    for (const t of DOC_TYPES) if (t.re.test(nm)) return t.code;
+    const head = String(firstText || "").slice(0, 500);
+    for (const t of DOC_TYPES) if (t.re.test(head)) return t.code;
+    return "ETC";
+  }
+  const addNo = (name, text) => { const m = (name + " " + String(text || "").slice(0, 300)).match(/(?:no\.?\s*|addendum\s*|#\s*)(\d+)|(\d+)\s*차/i); return m ? +(m[1] || m[2]) : 0; };
+
+  const MONTH_N = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, sept: 9, oct: 10, nov: 11, dec: 12 };
+  const pad = n => String(n).padStart(2, "0");
+  function isoDate(v) {
+    let m;
+    if ((m = v.match(/(20\d{2})[-./](\d{1,2})[-./](\d{1,2})/))) return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
+    if ((m = v.match(/(20\d{2})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/))) return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
+    if ((m = v.match(new RegExp("(\\d{1,2})(?:st|nd|rd|th)?\\s+(" + MONTHS + ")\\.?,?\\s+(20\\d{2})", "i")))) return `${m[3]}-${pad(MONTH_N[m[2].toLowerCase().slice(0, 3)] || MONTH_N[m[2].toLowerCase()])}-${pad(m[1])}`;
+    if ((m = v.match(new RegExp("(" + MONTHS + ")\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?,?\\s+(20\\d{2})", "i")))) return `${m[3]}-${pad(MONTH_N[m[1].toLowerCase().slice(0, 3)])}-${pad(m[2])}`;
+    return null;
+  }
+  function norm(item, value) {
+    if (!value) return null;
+    if (item.valueType === "percent") { const n = parseFloat(value); return isNaN(n) ? null : String(n); }
+    if (item.valueType === "date") return isoDate(value);
+    if (item.valueType === "duration") { const d = durationDays(value); return d == null ? null : String(Math.round(d)); }
+    return null; // 서술형 값은 문장이 달라도 같은 뜻일 수 있어 모순 판정을 하지 않는다
+  }
+
+  function buildPackage(docs) {
+    docs.forEach((d, i) => {
+      d.idx = i + 1;
+      d.type = d.type || detectDocType(d.name, d.pages[0] && d.pages[0].text);
+      d.addNo = d.type === "ADD" ? (addNo(d.name, d.pages[0] && d.pages[0].text) || i + 1) : 0;
+      if (!d.chunks) d.chunks = chunkPages(d.pages);
+      d.index = new BM25(d.chunks);
+    });
+    return { docs };
+  }
+
+  function candidateFor(item, d) {
+    const b = bestSentence(item, d.index);
+    if (!b) return null;
+    let value = b.val;
+    if (value == null && (item.valueType === "text" || item.key === "limitation_of_liability"))
+      value = b.s.length <= 220 ? b.s : b.s.slice(0, 217) + "…";
+    return { docId: d.id, docName: d.name, type: d.type, rank: TYPE[d.type].rank, addNo: d.addNo, page: b.chunk.page, section: b.chunk.section,
+      value, raw: b.raw, evidence: b.s.slice(0, 600), ctx: b.ctx, sc: b.sc, norm: norm(item, value) };
+  }
+
+  function analyzePackage(pkg) {
+    const items = ITEMS.map(item => {
+      const all = pkg.docs.map(d => candidateFor(item, d)).filter(Boolean);
+      const cands = all.filter(c => c.value != null);
+      let applied = null, conflict = null;
+      if (cands.length) {
+        const distinct = [...new Set(cands.map(c => c.norm).filter(v => v != null))];
+        if (item.valueType === "text" || distinct.length <= 1) {
+          applied = item.valueType === "text" ? cands.slice().sort((a, b) => b.sc - a.sc)[0]
+            : cands.slice().sort((a, b) => a.rank - b.rank || b.addNo - a.addNo || b.sc - a.sc)[0];
+        } else {
+          const adds = cands.filter(c => c.type === "ADD").sort((a, b) => b.addNo - a.addNo);
+          const byRank = cands.slice().sort((a, b) => a.rank - b.rank || b.sc - a.sc);
+          const values = byRank.map(c => ({ value: c.value, docName: c.docName, type: c.type, page: c.page, docId: c.docId }));
+          if (adds.length) {
+            applied = adds[0];
+            conflict = { status: "addendum", values, rule: `${applied.docName}(추가 공고)가 앞선 값을 바꿨습니다. 최신 판 값을 적용합니다.` };
+          } else {
+            applied = byRank[0];
+            conflict = { status: "open", values, rule: `문서 우선순위상 ${TYPE[applied.type].label} 값이 앞서지만, 값이 서로 달라 자동으로 고르지 않고 질의로 확인해야 합니다.` };
+          }
+        }
+      } else if (all.length) {
+        applied = null;
+      }
+      const ev = applied ? applied.evidence : "", ctx = applied ? applied.ctx : "";
+      const [risk, reason] = assessRisk(item.key, applied ? applied.value : null, ev, ctx);
+      return { key: item.key, label: item.label, category: item.category, group: item.group, dept: item.dept, en: item.en, use: item.use,
+        found: !!applied, value: applied ? applied.value : "", raw: applied ? applied.raw : null, summary: "", evidence: ev,
+        pages: applied ? [applied.page] : [], docId: applied ? applied.docId : null, docName: applied ? applied.docName : "",
+        docType: applied ? applied.type : null, section: applied ? applied.section : "",
+        candidates: cands.map(c => ({ docId: c.docId, docName: c.docName, type: c.type, page: c.page, value: c.value, raw: c.raw, evidence: c.evidence })),
+        conflict, risk, risk_reason: reason, source: "rule" };
+    });
+    return items;
+  }
+
+  // 다른 문서를 가리키는 참조 중 묶음에 없는 것
+  const REF_RE = /\b(Appendix|Annex|Schedule|Volume|Vol\.)\s+([A-Z]|\d{1,2}|[IVX]{1,4})\b|(부록|별첨)\s*([A-Z0-9]{1,2})/g;
+  function crossRefs(pkg) {
+    const found = new Map();
+    // 문서의 표제부: 파일명 + 첫 쪽에서 첫 번호 조항 앞까지의 줄(최대 6줄)
+    const headOf = d => { const out = []; for (const l of (d.pages[0] ? d.pages[0].text.split("\n") : []).slice(0, 6)) { if (/^\s*(?:\d+(?:\.\d+)*\.?\s|Clause\b|제\s*\d)/.test(l)) break; out.push(l); }
+      return (d.name.replace(/[_\-.]+/g, " ") + " " + out.join(" ")).toLowerCase(); };
+    const heads = pkg.docs.map(headOf);
+    pkg.docs.forEach((d, di) => { for (const p of d.pages) {
+      for (const line of p.text.split("\n")) {
+        for (const m of line.matchAll(REF_RE)) {
+          const kind = m[1] ? m[1].replace("Vol.", "Volume") : m[3];
+          const id = m[2] || m[4], target = `${kind} ${id}`;
+          if (heads[di].includes(target.toLowerCase())) continue; // 문서 자신의 표제
+          if (!found.has(target)) found.set(target, { target, refs: [] });
+          const r = found.get(target);
+          if (r.refs.length < 4) r.refs.push({ docId: d.id, docName: d.name, page: p.number, text: line.trim().slice(0, 220) });
+        }
+      }
+    } });
+    return [...found.values()].map(r => {
+      const t = r.target.toLowerCase(), m = t.match(/^volume (\d+)$/);
+      const present = heads.some(h => h.includes(t) || (m && new RegExp(`(^|\\s)v${m[1]}\\s`).test(h)));
+      return { ...r, present };
+    }).sort((a, b) => a.present - b.present || a.target.localeCompare(b.target));
+  }
+
+  const where = c => `${c.docName} p.${c.page}`;
+  function drafts(items, refs) {
+    const by = Object.fromEntries(items.map(i => [i.key, i]));
+    const Q = [], D = [];
+    for (const it of items) {
+      if (!it.conflict || it.conflict.status !== "open") continue;
+      const vs = it.conflict.values;
+      const en = `${vs.map(v => `${TYPE[v.type].en} (${v.docName}, p.${v.page}) states ${v.value}`).join(", whereas ")}. Please confirm the applicable ${it.en.toLowerCase()} and amend the Tender Documents by Addendum.`;
+      const ko = `${it.label}이 문서마다 다릅니다: ${vs.map(v => `${TYPE[v.type].label} ${v.value}(${v.docName} p.${v.page})`).join(" vs ")}. 적용 값을 확인하고 추가 공고로 정정해 달라고 요청합니다.`;
+      Q.push({ item: it.key, label: it.label, basis: "문서 간 모순", where: vs.map(v => `${v.docName} p.${v.page}`).join(" · "), en, ko, owner: it.dept, docId: vs[0].docId, page: vs[0].page });
+    }
+    if (by.ld_cap && !by.ld_cap.found) Q.push({ item: "ld_cap", label: "지체상금 상한", basis: "조항 없음", where: "-", owner: "계약법무",
+      en: "We could not find a maximum amount of delay damages in the Tender Documents. Please confirm the cap on delay damages as a percentage of the Contract Price.",
+      ko: "지체상금 상한 조항을 찾지 못했습니다. 계약금액 대비 상한(%)을 확인해 달라고 요청합니다." });
+    if (by.limitation_of_liability && !by.limitation_of_liability.found) Q.push({ item: "limitation_of_liability", label: "책임 한도", basis: "조항 없음", where: "-", owner: "계약법무",
+      en: "Please confirm the limitation of the Contractor's total liability under the Contract and the exclusion of indirect and consequential loss.",
+      ko: "계약자 총 책임 한도와 간접손해 면책 조항을 확인해 달라고 요청합니다." });
+    for (const r of refs.filter(r => !r.present)) {
+      const f = r.refs[0];
+      Q.push({ item: null, label: `빠진 문서: ${r.target}`, basis: "참조 문서 없음", where: `${f.docName} p.${f.page}`, owner: "영업", docId: f.docId, page: f.page,
+        en: `${f.docName}, p.${f.page} refers to ${r.target}, which is not included in the Tender Documents received. Please issue ${r.target}.`,
+        ko: `${f.docName} ${f.page}쪽이 ${r.target}을(를) 참조하지만 받은 입찰 문서에 없습니다. 해당 문서를 배포해 달라고 요청합니다.` });
+    }
+    const sd = by.site_data_reliance;
+    if (sd && sd.risk === "high") Q.push({ item: sd.key, label: sd.label, basis: "리스크 높음", where: where({ docName: sd.docName, page: sd.pages[0] }), owner: sd.dept, docId: sd.docId, page: sd.pages[0],
+      en: "Please confirm whether Bidders may rely on the site and geotechnical data provided with the Tender Documents for the purposes of design and pricing, and which party bears the cost of any inaccuracy.",
+      ko: "입찰 문서와 함께 받은 현장·지반 자료를 설계와 가격 산정에 믿고 써도 되는지, 자료가 틀렸을 때 비용은 누가 지는지 확인 요청합니다." });
+
+    const pct = it => parseFloat(it.value);
+    const DEV = {
+      liquidated_damages: it => ["지체상금률을 일 0.1% 이하로 낮춤", "Reduce the rate of delay damages to 0.1% of the Contract Price per day of delay."],
+      ld_cap: it => [`지체상금 상한을 ${pct(it)}%에서 10%로 낮춤`, "Limit the total amount of delay damages to 10% of the Contract Price."],
+      limitation_of_liability: it => [/unlimit|무제한|제한(?:하지| 없)/i.test(it.evidence) ? "무제한 책임을 계약금액의 100%로 제한" : `총 책임 한도를 ${isNaN(pct(it)) ? "" : pct(it) + "%에서 "}계약금액의 100%로 낮춤`, "Limit the Contractor's total liability to 100% of the Accepted Contract Amount, with exclusion of indirect and consequential loss."],
+      price_adjustment: () => ["주요 자재(강재·동·연료)와 인건비에 물가변동 조정 공식 적용", "Include a price adjustment formula for steel, copper, fuel and labour indices in accordance with Sub-Clause 13.8."],
+      payment_terms: it => [`기성 지급 기한을 ${it.value}에서 28일로 줄임`, "Reduce the period for payment of Interim Payment Certificates to 28 days."],
+      warranty: it => [`하자담보기간을 ${it.value}에서 24개월 이하로 줄임`, "Limit the Defects Notification Period to 24 months from Taking Over."],
+      bid_bond: it => [`입찰보증을 ${it.value}에서 2%로 낮춤`, "Reduce the Bid Security to 2% of the Bid Price."],
+      performance_bond: it => [`이행보증을 ${it.value}에서 10%로 낮춤`, "Reduce the Performance Security to 10% of the Contract Price."],
+      retention: it => [`유보금을 ${it.value}에서 5%로 낮추고 인수 때 절반 반환`, "Limit Retention Money to 5% of the Contract Price, with half released at Taking Over."],
+      advance_payment: () => ["선급금 10%를 선급금 보증과 교환으로 지급", "Provide an advance payment of 10% of the Contract Price against an Advance Payment Guarantee."],
+      site_data_reliance: () => ["발주처 조사 자료를 신뢰 가능 자료(RUI)로 지정", "Designate the geotechnical and site data as Rely Upon Information for which the Employer is responsible."],
+      local_content: it => [`현지화 의무 ${it.value}를 낮추거나 미달 시 제재를 협의로 바꿈`, "Reduce the local content requirement or replace the sanction for shortfall with a negotiated remedy."],
+    };
+    for (const it of items) {
+      if (it.risk !== "high" || !DEV[it.key]) continue;
+      const [ko, en] = DEV[it.key](it);
+      D.push({ item: it.key, label: it.label, basis: it.risk_reason, where: it.found ? `${it.docName} p.${it.pages[0]}` : "조항 없음", owner: it.dept, ko, en, docId: it.docId, page: it.pages[0] });
+    }
+    Q.forEach((q, i) => q.id = "Q-" + pad(i + 1));
+    D.forEach((d, i) => d.id = "D-" + pad(i + 1));
+    return { Q, D };
+  }
+
+  // 계약금액이 주어지면 비율 항목을 금액으로 바꾼다
+  function exposure(items, price) {
+    if (!(price > 0)) return [];
+    const by = Object.fromEntries(items.map(i => [i.key, i]));
+    const rows = [["ld_cap", "지체상금 최대"], ["limitation_of_liability", "총 책임 한도"], ["performance_bond", "이행보증"], ["retention", "유보금"], ["advance_payment", "선급금(받는 돈)"], ["bid_bond", "입찰보증(입찰가 기준)"]];
+    return rows.map(([k, label]) => { const it = by[k]; const p = it && it.found ? parseFloat(it.value) : NaN;
+      return { key: k, label, pct: isNaN(p) ? null : p, amount: isNaN(p) ? null : Math.round(price * p / 100), item: it }; });
+  }
+
+  const api = { CATEGORIES, GROUPS, DEPTS, DOC_TYPES, TYPE, detectDocType, buildPackage, analyzePackage, crossRefs, drafts, exposure, isoDate, pseudoPages, chunkPages, buildDocument, tokenize, expandQuery, BM25, sentences, extractRules, assessRisk, offlineAnswer };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ITBEngine = api;
 })(typeof window !== "undefined" ? window : globalThis);

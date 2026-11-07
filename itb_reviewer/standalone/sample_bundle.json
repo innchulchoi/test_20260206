@@ -1,0 +1,45 @@
+{
+  "name": "Riverside 600 MW 복합화력 EPC (가상)",
+  "note": "소프트웨어 시험용 가상 입찰 문서 묶음. 발주처·프로젝트·문서 번호는 모두 가상이다.",
+  "docs": [
+    {
+      "name": "V1_Instructions_to_Bidders.pdf",
+      "kind": "pdf",
+      "pages": [
+        {"number": 1, "text": "NORTHBAY ENERGY AUTHORITY\nRIVERSIDE 600 MW COMBINED CYCLE POWER PLANT PROJECT\nTender No. NEA-RCC-2027-01\nVOLUME 1 - INSTRUCTIONS TO BIDDERS\nIssue r0, December 2026\nThis is a fictional document generated for software testing only."},
+        {"number": 2, "text": "1. General\n1.1 The Employer, Northbay Energy Authority (the \"Employer\"), invites sealed bids for the Riverside 600 MW Combined Cycle Power Plant Project (the \"Project\").\n1.2 The Site is located in the Riverside Industrial Zone, Port Halden, Republic of Nordavia.\n1.3 The scope of work comprises the engineering, procurement, construction, commissioning and testing of a 600 MW combined cycle power plant including two gas turbines, two heat recovery steam generators, one steam turbine, a 400 kV switchyard and all balance of plant.\n1.4 The Contract shall be a lump sum turnkey EPC contract based on the FIDIC Conditions of Contract for EPC/Turnkey Projects (Silver Book), 2017 Edition, as amended by the Particular Conditions.\n2. Bidding Schedule\n2.1 A pre-bid meeting and site visit will be held on 2027-01-20 at 10:00 hrs at the Employer's site office. Attendance is mandatory for all bidders.\n2.2 Bidders may submit requests for clarification in writing no later than 2027-02-10. The Employer will respond to all clarification queries by way of Addenda, which shall form part of the Tender Documents.\n2.3 Bids must be received at the Employer's address no later than 2027-03-16 at 14:00 hrs local time (the bid submission deadline). Late bids shall be rejected.\n2.4 Bids shall remain valid for a period of 180 days after the bid submission deadline."},
+        {"number": 3, "text": "3. Preparation of Bids\n3.1 The Bid shall comprise two separate envelopes: Envelope A (Technical Proposal) and Envelope B (Price Proposal including the completed Price Schedules).\n3.2 The currency of the Bid shall be United States Dollars (USD). Local costs may be quoted up to 20% in Nordavian Krona (NVK) at the exchange rate published by the Central Bank 28 days prior to the bid submission deadline.\n3.3 Each bid shall be accompanied by a Bid Security in the amount of 2% of the Bid Price, in the form of an unconditional bank guarantee valid for 28 days beyond the bid validity period.\n4. Evaluation and Award\n4.1 Bids will be evaluated on a pass/fail technical evaluation followed by commercial evaluation. Technical compliance carries a weighting of 30% and price a weighting of 70%.\n4.2 The Contract will be awarded to the bidder whose bid is technically compliant and has the lowest evaluated price after applying the weighting.\n4.3 Deviations from the Conditions of Contract shall be listed in the Schedule of Deviations. Unlisted deviations will not be considered."}
+      ]
+    },
+    {
+      "name": "V2_Contract_Data.pdf",
+      "kind": "pdf",
+      "pages": [
+        {"number": 1, "text": "VOLUME 2 - CONTRACT DATA\nRiverside 600 MW Combined Cycle Power Plant Project\nThe following data apply to the Conditions of Contract. Clause numbers refer to the General Conditions."},
+        {"number": 2, "text": "Clause 4.2 Performance Security\nThe Contractor shall deliver a Performance Security in the amount of 10% of the Contract Price within 28 days after receiving the Letter of Acceptance.\nClause 8.2 Time for Completion\nThe Time for Completion of the whole of the Works shall be 36 months from the Commencement Date.\nClause 8.8 Delay Damages\nThe Contractor shall pay liquidated damages to the Employer at the rate of 0.15% of the Contract Price per calendar day of delay.\nThe total amount of delay damages shall not exceed a maximum of 15% of the Contract Price.\nClause 11.3 Defects Notification Period\nThe Defects Notification Period shall be 24 months from the date of Taking Over.\nClause 14.2 Advance Payment\nThe Employer shall make an advance payment of 10% of the Contract Price, against submission of an Advance Payment Guarantee of equal amount.\nClause 14.3 Retention Money\nRetention Money of 5% shall be deducted from each interim payment until the total Retention Money reaches 5% of the Contract Price."}
+      ]
+    },
+    {
+      "name": "V3_Particular_Conditions.pdf",
+      "kind": "pdf",
+      "pages": [
+        {"number": 1, "text": "VOLUME 3 - PARTICULAR CONDITIONS OF CONTRACT\nClause 1.5 Priority of Documents\nThe documents forming the Contract are to be taken as mutually explanatory. In case of ambiguity or discrepancy the priority shall be: the Contract Agreement, the Contract Data, these Particular Conditions, the General Conditions, the Employer's Requirements, the Technical Specifications.\nClause 8.8 Delay Damages\nThe total amount of delay damages under the Contract shall not exceed a maximum of 10% of the Contract Price.\nClause 13.8 Adjustments for Changes in Cost\nThe Contract Price is fixed and firm and shall not be subject to any adjustment for rise or fall in the cost of labour, materials, equipment or other inputs to the Works."},
+        {"number": 2, "text": "Clause 14.3 Application for Interim Payments\nThe Contractor shall submit monthly statements. The Employer shall pay the amount certified in each Interim Payment Certificate within 56 days after receiving the statement and supporting documents.\nClause 14.9 Retention Money\nRetention Money of 10% shall be deducted from each interim payment until the total Retention Money reaches 10% of the Contract Price. Half shall be released at Taking Over.\nClause 17.6 Limitation of Liability\nThe total liability of the Contractor to the Employer under or in connection with the Contract shall not exceed 150% of the Accepted Contract Amount. Neither Party shall be liable for loss of profit or any indirect or consequential loss, except in cases of fraud or wilful misconduct.\nClause 19 Insurance\nThe Contractor shall effect and maintain Contractor's All Risks insurance for the full replacement value of the Works and third party liability insurance with a minimum limit of USD 50,000,000 per occurrence.\nClause 21 Disputes and Arbitration\nThe Contract shall be governed by the laws of the Republic of Nordavia. Any dispute not settled amicably shall be finally settled by arbitration under the Rules of Arbitration of the International Chamber of Commerce (ICC), with the seat of arbitration in Singapore."}
+      ]
+    },
+    {
+      "name": "V4_Employers_Requirements.pdf",
+      "kind": "pdf",
+      "pages": [
+        {"number": 1, "text": "VOLUME 4 - EMPLOYER'S REQUIREMENTS\n1. Scope\n1.1 The Works shall be designed and constructed in accordance with the Technical Specifications in Volume 5 and the Site Data in Appendix G.\n1.2 The Contractor shall verify the Site Data. The Employer does not warrant the accuracy of the geotechnical information in Appendix G, which is provided for information only.\n2. Local Content\n2.1 The Contractor shall ensure that not less than 30% of the total value of the Works is sourced from Nordavian nationals, local subcontractors and local suppliers (in-country value).\n3. Interfaces\n3.1 The gas supply connection at the plant boundary shall be provided by others as described in Appendix I, Clause 2.6. The Contractor shall coordinate the tie-in schedule with the gas pipeline operator."}
+      ]
+    },
+    {
+      "name": "A1_Addendum_No1.pdf",
+      "kind": "pdf",
+      "pages": [
+        {"number": 1, "text": "ADDENDUM NO. 1\nRiverside 600 MW Combined Cycle Power Plant Project, Tender No. NEA-RCC-2027-01\nIssued 2027-02-20. This Addendum forms part of the Tender Documents and prevails over any earlier issue.\n1. Bid Submission Deadline\nITB Clause 2.3 is amended: Bids must be received no later than 2027-03-30 at 14:00 hrs local time.\n2. Delay Damages\nContract Data Clause 8.8 is amended to read: The total amount of delay damages shall not exceed a maximum of 10% of the Contract Price.\n3. Responses to Clarification Requests\nQuery 07: The Employer confirms that the pre-bid meeting minutes are for information only."}
+      ]
+    }
+  ]
+}
